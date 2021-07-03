@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import ReactDOM from 'react-dom';
+
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/bootstrap_darky.min.css';
+
+import Container from 'react-bootstrap/Container';
+
+import Navbar from 'react-bootstrap/Navbar';
+// import Alert from 'react-bootstrap/Alert';
+import URLList from './components/URLList';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const rolexURL = 
+    <Container fluid>
+      <Navbar expand="lg" variant="dark" bg="dark">
+        <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
+      </Navbar>
+
+      <URLList />
+
+    </Container>
+  ;
+  return ReactDOM.render(rolexURL, document.getElementById('root'));
 }
 
 export default App;
