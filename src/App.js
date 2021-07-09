@@ -7,8 +7,7 @@ import './css/bootstrap_darky.min.css';
 import Container from 'react-bootstrap/Container';
 
 import Navbar from 'react-bootstrap/Navbar';
-// import Alert from 'react-bootstrap/Alert';
-import URLList from './components/URLList';
+import FilterableURLList from './components/FilterableURLList';
 
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
         <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
       </Navbar>
 
-      <URLList />
+      <FilterableURLList />
 
     </Container>
   ;

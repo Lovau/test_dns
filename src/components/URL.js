@@ -62,7 +62,7 @@ class URL extends React.Component {
 
   getRandomSGTIN() {
   	// return '0' + this._randomstring(12, false) + '9' + this._randomstring(11, true);
-  	return '0123';
+  	return this._randomstring(3, false);
   }
 
   _removeDomainProtocol(domain) {
@@ -134,7 +134,7 @@ class URL extends React.Component {
 	  		domain = this._removeDomainProtocol(domain);
 
 	  		sslCertificate.get(domain).then(function (certificate) {
-	  			console.log("SSL expiry date for domain "+domain+ ": "+certificate.valid_to)
+	  			// console.log("SSL expiry date for domain "+domain+ ": "+certificate.valid_to)
 					resolve(certificate.valid_to);
 	  		})
 	  		.catch(err => {
@@ -150,7 +150,7 @@ class URL extends React.Component {
 					method: 'GET', // The method
 				})
 		    .then(res => {
-			    	console.log("Redirect for "+fullURL+" is: "+ res.url, res);
+			    	// console.log("Redirect for "+fullURL+" is: "+ res.url, res);
 			    	resolve(res.url);
 		    })
 		    .catch(err => {
@@ -167,7 +167,7 @@ class URL extends React.Component {
   		this.setState({
   			cname: cname
   		});
-  		console.log(domain + ": CNAME", this.state.cname);
+  		// console.log(domain + ": CNAME", this.state.cname);
 
 			if (cname) {
 	  		try {
@@ -175,7 +175,7 @@ class URL extends React.Component {
 		  		this.setState({
 		  			SSLExpiryDate: SSLExpiryDate
 		  		});
-		  		console.log(domain + ": SSL expiry Date", SSLExpiryDate);
+		  		// console.log(domain + ": SSL expiry Date", SSLExpiryDate);
 	  		} catch (err) {
 	  			this.setState({
 	  				SSLExpiryDate: "Unable to get SSL"
@@ -192,7 +192,7 @@ class URL extends React.Component {
 		  		this.setState({
 		  			redirectWithoutSGTIN: redirectWithoutSGTIN
 		  		});
-		  		console.log(domain + " redirects to "+ redirectWithoutSGTIN);
+		  		// console.log(domain + " redirects to "+ redirectWithoutSGTIN);
 	  		} catch (err) {
 	  			this.setState({
 	  				redirectWithoutSGTIN: "Unable to get the redirection"
@@ -209,7 +209,7 @@ class URL extends React.Component {
 		  		this.setState({
 		  			redirectWithSGTIN: redirectWithSGTIN
 		  		});
-		  		console.log(this.state.url + " redirects to "+ redirectWithSGTIN);
+		  		// console.log(this.state.url + " redirects to "+ redirectWithSGTIN);
 	  		} catch (err) {
 		  		this.setState({
 		  			redirectWithSGTIN: "Unable to get the redirection"
@@ -227,9 +227,22 @@ class URL extends React.Component {
   }
 
   render() {
+
+  	if (this.props.siteFilter.length > 0 && !(this.props.site.toLowerCase().includes(this.props.siteFilter.toLowerCase()))) {
+  		return null;
+  	}
+  	if (this.props.environmentFilter.length > 0 && !(this.props.environment.toLowerCase().includes(this.props.environmentFilter.toLowerCase()))) {
+  		return null;
+  	}
+  	if (this.props.domainFilter.length > 0 && !(this.state.url.toLowerCase().includes(this.props.domainFilter.toLowerCase()))) {
+  		return null;
+  	}
+
   	return (
   		<tr>
-  			<td>{this.state.url}</td>
+  			<td>{this.props.site}</td>
+  			<td>{this.props.environment}</td>
+  			<td>{this.props.domain}</td>
   			<td>{this.state.cname}</td>
   			<td>{this.state.SSLExpiryDate}</td>
   			<td>{this.state.redirectWithoutSGTIN}</td>
