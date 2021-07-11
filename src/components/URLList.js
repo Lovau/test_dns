@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 import URL from './URL';
 // import CSV from "../data/urls.csv";
 import CSV from "../data/Rolex_URL_working_copy.csv";
+import cnameMapping from "../data/cname_mapping.json";
 
 const fetch = require('node-fetch');
 var URLs;
@@ -14,11 +15,25 @@ class URLList extends React.Component {
   constructor(props) {
     super(props);
 
-   //  this.state.urls[0] = {'domain': "https://qru.aptamilessensis.com", "update": false};
-   //  this.state.urls[1] = {'domain': "https://qr.aptaclub.de", "update": false};
-   //  this.state.urls[2] = {'domain': "https://qrG.aptaclub.de", "update": false};
+    //  this.state.urls[0] = {'domain': "https://qru.aptamilessensis.com", "update": false};
+    //  this.state.urls[1] = {'domain': "https://qr.aptaclub.de", "update": false};
+    //  this.state.urls[2] = {'domain': "https://qrG.aptaclub.de", "update": false};
+    this.state = {
+     updatesNumber: 0
+    }
+  }
 
-    this.handleTriggerClick = this.handleTriggerClick.bind(this);
+  handleCallback(childData) {
+    console.log("child communication received", childData);
+    // var newUpdates;
+    // if (this.state && 'updatesNumber' in this.state) {
+    //   newUpdates = this.state.updatesNumber+1;
+    // } else {
+    //   newUpdates = 1;
+    // }
+    // this.setState({
+    //   updatesNumber: newUpdates
+    // });
   }
 
   async getURLs() {
@@ -56,15 +71,21 @@ class URLList extends React.Component {
   //   this.getURLs();
   // }
 
-  handleTriggerClick() {
-  	console.log("click !");
-  	var urls = this.state.urls;
-  	for (var i = 0; i < urls.length; i++) {
-  		urls[i].update = true;
-  	}
-  	this.setState({
-  		urls: urls
-  	});
+  URLisFiltered(domain) {
+    if (this.props.siteFilter.length > 0 && !(domain.Brand.toLowerCase().includes(this.props.siteFilter.toLowerCase()))) {
+      return true;
+    }
+    if (this.props.environmentFilter.length > 0 && !(domain.Environment.toLowerCase().includes(this.props.environmentFilter.toLowerCase()))) {
+      return true;
+    }
+    if (this.props.domainFilter.length > 0 && !(domain.URL.toLowerCase().includes(this.props.domainFilter.toLowerCase()))) {
+      return true;
+    }
+    // if (this.props.cnameFilter.length > 0 && !(domain.cname.toLowerCase().includes(this.props.cnameFilter.toLowerCase()))) {
+    //   return true;
+    // }
+
+    return false;
   }
 
   render() {
@@ -79,23 +100,29 @@ class URLList extends React.Component {
   	}
   	var domains = this.state.urls;
 
+
+    var numberOfURLsDisplayed = 0;
   	const listUrls = domains.map((domain) => {
+      if (this.URLisFiltered(domain)) {
+        return null;
+      }
+      numberOfURLsDisplayed++;
   	  return <URL key={domain.URL} 
 				  	  		site={domain.Brand} 
 				  	  		environment={domain.Environment} 
 				  	  		domain={domain.URL} 
+                  cnameMapping={cnameMapping}
 				  	  		update={this.props.update}
-				  	  		siteFilter={this.props.siteFilter}
-				  	  		environmentFilter={this.props.environmentFilter}
-				  	  		domainFilter={this.props.domainFilter}
+                  parentCallback={this.handleCallback}
 		  	  		/>
   	});
 
+    // console.log("number of domains", numberOfURLsDisplayed);
+
   	return (
   		<tbody>
-
-  		    {listUrls}
-  		    </tbody>
+	     {listUrls}
+	    </tbody>
 
 		);
   }

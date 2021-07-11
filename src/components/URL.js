@@ -1,8 +1,10 @@
 import React from "react";
+
 const fetch = require('node-fetch');
 // const sslChecker = require("ssl-checker");
 // const checkCertExpiration = require('check-cert-expiration');
 const sslCertificate = require('get-ssl-certificate-next')
+
 
 // from: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
 // Generated with:
@@ -12,6 +14,9 @@ const sslCertificate = require('get-ssl-certificate-next')
 // 	heroku create
 // 	git push heroku master
 // const CORS_PROXY = 'https://infinite-crag-06340.herokuapp.com/';
+
+const cnameErrorMessage = "Doesn't exist";
+const serverUnknownMessage = "Unknown server";
 
 class URL extends React.Component {
 
@@ -24,16 +29,7 @@ class URL extends React.Component {
     this.state = {
     	url: props.domain + "/" + this.state.sgtin
     };
-
-    // this.handleClick = this.handleClick.bind(this);
   }
-
-  // handleClick() {
-  // 	if (! this.state.cname) {
-	 //  	console.log("click !");
-	 //  	this.getDNSDetails(this.props.domain);
-		// }
-  // }
 
   componentDidMount() {
   	if (this.props.update && !this.state.cname) {
@@ -45,7 +41,6 @@ class URL extends React.Component {
     	this.getDNSDetails(this.props.domain);
   	}
   }
-
 
   _randomstring(length, hasCharacters = true) {
       var result           = '';
@@ -78,6 +73,8 @@ class URL extends React.Component {
   	return new Promise((resolve, reject) => {
 
   		domain = this._removeDomainProtocol(domain);
+
+  		console.log("ongoing request");
 
   		var url = 'https://dns.google/resolve?name=' + domain;
 
@@ -134,7 +131,6 @@ class URL extends React.Component {
 	  		domain = this._removeDomainProtocol(domain);
 
 	  		sslCertificate.get(domain).then(function (certificate) {
-	  			// console.log("SSL expiry date for domain "+domain+ ": "+certificate.valid_to)
 					resolve(certificate.valid_to);
 	  		})
 	  		.catch(err => {
@@ -147,10 +143,9 @@ class URL extends React.Component {
 	async getRedirect(fullURL) {
 		return new Promise((resolve, reject) => {
 			fetch(fullURL, {
-					method: 'GET', // The method
+					method: 'GET',
 				})
 		    .then(res => {
-			    	// console.log("Redirect for "+fullURL+" is: "+ res.url, res);
 			    	resolve(res.url);
 		    })
 		    .catch(err => {
@@ -167,88 +162,98 @@ class URL extends React.Component {
   		this.setState({
   			cname: cname
   		});
-  		// console.log(domain + ": CNAME", this.state.cname);
+  		if (this.props.cnameMapping[cname]) {
+  			this.setState({
+  				server: this.props.cnameMapping[cname]
+  			});
+  		} else {
+  			this.setState({
+  				server: serverUnknownMessage
+  			});
+  		}
 
-			if (cname) {
-	  		try {
-		  		var SSLExpiryDate = await this.getSSLExpiryDate(domain);
-		  		this.setState({
-		  			SSLExpiryDate: SSLExpiryDate
-		  		});
-		  		// console.log(domain + ": SSL expiry Date", SSLExpiryDate);
-	  		} catch (err) {
-	  			this.setState({
-	  				SSLExpiryDate: "Unable to get SSL"
-	  			});
-	  			console.log(domain + ": Error", err);
-	  		}
+			// if (cname) {
+	  // 		try {
+		 //  		var SSLExpiryDate = await this.getSSLExpiryDate(domain);
+		 //  		this.setState({
+		 //  			SSLExpiryDate: SSLExpiryDate
+		 //  		});
+	  // 		} catch (err) {
+	  // 			this.setState({
+	  // 				SSLExpiryDate: "Unable to get SSL"
+	  // 			});
+	  // 			console.log(domain + ": Error", err);
+	  // 		}
 
-	  		try {
-	  			//TODO : test if http/https is there
-		  		var redirectWithoutSGTIN = await this.getRedirect(domain);
-		  		if (redirectWithoutSGTIN === domain+"/") {
-		  			redirectWithoutSGTIN = "No redirection";
-		  		}
-		  		this.setState({
-		  			redirectWithoutSGTIN: redirectWithoutSGTIN
-		  		});
-		  		// console.log(domain + " redirects to "+ redirectWithoutSGTIN);
-	  		} catch (err) {
-	  			this.setState({
-	  				redirectWithoutSGTIN: "Unable to get the redirection"
-	  			});
-	  			console.log(domain + ": Error", err);
-	  		}
+	  // 		try {
+	  // 			//TODO : test if http/https is there
+		 //  		var redirectWithoutSGTIN = await this.getRedirect(domain);
+		 //  		if (redirectWithoutSGTIN === domain+"/") {
+		 //  			redirectWithoutSGTIN = "No redirection";
+		 //  		}
+		 //  		this.setState({
+		 //  			redirectWithoutSGTIN: redirectWithoutSGTIN
+		 //  		});
+	  // 		} catch (err) {
+	  // 			this.setState({
+	  // 				redirectWithoutSGTIN: "Unable to get the redirection"
+	  // 			});
+	  // 			console.log(domain + ": Error", err);
+	  // 		}
 
-	  		try {
-		  		//TODO : test if http/https is there
-		  		var redirectWithSGTIN = await this.getRedirect(this.state.url);
-		  		if (redirectWithSGTIN === this.state.url) {
-		  			redirectWithSGTIN = "No redirection";
-		  		}
-		  		this.setState({
-		  			redirectWithSGTIN: redirectWithSGTIN
-		  		});
-		  		// console.log(this.state.url + " redirects to "+ redirectWithSGTIN);
-	  		} catch (err) {
-		  		this.setState({
-		  			redirectWithSGTIN: "Unable to get the redirection"
-		  		});
-	  			console.log(domain + ": Error", err);
-	  		}
-	  	}
+	  // 		try {
+		 //  		//TODO : test if http/https is there
+		 //  		var redirectWithSGTIN = await this.getRedirect(this.state.url);
+		 //  		if (redirectWithSGTIN === this.state.url) {
+		 //  			redirectWithSGTIN = "No redirection";
+		 //  		}
+		 //  		this.setState({
+		 //  			redirectWithSGTIN: redirectWithSGTIN
+		 //  		});
+	  // 		} catch (err) {
+		 //  		this.setState({
+		 //  			redirectWithSGTIN: "Unable to get the redirection"
+		 //  		});
+	  // 			console.log(domain + ": Error", err);
+	  // 		}
+	  // 	}
 
   	} catch (err) {
   		this.setState({
-  			cname: "Doesn't exist"
+  			cname: cnameErrorMessage
   		});
   		console.log(domain + ": Error", err);
   	}
+
+  	this.props.parentCallback("Data from child " + this.props.domain);
   }
 
   render() {
+  	var domain = this._removeDomainProtocol(this.props.domain);
 
-  	if (this.props.siteFilter.length > 0 && !(this.props.site.toLowerCase().includes(this.props.siteFilter.toLowerCase()))) {
-  		return null;
+  	var tdCnameClass = "";
+  	if (this.state.server === serverUnknownMessage) {
+  		tdCnameClass = "warningCell";
+  	} 
+  	if (this.state.cname === cnameErrorMessage) {
+  		tdCnameClass = "errorCell";
   	}
-  	if (this.props.environmentFilter.length > 0 && !(this.props.environment.toLowerCase().includes(this.props.environmentFilter.toLowerCase()))) {
-  		return null;
-  	}
-  	if (this.props.domainFilter.length > 0 && !(this.state.url.toLowerCase().includes(this.props.domainFilter.toLowerCase()))) {
-  		return null;
+  	var cnameCell = <td className={tdCnameClass} >{this.state.cname}</td>;
+  	if ("server" in this.state) {
+  		cnameCell = <td className={tdCnameClass} >{this.state.cname}<br/>{this.state.server}</td> 
   	}
 
   	return (
   		<tr>
   			<td>{this.props.site}</td>
   			<td>{this.props.environment}</td>
-  			<td>{this.props.domain}</td>
-  			<td>{this.state.cname}</td>
+  			<td>{domain}</td>
+  			{cnameCell}
   			<td>{this.state.SSLExpiryDate}</td>
   			<td>{this.state.redirectWithoutSGTIN}</td>
   			<td>{this.state.redirectWithSGTIN}</td>
   		</tr>
-	);
+		);
   }
 
 }

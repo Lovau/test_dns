@@ -1,0 +1,12 @@
+button {
+	float: right;
+}
+
+.warningCell {
+	/*background-color: orange;*/
+	color: orange;
+}
+.errorCell {
+	/*background-color: #db4e44;*/
+	color: #ed3d1a;
+}

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/bootstrap_darky.min.css';
+import './css/rolex_url.css';
 
 import Container from 'react-bootstrap/Container';
 

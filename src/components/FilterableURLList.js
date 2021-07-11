@@ -11,10 +11,11 @@ class FilterableURLList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleTriggerVerification = this.handleTriggerVerification.bind(this);
+    this.handleURLsVerifications = this.handleURLsVerifications.bind(this);
     this.handleFilterSiteChange = this.handleFilterSiteChange.bind(this);
     this.handleFilterEnvironmentChange = this.handleFilterEnvironmentChange.bind(this);
     this.handleFilterDomainChange = this.handleFilterDomainChange.bind(this);
+    this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
   }
 
   handleFilterSiteChange(e) {
@@ -32,6 +33,11 @@ class FilterableURLList extends React.Component {
   		domain: e.target.value
   	});
   }
+  handleFilterCnameChange(e) {
+  	this.setState({
+  		cname: e.target.value
+  	});
+  }
 
   componentDidMount() {
   	this.setState({
@@ -42,7 +48,7 @@ class FilterableURLList extends React.Component {
   	});
   }
 
-  handleTriggerVerification() {
+  handleURLsVerifications() {
   	this.setState({
   		update: true
   	});
@@ -61,6 +67,10 @@ class FilterableURLList extends React.Component {
   	if (this.state != null && 'domain' in this.state) {
   		domainFilter = this.state.domain;
   	}
+  	var cnameFilter = '';
+  	if (this.state != null && 'cname' in this.state) {
+  		cnameFilter = this.state.cname;
+  	}
   	var update = false;
   	if (this.state != null && 'update' in this.state) {
   		update = this.state.update;
@@ -68,8 +78,10 @@ class FilterableURLList extends React.Component {
 
   	return (
   		<Row>
-	  		<Col sm={{ span: 2, offset: 10 }}>
-		  		<Button variant="light" onClick={this.handleTriggerVerification}>Verify the URLs</Button>
+	  		<Col sm={10}>
+	  		</Col>
+	  		<Col sm={2}>
+		  		<Button variant="primary" onClick={this.handleURLsVerifications} className="mt-2 mb-2" >Verify the URLs</Button>
 	  		</Col>
 
 	  		<Col sm={12} >
@@ -100,13 +112,17 @@ class FilterableURLList extends React.Component {
   		    		    <Form.Control size="sm" type="text" placeholder="Domain" value={domainFilter} onChange={this.handleFilterDomainChange} />
   		    		  </Form>
 			  		  </td>
-			  		  <td></td>
+			  		  <td>
+  		  	  		<Form>
+  		    		    <Form.Control size="sm" type="text" placeholder="TODO" value={cnameFilter} onChange={this.handleFilterCnameChange} />
+  		    		  </Form>
+			  		  </td>
 			  		  <td></td>
 			  		  <td></td>
 			  		  <td></td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} update={update} />
+			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} />
 		  		</Table>
 	  		</Col>
   		</Row>
