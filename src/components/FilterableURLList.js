@@ -18,24 +18,34 @@ class FilterableURLList extends React.Component {
     this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
   }
 
+  handleKeyPress(e) {
+  	if (e.key === 'Enter') {
+  		e.preventDefault();
+  	}
+  }
+
   handleFilterSiteChange(e) {
   	this.setState({
-  		site: e.target.value
+  		site: e.target.value,
+  		update: false
   	});
   }
   handleFilterEnvironmentChange(e) {
   	this.setState({
-  		environment: e.target.value
+  		environment: e.target.value,
+  		update: false
   	});
   }
   handleFilterDomainChange(e) {
   	this.setState({
-  		domain: e.target.value
+  		domain: e.target.value,
+  		update: false
   	});
   }
   handleFilterCnameChange(e) {
   	this.setState({
-  		cname: e.target.value
+  		cname: e.target.value,
+  		update: false
   	});
   }
 
@@ -99,22 +109,22 @@ class FilterableURLList extends React.Component {
 		  		  <tr>
 			  		  <td>
 		  		  		<Form>
-		  	  		    <Form.Control size="sm" type="text" placeholder="Site" value={siteFilter} onChange={this.handleFilterSiteChange} />
+		  	  		    <Form.Control size="sm" type="text" placeholder="Site" value={siteFilter} onChange={this.handleFilterSiteChange} onKeyPress={this.handleKeyPress} />
 		  	  		  </Form>
 			  		  </td>
 			  		  <td>
   		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="Envt" value={environmentFilter} onChange={this.handleFilterEnvironmentChange} />
+  		    		    <Form.Control size="sm" type="text" placeholder="Envt" value={environmentFilter} onChange={this.handleFilterEnvironmentChange} onKeyPress={this.handleKeyPress} />
   		    		  </Form>
 			  		  </td>
 			  		  <td>
   		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="Domain" value={domainFilter} onChange={this.handleFilterDomainChange} />
+  		    		    <Form.Control size="sm" type="text" placeholder="Domain" value={domainFilter} onChange={this.handleFilterDomainChange} onKeyPress={this.handleKeyPress} />
   		    		  </Form>
 			  		  </td>
 			  		  <td>
   		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="TODO" value={cnameFilter} onChange={this.handleFilterCnameChange} />
+  		    		    <Form.Control size="sm" type="text" placeholder="CNAME & server" value={cnameFilter} onChange={this.handleFilterCnameChange} onKeyPress={this.handleKeyPress} />
   		    		  </Form>
 			  		  </td>
 			  		  <td></td>

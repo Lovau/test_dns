@@ -4,7 +4,8 @@
 	"d99wsl52rc9kd.cloudfront.net.": "EU - AEM Tech prod",
 	"djt946bb0danl.cloudfront.net.": "EU - AEM Public prod",
 	"dh80sbhfv2zfi.cloudfront.net.": "EU - AEM Public prod",
+	"qr-staging-lingyun.aptamil.lyuncloud.com.": "CN - AEM staging",
 	"danone.lyuncloud.com.": "CN - AEM Public prod",
-	"danone-prod64-china-elb1cnnorth1-208829668.cn-north-1.elb.amazonaws.com.cn.": "CN - AEM staging",
+	"danone-stage64china-elb1cnnorth1-950695756.cn-north-1.elb.amazonaws.com.cn.": "CN - AEM staging",
 	"danone-prod64-china-elb1cnnorth1-208829668.cn-north-1.elb.amazonaws.com.cn.": "CN - AEM Tech prod"
 }

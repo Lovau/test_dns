@@ -6,6 +6,7 @@ import URL from './URL';
 // import CSV from "../data/urls.csv";
 import CSV from "../data/Rolex_URL_working_copy.csv";
 import cnameMapping from "../data/cname_mapping.json";
+import Helper from "./Helper";
 
 const fetch = require('node-fetch');
 var URLs;
@@ -19,21 +20,18 @@ class URLList extends React.Component {
     //  this.state.urls[1] = {'domain': "https://qr.aptaclub.de", "update": false};
     //  this.state.urls[2] = {'domain': "https://qrG.aptaclub.de", "update": false};
     this.state = {
-     updatesNumber: 0
-    }
+     domainsToCnames: {}
+    };
+
+    this.handleCallback = this.handleCallback.bind(this);
   }
 
   handleCallback(childData) {
-    console.log("child communication received", childData);
-    // var newUpdates;
-    // if (this.state && 'updatesNumber' in this.state) {
-    //   newUpdates = this.state.updatesNumber+1;
-    // } else {
-    //   newUpdates = 1;
-    // }
-    // this.setState({
-    //   updatesNumber: newUpdates
-    // });
+    var domainsToCnames = { ...this.state.domainsToCnames, ...childData };
+
+    this.setState({
+      domainsToCnames: domainsToCnames
+    });
   }
 
   async getURLs() {
@@ -81,14 +79,20 @@ class URLList extends React.Component {
     if (this.props.domainFilter.length > 0 && !(domain.URL.toLowerCase().includes(this.props.domainFilter.toLowerCase()))) {
       return true;
     }
-    // if (this.props.cnameFilter.length > 0 && !(domain.cname.toLowerCase().includes(this.props.cnameFilter.toLowerCase()))) {
-    //   return true;
-    // }
+
+    var dns = Helper._removeDomainProtocol(domain.URL);
+    if (this.props.cnameFilter.length > 0 
+      && 
+        (!(dns in this.state.domainsToCnames) || !(this.state.domainsToCnames[dns].toLowerCase().includes(this.props.cnameFilter.toLowerCase())))
+        ) {
+        return true;
+    }
 
     return false;
   }
 
   render() {
+
   	if (!this.state || !("urls" in this.state) || this.state.urls.length < 1) {
   		return (
   			<Row>
@@ -98,26 +102,25 @@ class URLList extends React.Component {
 	  		</Row>
   		);
   	}
-  	var domains = this.state.urls;
 
-
-    var numberOfURLsDisplayed = 0;
-  	const listUrls = domains.map((domain) => {
+  	const listUrls = this.state.urls.map((domain) => {
+      
+      var update = this.props.update;
+      var display = true;
       if (this.URLisFiltered(domain)) {
-        return null;
+        update = false;
+        display = false;
       }
-      numberOfURLsDisplayed++;
   	  return <URL key={domain.URL} 
 				  	  		site={domain.Brand} 
 				  	  		environment={domain.Environment} 
 				  	  		domain={domain.URL} 
                   cnameMapping={cnameMapping}
-				  	  		update={this.props.update}
+				  	  		update={update}
+                  display={display}
                   parentCallback={this.handleCallback}
 		  	  		/>
   	});
-
-    // console.log("number of domains", numberOfURLsDisplayed);
 
   	return (
   		<tbody>

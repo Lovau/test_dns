@@ -1,4 +1,5 @@
 import React from "react";
+import Helper from "./Helper";
 
 const fetch = require('node-fetch');
 // const sslChecker = require("ssl-checker");
@@ -24,57 +25,31 @@ class URL extends React.Component {
     super(props);
 
     this.state = {
-    	sgtin: this.getRandomSGTIN()
+    	updateInProgress: false,
+    	sgtin: Helper.getRandomSGTIN()
     };
     this.state = {
     	url: props.domain + "/" + this.state.sgtin
     };
   }
 
-  componentDidMount() {
-  	if (this.props.update && !this.state.cname) {
-    	this.getDNSDetails(this.props.domain);
-  	}
-  }
   componentDidUpdate() {
-  	if (this.props.update && !this.state.cname) {
+  	if (this.props.update && !this.state.updateInProgress && !this.state.cname) {
+  		// updateInProgress is here to avoid calling the update again while it is already called but 
+  		this.setState({
+  			updateInProgress: true
+  		});
     	this.getDNSDetails(this.props.domain);
   	}
-  }
-
-  _randomstring(length, hasCharacters = true) {
-      var result           = '';
-      var characters       = '0123456789';
-      if (hasCharacters) {
-      	characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      }
-      var charactersLength = characters.length;
-      for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-     }
-     return result;
-  }
-
-  getRandomSGTIN() {
-  	// return '0' + this._randomstring(12, false) + '9' + this._randomstring(11, true);
-  	return this._randomstring(3, false);
-  }
-
-  _removeDomainProtocol(domain) {
-  	if (domain.includes("https://")) {
-  		 domain = domain.replace("https://", "");
-  	} else if (domain.includes("http://")) {
-  		 domain = domain.replace("http://", "");
-  	} 
-  	return domain;
   }
 
   async dnsExist(domain) {
   	return new Promise((resolve, reject) => {
 
-  		domain = this._removeDomainProtocol(domain);
+  		domain = Helper._removeDomainProtocol(domain);
 
-  		console.log("ongoing request");
+  		// console.log("ongoing request");
+  		// console.log("with " + domain, this.props.update, this.state);
 
   		var url = 'https://dns.google/resolve?name=' + domain;
 
@@ -95,7 +70,7 @@ class URL extends React.Component {
   }
 
   // getSSLExpiryDate(domain) {
-		// domain = this._removeDomainProtocol(domain);
+		// domain = Helper._removeDomainProtocol(domain);
 		// console.log("Getting SSL expiry date for "+domain);
 		// (async function () {
 	 //    try {
@@ -114,7 +89,7 @@ class URL extends React.Component {
 
   // async getSSLExpiryDate(domain) {
   // 	return new Promise((resolve, reject) => {
-  // 		domain = this._removeDomainProtocol(domain);
+  // 		domain = Helper._removeDomainProtocol(domain);
   // 		console.log("SSL",domain);
   // 		sslChecker(domain, { method: "GET", port: 443 })
   // 			.then((data) => {
@@ -128,7 +103,7 @@ class URL extends React.Component {
   
   async getSSLExpiryDate(domain) {
   	return new Promise((resolve, reject) => {
-	  		domain = this._removeDomainProtocol(domain);
+	  		domain = Helper._removeDomainProtocol(domain);
 
 	  		sslCertificate.get(domain).then(function (certificate) {
 					resolve(certificate.valid_to);
@@ -162,15 +137,19 @@ class URL extends React.Component {
   		this.setState({
   			cname: cname
   		});
+
+  		var server;
   		if (this.props.cnameMapping[cname]) {
-  			this.setState({
-  				server: this.props.cnameMapping[cname]
-  			});
+  				server = this.props.cnameMapping[cname];
   		} else {
-  			this.setState({
-  				server: serverUnknownMessage
-  			});
+  				server = serverUnknownMessage;
   		}
+			this.setState({
+				server: server
+			});
+	  	var domainAndCnameData = {};
+	  	domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + ' ' + server;
+	  	this.props.parentCallback(domainAndCnameData);
 
 			// if (cname) {
 	  // 		try {
@@ -225,11 +204,10 @@ class URL extends React.Component {
   		console.log(domain + ": Error", err);
   	}
 
-  	this.props.parentCallback("Data from child " + this.props.domain);
   }
 
   render() {
-  	var domain = this._removeDomainProtocol(this.props.domain);
+  	var domain = Helper._removeDomainProtocol(this.props.domain);
 
   	var tdCnameClass = "";
   	if (this.state.server === serverUnknownMessage) {
@@ -241,6 +219,10 @@ class URL extends React.Component {
   	var cnameCell = <td className={tdCnameClass} >{this.state.cname}</td>;
   	if ("server" in this.state) {
   		cnameCell = <td className={tdCnameClass} >{this.state.cname}<br/>{this.state.server}</td> 
+  	}
+
+  	if (!this.props.display) {
+  		return null;
   	}
 
   	return (
