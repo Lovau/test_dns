@@ -24,6 +24,9 @@ const Helper = {
   	} else if (domain.includes("http://")) {
   		 domain = domain.replace("http://", "");
   	} 
+    if (domain.slice(domain.length - 1) === "/") {
+      domain = domain.slice(0, -1);
+    }
   	return domain;
   }
 };

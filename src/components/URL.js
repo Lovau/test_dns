@@ -48,9 +48,6 @@ class URL extends React.Component {
 
   		domain = Helper._removeDomainProtocol(domain);
 
-  		// console.log("ongoing request");
-  		// console.log("with " + domain, this.props.update, this.state);
-
   		var url = 'https://dns.google/resolve?name=' + domain;
 
   		fetch(url)
@@ -132,6 +129,7 @@ class URL extends React.Component {
 
   async getDNSDetails(domain) {
 
+  	var domainAndCnameData = {};
   	try {
   		var cname = await this.dnsExist(domain);
   		this.setState({
@@ -147,7 +145,6 @@ class URL extends React.Component {
 			this.setState({
 				server: server
 			});
-	  	var domainAndCnameData = {};
 	  	domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + ' ' + server;
 	  	this.props.parentCallback(domainAndCnameData);
 
@@ -201,6 +198,8 @@ class URL extends React.Component {
   		this.setState({
   			cname: cnameErrorMessage
   		});
+  		domainAndCnameData[Helper._removeDomainProtocol(domain)] = cnameErrorMessage;
+  		this.props.parentCallback(domainAndCnameData);
   		console.log(domain + ": Error", err);
   	}
 
