@@ -19,6 +19,10 @@ const sslCertificate = require('get-ssl-certificate-next')
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 
+const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
+const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
+const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=";
+
 class URL extends React.Component {
 
   constructor(props) {
@@ -43,85 +47,68 @@ class URL extends React.Component {
   	}
   }
 
-  async dnsExist(domain) {
-  	return new Promise((resolve, reject) => {
-
-  		domain = Helper._removeDomainProtocol(domain);
-
-  		var url = 'https://dns.google/resolve?name=' + domain;
-
-  		fetch(url)
-		    .then(res => res.json())
-		    .then(json => {
-		    	if (json.Answer) {
-		    		var cname = json.Answer[0].data;
-			  		resolve(cname);
-		    	}
-		    	reject(json);
-		    })
-		    .catch(err => {
-		    	console.log(err);
-		    	reject(err);
-		    });
-  	});
-  }
-
-  // getSSLExpiryDate(domain) {
-		// domain = Helper._removeDomainProtocol(domain);
-		// console.log("Getting SSL expiry date for "+domain);
-		// (async function () {
-	 //    try {
-  //       const { valid_to, daysLeft, host, port } = await checkCertExpiration('qru.aptamilessensis.com');
-  //       console.log(`${daysLeft} days until the certificate expires for ${host}:${port}`);
-		// 		this.setState({
-		// 			SSLExpiryDate: valid_to
-		// 		});
-		// 		return valid_to;
-	 //    } catch (err) {
-  //       console.error(`${err.name}:${err.message}`);
-  //       return err;
-	 //    }
-  //   })();
-  // }
-
-  // async getSSLExpiryDate(domain) {
+  // async dnsExist(domain) {
   // 	return new Promise((resolve, reject) => {
+
   // 		domain = Helper._removeDomainProtocol(domain);
-  // 		console.log("SSL",domain);
-  // 		sslChecker(domain, { method: "GET", port: 443 })
-  // 			.then((data) => {
-  // 				this.setState({
-  // 					SSLExpiryDate: data.validTo
-  // 				});
-  // 				resolve(data.validTo);
-  // 			});
+
+  // 		var url = 'https://dns.google/resolve?name=' + domain;
+
+  // 		fetch(url)
+		//     .then(res => res.json())
+		//     .then(json => {
+		//     	if (json.Answer) {
+		//     		var cname = json.Answer[0].data;
+		// 	  		resolve(cname);
+		//     	}
+		//     	reject(json);
+		//     })
+		//     .catch(err => {
+		//     	console.log(err);
+		//     	reject(err);
+		//     });
   // 	});
   // }
   
-  async getSSLExpiryDate(domain) {
-  	return new Promise((resolve, reject) => {
-	  		domain = Helper._removeDomainProtocol(domain);
+  async dnsExist(domain) {
+  			return new Promise((resolve, reject) => {
+  				// console.log(API_DNS+domain);
+  				fetch(API_DNS+domain, {
+  						method: 'GET',
+  					})
+  			    .then(res => res.json())
+  	        .then(body => resolve(body.CNAME[0]))
+  			    .catch(err => {
+  			    	console.log("getDNS err", API_DNS+domain, err);
+  			    	reject(err);
+  			    });
+  			});
+  }
 
-	  		sslCertificate.get(domain).then(function (certificate) {
-					resolve(certificate.valid_to);
-	  		})
-	  		.catch(err => {
-	  			console.log("SSL domain for "+domain, err);
-	  			reject(err);
-	  		});
-	  });
+  async getSSLExpiryDate(domain) {
+		return new Promise((resolve, reject) => {
+			// console.log(API_SSL+domain);
+			fetch(API_SSL+domain, {
+					method: 'GET',
+				})
+		    .then(res => res.json())
+        .then(body => resolve(body.daysRemaining))
+		    .catch(err => {
+		    	console.log("getSSL err", API_SSL+domain, err);
+		    	reject(err);
+		    });
+		});
 	}
 
 	async getRedirect(fullURL) {
 		return new Promise((resolve, reject) => {
-			fetch(fullURL, {
+			fetch(API_REDIRECT+fullURL, {
 					method: 'GET',
 				})
-		    .then(res => {
-			    	resolve(res.url);
-		    })
+		    .then(res => res.json())
+        .then(body => resolve(body.redirect))
 		    .catch(err => {
-		    	console.log("getRedirect err", fullURL, err);
+		    	console.log("getRedirect err", API_REDIRECT+fullURL, err);
 		    	reject(err);
 		    });
 		});
@@ -131,7 +118,7 @@ class URL extends React.Component {
 
   	var domainAndCnameData = {};
   	try {
-  		var cname = await this.dnsExist(domain);
+  		var cname = await this.dnsExist(Helper._removeDomainProtocol(domain));
   		this.setState({
   			cname: cname
   		});
@@ -148,51 +135,51 @@ class URL extends React.Component {
 	  	domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + ' ' + server;
 	  	this.props.parentCallback(domainAndCnameData);
 
-			// if (cname) {
-	  // 		try {
-		 //  		var SSLExpiryDate = await this.getSSLExpiryDate(domain);
-		 //  		this.setState({
-		 //  			SSLExpiryDate: SSLExpiryDate
-		 //  		});
-	  // 		} catch (err) {
-	  // 			this.setState({
-	  // 				SSLExpiryDate: "Unable to get SSL"
-	  // 			});
-	  // 			console.log(domain + ": Error", err);
-	  // 		}
+			if (cname) {
+	  		try {
+		  		var SSLExpiryDate = await this.getSSLExpiryDate(Helper._removeDomainProtocol(domain));
+		  		this.setState({
+		  			SSLExpiryDate: SSLExpiryDate
+		  		});
+	  		} catch (err) {
+	  			this.setState({
+	  				SSLExpiryDate: "Unable to get SSL"
+	  			});
+	  			console.log(domain + ": Error", err);
+	  		}
 
-	  // 		try {
-	  // 			//TODO : test if http/https is there
-		 //  		var redirectWithoutSGTIN = await this.getRedirect(domain);
-		 //  		if (redirectWithoutSGTIN === domain+"/") {
-		 //  			redirectWithoutSGTIN = "No redirection";
-		 //  		}
-		 //  		this.setState({
-		 //  			redirectWithoutSGTIN: redirectWithoutSGTIN
-		 //  		});
-	  // 		} catch (err) {
-	  // 			this.setState({
-	  // 				redirectWithoutSGTIN: "Unable to get the redirection"
-	  // 			});
-	  // 			console.log(domain + ": Error", err);
-	  // 		}
+	  		try {
+	  			//TODO : test if http/https is there
+		  		var redirectWithoutSGTIN = await this.getRedirect(domain);
+		  		if (redirectWithoutSGTIN === domain+"/") {
+		  			redirectWithoutSGTIN = "No redirection";
+		  		}
+		  		this.setState({
+		  			redirectWithoutSGTIN: redirectWithoutSGTIN
+		  		});
+	  		} catch (err) {
+	  			this.setState({
+	  				redirectWithoutSGTIN: "Unable to get the redirection"
+	  			});
+	  			console.log(domain + ": Error", err);
+	  		}
 
-	  // 		try {
-		 //  		//TODO : test if http/https is there
-		 //  		var redirectWithSGTIN = await this.getRedirect(this.state.url);
-		 //  		if (redirectWithSGTIN === this.state.url) {
-		 //  			redirectWithSGTIN = "No redirection";
-		 //  		}
-		 //  		this.setState({
-		 //  			redirectWithSGTIN: redirectWithSGTIN
-		 //  		});
-	  // 		} catch (err) {
-		 //  		this.setState({
-		 //  			redirectWithSGTIN: "Unable to get the redirection"
-		 //  		});
-	  // 			console.log(domain + ": Error", err);
-	  // 		}
-	  // 	}
+	  		try {
+		  		//TODO : test if http/https is there
+		  		var redirectWithSGTIN = await this.getRedirect(this.state.url);
+		  		if (redirectWithSGTIN === this.state.url) {
+		  			redirectWithSGTIN = "No redirection";
+		  		}
+		  		this.setState({
+		  			redirectWithSGTIN: redirectWithSGTIN
+		  		});
+	  		} catch (err) {
+		  		this.setState({
+		  			redirectWithSGTIN: "Unable to get the redirection"
+		  		});
+	  			console.log(domain + ": Error", err);
+	  		}
+	  	}
 
   	} catch (err) {
   		this.setState({
