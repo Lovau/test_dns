@@ -4,7 +4,7 @@ import Helper from "./Helper";
 const fetch = require('node-fetch');
 // const sslChecker = require("ssl-checker");
 // const checkCertExpiration = require('check-cert-expiration');
-const sslCertificate = require('get-ssl-certificate-next')
+// const sslCertificate = require('get-ssl-certificate-next')
 
 
 // from: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
