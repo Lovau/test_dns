@@ -12,14 +12,14 @@ AFR Aptamil,https://qrx.aptatnc.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,
 AFR Aptamil,https://qry.aptatnc.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,
 AFR Aptamil,https://qrz.aptatnc.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,
 AFR Aptamil,https://rolex-aptamil-afr-prod-64.content.digital4danone.com,Prod Tech,Not Ready,Ready,Not Ready,N,EU,N,,,
-AFR Aptamil,http://rolex-aptamil-afr-rc-64-eu.aem.digital4danone.com,RC,Not Ready,Ready,Not Ready,N,EU,N,,,
+AFR Aptamil,https://rolex-aptamil-afr-rc-64-eu.aem.digital4danone.com,RC,Not Ready,Ready,Not Ready,N,EU,N,,,
 AFR Aptamil,https://rolex-aptamil-afr-staging-64-eu.content.digital4danone.com,Staging,Not Ready,Ready,Not Ready,N,EU,N,,,
 ANZ Aptamil,https://aptamilanz.content.digital4danone.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,N,N,N
 ANZ Aptamil,https://qr.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 ANZ Aptamil,https://rolex-aptamil-au-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,Y,N,N,N
 ANZ Aptamil,https://qrs.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 ANZ Aptamil,https://rolex-aptamil-au-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
-ANZ Aptamil,http://rolex-aptanutritionau-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+ANZ Aptamil,https://rolex-aptanutritionau-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 ANZ Aptamil,https://aptamilanz-staging.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,Y,CN,N,N,N,N
 ANZ Aptamil,https://qrt.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 ANZ Aptamil,https://qrx.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
@@ -46,7 +46,7 @@ ANZ Aptamil OAT,https://qra2t.nutricia.com.au,Public prod,Ready,Ready,Ready,N,EU
 ANZ Aptamil OAT,https://qru.aptamilessensis.com,Public prod,Ready,Ready,Ready,N,EU,N,N,N,Y
 ANZ Aptamil OAT,https://qrv.aptamilessensis.com,Public prod,Ready,Ready,Ready,Y,EU,N,N,N,N
 ANZ Aptamil OAT,https://qrw.aptamilessensis.com,Public prod,Ready,Ready,Ready,Y,EU,N,N,N,N
-ANZ Aptamil OAT,http://rolex-aptamiloatau-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
+ANZ Aptamil OAT,https://rolex-aptamiloatau-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
 ANZ Aptamil OAT,https://rolex-aptamil-anz-oat-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,Y,CN,N,N,N,N
 ANZ Aptamil OAT,https://anzaptamiloat-staging.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,Y,N,N,N
 ANZ Aptamil OAT,https://rolex-aptamil-anz-oat-staging-64.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,N,N
@@ -56,7 +56,7 @@ ANZ Aptamil Profutura,https://qru.aptamil-anz.com,Public prod,Ready,Ready,Ready,
 ANZ Aptamil Profutura,https://qrw.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 ANZ Aptamil Profutura,https://rolex-aptamil-anz-pf-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,N,N,Y
 ANZ Aptamil Profutura,https://rolex-aptamil-anz-pf-prod-64.content.digital4danone.com.cn,Prod Tech,INC0281667,Ready,Not Ready,N,CN,Y,N,N,N
-ANZ Aptamil Profutura,http://rolex-aptamil-anz-pf-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,N,N,Y
+ANZ Aptamil Profutura,https://rolex-aptamil-anz-pf-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,N,N,Y
 ANZ Aptamil Profutura,https://rolex-aptamil-anz-pf-staging-64.content.digital4danone.com.cn,Staging,INC0281667,Ready,Not Ready,Y,CN,N,N,N,N
 ANZ Aptamil Profutura,https://rolex-aptamil-anz-pf-staging-64.content.digital4danone.com,Staging,Ready,Ready,Not Ready,N,EU,N,N,N,N
 ANZ Aptamil Pronutra,https://qrv.aptamil-anz.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
@@ -101,7 +101,7 @@ CN Aptamil,https://qrv.aptamil.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,Y,Y,Y
 CN Aptamil,https://tr.aptamil.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,Y,Y,Y
 CN Aptamil,https://rolex-aptamil-cn-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 CN Aptamil,https://rolex-aptamil-cn-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
-CN Aptamil,http://rolex-aptamilcn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+CN Aptamil,https://rolex-aptamilcn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 CN Aptamil,https://rolex-aptamilcn-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 CN Aptamil,https://qr-staging-64.aptamil.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,Y,Y
 CN Aptamil,https://qr-staging-lingyun.aptamil.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,Y,Y
@@ -109,7 +109,7 @@ CN Aptamil Platinum,https://qru.aptamil.com.cn,Public prod,Ready,Ready,Ready,N,C
 CN Aptamil Platinum,https://qrw.aptamil.com.cn,Public prod,Mail Vector,Not ready,RF-531,N,CN,N,Y,Y,N
 CN Aptamil Platinum,https://qrx.aptamil.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,Y,Y,N
 CN Aptamil Platinum,https://rolex-aptamil-cn-platinum-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,N
-CN Aptamil Platinum,http://rolex-aptamilcnplatinum-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
+CN Aptamil Platinum,https://rolex-aptamilcnplatinum-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
 CN Aptamil Platinum,https://rolex-aptamilcnplatinum-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 CN Nutriblis,https://qra.nutrilonholland.com.cn,Public prod,Not ready,Not ready,Not ready,N,CN,Y,N,N,N
 CN Nutriblis,https://qrb.nutrilonholland.com.cn,Public prod,Not ready,Not ready,Not ready,N,CN,Y,N,N,N
@@ -117,14 +117,14 @@ CN Nutriblis,https://qrc.nutrilonholland.com.cn,Public prod,Not ready,Not ready,
 CN Nutriblis,https://qrd.nutrilonholland.com.cn,Public prod,Not ready,Not ready,Not ready,N,CN,Y,N,N,N
 CN Nutriblis,https://qre.nutrilonholland.com.cn,Public prod,Not ready,Not ready,Not ready,N,CN,Y,N,N,N
 CN Nutriblis,https://rolex-nutriblis-cn-prod-64.content.digital4danone.com.cn,Prod Tech,Not ready,Ready,Not ready,N,CN,N,,,
-CN Nutriblis,http://rolex-nutribliscn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not ready,N,EU,N,,,
+CN Nutriblis,https://rolex-nutribliscn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not ready,N,EU,N,,,
 CN Nutriblis,https://rolex-nutriblis-cn-staging-64.content.digital4danone.com.cn,Staging,Not ready,Ready,Not ready,N,CN,N,,,
 CN Nutrilon,https://tr.nutrilonholland.com.cn,Public prod,Ready,Ready,Ready,N,CN,Y,Y,N,N
 CN Nutrilon,https://qr.nutrilonholland.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,Y,N,Y
 CN Nutrilon,https://qrt.nutrilonholland.com.cn,Public prod,Ready,Ready,Ready,N,CN,Y,Y,N,Y
 CN Nutrilon,https://qrv.nutrilonholland.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,Y,N,Y
 CN Nutrilon,https://rolex-nutrilon-cn-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
-CN Nutrilon,http://rolex-nutriloncn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+CN Nutrilon,https://rolex-nutriloncn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 CN Nutrilon,https://rolex-nutriloncn-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 CN Nutrilon,https://rolex-nutriloncn-perf-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 CN Nutrilon,https://qr-staging-64.nutrilonholland.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,Y,Y
@@ -149,7 +149,7 @@ DE Aptamil,https://qrw.aptaclub-de.com,Public prod,Ready,Ready,Ready,Y,CN,N,Y,N,
 DE Aptamil,https://aptaclubde.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
 DE Aptamil,https://rolex-aptamil-de-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 DE Aptamil,https://rolex-aptamil-de-prod-64-cn.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
-DE Aptamil,http://rolex-aptamilde-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+DE Aptamil,https://rolex-aptamilde-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 DE Aptamil,https://rolex-aptamilde-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
 DE Aptamil,https://aptaclubde-staging.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,Y
 DE Aptamil,https://rolex-aptamilde-staging-64-cn.content.digital4danone.com.cn ,Staging,Ready,Ready,Ready,Y,CN,N,N,N,Y
@@ -157,7 +157,7 @@ DE Aptamil HA,https://qrb.aptaclub.de,Public prod,Ready,Ready,Ready,N,EU,N,Y,N,Y
 DE Aptamil Organic,https://qra.aptaclub.de,Public prod,Ready,Ready,Ready,N,EU,N,Y,N,Y
 DE Aptamil Organic,https://rolex-aptamil-de-organic-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,N
 DE Aptamil Organic,https://rolex-aptamil-de-organic-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Not ready,N,CN,N,N,N,N
-DE Aptamil Organic,http://rolex-aptamilde-organic-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
+DE Aptamil Organic,https://rolex-aptamilde-organic-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
 DE Aptamil Organic,https://rolex-aptamilde-organic-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,N,N
 DE Aptamil Organic,https://rolex-aptamilde-organic-staging-64-cn.content.digital4danone.com.cn ,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 DE Aptamil Profutura,https://qrb.aptaclub-de.com,Public prod,Not Ready,Ready,Not Ready,Y,CN,N,Y,N,Y
@@ -167,13 +167,13 @@ ES Almiron,https://qrv.almiclub.es,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 ES Almiron,https://qrw.almiclub.es,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 ES Almiron,https://qrx.almiclub.es,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 ES Almiron,https://rolex-almiron-es-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,,,
-ES Almiron,http://rolex-almirones-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,,,
+ES Almiron,https://rolex-almirones-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,,,
 ES Almiron,https://rolex-almiron-es-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Not Ready,N,EU,N,,,
 FR Bledina,https://qr.bledina.com,Public prod,Ready,Ready,Ready,N,EU,Y,Y,N,N
 FR Bledina,https://qrs.bledina.com,Public prod,Ready,Ready,Ready,N,EU,Y,Y,N,N
 FR Bledina,https://qrt.bledina.com,Public prod,Ready,Ready,Ready,N,EU,N,Y,Y,Y
 FR Bledina,https://rolex-bledina-fr-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,N
-FR Bledina,http://rolex-bledinafr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
+FR Bledina,https://rolex-bledinafr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
 FR Bledina,https://rolex-bledinafr-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,N
 FR Gallia,https://qr.laboratoire-gallia.com,Public prod,Ready,Ready,Ready,N,EU,N,Y,N,N
 FR Gallia,https://qrs.laboratoire-gallia.com,Public prod,Ready,Ready,Ready,N,EU,Y,Y,N,N
@@ -182,7 +182,7 @@ FR Gallia,https://qrw.laboratoire-gallia.com,Public prod,Ready,Ready,Ready,N,EU,
 FR Gallia,https://qrx.laboratoire-gallia.com,Public prod,Ready,Ready,Ready,N,EU,Y,Y,N,N
 FR Gallia,https://qrt.laboratoire-gallia.com,Public prod,Ready,Ready,Ready,N,EU,N,Y,Y,Y
 FR Gallia,https://rolex-gallia-fr-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,N
-FR Gallia,http://rolex-galliafr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
+FR Gallia,https://rolex-galliafr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,N
 FR Gallia,https://rolex-galliafr-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,N
 GR Almiron,https://qrt.nutricia.gr,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 GR Almiron,https://qru.nutricia.gr,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
@@ -192,7 +192,7 @@ GR Almiron,https://qrx.nutricia.gr,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 GR Almiron,https://qry.nutricia.gr,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 GR Almiron,https://qrz.nutricia.gr,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 GR Almiron,https://rolex-almiron-gr-prod-64.content.digital4danone.com,Prod Tech,INC0281667,Ready,Not Ready,N,EU,N,,,
-GR Almiron,http://rolex-almirongr-rc-64-eu.aem.digital4danone.com,RC,INC0281667,Ready,Not Ready,N,EU,N,,,
+GR Almiron,https://rolex-almirongr-rc-64-eu.aem.digital4danone.com,RC,INC0281667,Ready,Not Ready,N,EU,N,,,
 GR Almiron,https://rolex-almiron-gr-staging-64-eu.content.digital4danone.com,Staging,INC0281667,Ready,Not Ready,N,EU,N,,,
 HK Aptamil,https://rolex-aptamil-hk-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 HK Aptamil,https://qr.apta.com.hk ,Public prod,Ready,Ready,Ready,N,EU,Y,N,Y,N
@@ -201,13 +201,13 @@ HK Aptamil,https://qrg.apta.com.hk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 HK Aptamil,https://qrf.apta.com.hk,Public prod,Ready,Ready,Ready,N,EU,N,Y,N,Y
 HK Aptamil,https://qrz.aptamilessensis.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK Aptamil,https://rolex-aptamil-hk-prod-64.content.digital4danone.com.cn,Prod Tech,Not Ready,Not Ready,Not Ready,N,CN,N,,,
-HK Aptamil,http://rolex-nutriciaprogramhk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+HK Aptamil,https://rolex-nutriciaprogramhk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 HK Aptamil,https://rolex-nutriciaprogramhk-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
 HK Aptamil HMO,https://qrd.aptamilessensis.com,Public prod,Not Ready,Ready,Not Ready,Y,CN,Y,N,N,N
 HK Aptamil HMO,https://qre.aptamilessensis.com,Public prod,Not Ready,Ready,Not Ready,Y,CN,Y,N,N,N
 HK Aptamil HMO,https://qrx.aptamilessensis.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK Aptamil HMO,https://rolex-aptamilhk-hmo-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,,,
-HK Aptamil HMO,http://rolex-aptamilhkhmo-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
+HK Aptamil HMO,https://rolex-aptamilhkhmo-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
 HK Aptamil HMO,https://rolex-aptamilhk-hmo-staging-64.content.digital4danone.com,Staging,Ready,Ready,Not Ready,N,EU,N,,,
 HK Aptamil HMO,https://rolex-aptamilhk-hmo-prod-64.content.digital4danone.com.cn,Prod Tech,Not Ready,Ready,Not Ready,N,CN,,,,
 HK Aptamil HMO,https://rolex-aptamilhk-hmo-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Not Ready,N,CN,N,,,
@@ -215,7 +215,7 @@ HK Aptamil PHP,https://qrf.aptamilessensis.com,Public prod,Not Ready,Ready,Not R
 HK Aptamil PHP,https://qrg.aptamilessensis.com,Public prod,Not Ready,Ready,Not Ready,Y,CN,Y,N,N,N
 HK Aptamil PHP,https://qry.aptamilessensis.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK Aptamil PHP,https://rolex-aptamilhk-php-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,,,
-HK Aptamil PHP,http://rolex-aptamilhkphp-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
+HK Aptamil PHP,https://rolex-aptamilhkphp-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
 HK Aptamil PHP,https://rolex-aptamilhk-php-staging-64.content.digital4danone.com,Staging,Ready,Ready,Not Ready,N,EU,N,,,
 HK Aptamil PHP,https://rolex-aptamilhk-php-prod-64.content.digital4danone.com.cn,Prod Tech,Not Ready,Ready,Not Ready,N,CN,N,,,
 HK Aptamil PHP,https://rolex-aptamilhk-php-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Not Ready,N,CN,N,,,
@@ -228,7 +228,7 @@ HK Aptamil Synbio,https://qrv.aptamil-hk.com,Public prod,Ready,Ready,Ready,Y,CN,
 HK Aptamil Synbio,https://qrw.aptamil-hk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK Aptamil Synbio,https://rolex-aptamilhk-synbio-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,N
 HK Aptamil Synbio,https://rolex-aptamilhk-synbio-prod-64-cn.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
-HK Aptamil Synbio,http://rolex-aptamilhksynbio-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,CN,N,N,N,N
+HK Aptamil Synbio,https://rolex-aptamilhksynbio-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,CN,N,N,N,N
 HK Aptamil Synbio,https://rolex-aptamilhk-synbio-staging-64.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,N,N
 HK Aptamil Synbio,https://aptamilhk-staging.content.digital4danone.com.cn  ,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 HK Aptamil Synbio,https://rolex-aptamilhk-synbio-staging-64-cn.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,Y,CN,N,N,Y,Y
@@ -243,21 +243,21 @@ HK C&G,https://qrs.cghappykids.com.hk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 HK C&G,https://qrt.cghappykids.com.hk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 HK C&G,https://qru.cowgate-hk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK C&G,https://qrv.cowgate-hk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
-HK C&G,http://rolex-cowandgatehk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+HK C&G,https://rolex-cowandgatehk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 HK C&G,https://qrw.cowgate-hk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 HK C&G,https://rolex-cowandgatehk-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
 HK C&G,https://cowandgatehk-staging.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
 HK C&G,https://rolex-cowandgatehk-staging-64.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,Y,CN,N,N,N,N
-HK Nutrilon,http://rolex-nutrilonhk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+HK Nutrilon,https://rolex-nutrilonhk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 HK Nutrilon,https://rolex-nutrilonhk-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
 HK Nutrilon Organic,https://rolex-nutrilon-hk-organic-prod-64.content.digital4danone.com,Prod Tech,Not ready,Ready,Not ready,,EU,,,,
 HK Nutrilon Organic,https://rolex-nutrilon-hk-organic-prod-64-cn.content.digital4danone.com.cn,Prod Tech,Not ready,Ready,Not ready,,CN,,,,
 HK Nutrilon Organic,https://rolex-nutrilon-hk-organic-staging-64.content.digital4danone.com,Staging,Not ready,Ready,Not ready,,EU,,,,
 HK Nutrilon Organic,https://rolex-nutrilon-hk-organic-staging-64.content.digital4danone.com.cn,Staging,Not ready,Ready,Not ready,,CN,,,,
-HK Nutrilon Organic,http://rolex-nutrilonhk-organic-rc-64-eu.aem.digital4danone.com,RC,Not ready,Ready,Not ready,,EU,,,,
+HK Nutrilon Organic,https://rolex-nutrilonhk-organic-rc-64-eu.aem.digital4danone.com,RC,Not ready,Ready,Not ready,,EU,,,,
 HK Nutrilon Organic,https://rolex-aptamil-me-prod-64.content.digital4danone.com,Prod Tech,Not ready,Ready,Not ready,,EU,,,,
 HK Nutrilon Organic,https://rolex-aptamil-me-organic-staging-64.content.digital4danone.com,Staging,Not ready,Ready,Not ready,,EU,,,,
-HK Nutrilon Organic,http://rolex-aptamilme-organic-rc-64-eu.aem.digital4danone.com,RC,Not ready,Ready,Not ready,,EU,,,,
+HK Nutrilon Organic,https://rolex-aptamilme-organic-rc-64-eu.aem.digital4danone.com,RC,Not ready,Ready,Not ready,,EU,,,,
 HK Nutrilon thinkGreen,https://rolex-nutrilon-hk-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 HK Nutrilon ThinkGreen,https://nutrilonhk.content.digital4danone.com.cn,Public prod,Ready,Ready,Ready,N,CN,Y,N,N,N
 HK Nutrilon ThinkGreen,https://qr.nutrilon-hk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
@@ -283,7 +283,7 @@ IT Aptamil,https://qrx.aptaclub.it ,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 IT Aptamil,https://qry.aptaclub.it ,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 IT Aptamil,https://qrz.aptaclub.it ,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 IT Aptamil,https://rolex-aptamilit-prod-64-eu.content.digital4danone.com,Prod Tech,Ready,Ready,Not ready,N,EU,N,N,N,N
-IT Aptamil,http://rolex-aptamilit-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not ready,N,EU,N,N,N,N
+IT Aptamil,https://rolex-aptamilit-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not ready,N,EU,N,N,N,N
 IT Aptamil,https://rolex-aptamil-it-prod-64.content.digital4danone.com,Staging,Ready,Ready,Not ready,N,EU,N,N,N,N
 ME Aptamil,https://qru.apta-advice.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 ME Aptamil,https://qrv.apta-advice.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
@@ -293,7 +293,7 @@ ME Aptamil,https://qrt.apta-advice.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 NL Nutrilon,https://nutrilonnl.content.digital4danone.com.cn,Public prod,Ready,Ready,Ready,N,CN,Y,N,N,N
 NL Nutrilon,https://rolex-nutrilon-nl-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 NL Nutrilon,https://rolex-nutrilon-nl-prod-64-cn.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,N,N,N,Y
-NL Nutrilon,http://rolex-nutrilonhollandcn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+NL Nutrilon,https://rolex-nutrilonhollandcn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 NL Nutrilon,https://qr.nutrilon.nl,Public prod,Ready,Ready,Ready,N,EU,Y,,,Y
 NL Nutrilon,https://qr.nutrilon-nl.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,Y
 NL Nutrilon,https://qrs.nutrilon.nl,Public prod,Ready,Ready,Ready,N,EU,Y,,,
@@ -310,10 +310,10 @@ NL Nutrilon,https://qrv.nutrilon-nl.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N
 NL Nutrilon,https://qrw.nutrilon.nl,Public prod,Not ready,Ready,Not ready,N,EU,,,,
 NL Nutrilon,https://qrw.nutrilon-nl.com,Public prod,Ready,Ready,Not ready,Y,CN,Y,N,N,Y
 NZ Aptamil,https://rolex-aptamil-nz-prod-64.content.digital4danone.com,Prod Tech,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
-NZ Aptamil,http://rolex-aptamilnz-rc-64-eu.aem.digital4danone.com,RC,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
+NZ Aptamil,https://rolex-aptamilnz-rc-64-eu.aem.digital4danone.com,RC,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
 NZ Aptamil,https://rolex-aptamilnz-staging-64-eu.content.digital4danone.com,Staging,Not needed,Not needed,Not needed,N,EU,N,N,Y,Y
 NZ Karicare,https://rolex-karinourish-nz-prod-64.content.digital4danone.com,Prod Tech,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
-NZ Karicare,http://rolex-karinourishnz-rc-64-eu.aem.digital4danone.com,RC,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
+NZ Karicare,https://rolex-karinourishnz-rc-64-eu.aem.digital4danone.com,RC,Not needed,Not needed,Not needed,N,EU,N,N,N,Y
 NZ Karicare,https://rolex-karinourishnz-staging-64-eu.content.digital4danone.com,Staging,Not needed,Not needed,Not needed,N,EU,N,N,Y,Y
 PL Bebilon,https://qrt.bebiprogram.pl,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 PL Bebilon,https://qru.bebiprogram.pl,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
@@ -328,7 +328,7 @@ TR Aptamil,https://qru.ilkadimlarim.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 TR Aptamil,https://qrv.ilkadimlarim.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 TR Aptamil,https://qrw.ilkadimlarim.com,Public prod,Ready,Ready,Ready,N,EU,Y,,,N
 TR Aptamil,https://rolex-aptamil-tr-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,,,
-TR Aptamil,http://rolex-aptamiltr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,,,
+TR Aptamil,https://rolex-aptamiltr-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Not Ready,N,EU,N,,,
 TR Aptamil,https://rolex-aptamil-tr-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Not Ready,N,EU,N,,,
 UK Aptamil,https://aptamiluk.content.digital4danone.com.cn,Public prod,Ready,Ready,Ready,N,CN,N,N,N,N
 UK Aptamil,https://qr.aptamil-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
@@ -343,7 +343,7 @@ UK Aptamil,https://qrv.aptamil-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK Aptamil,https://qrw.aptamil-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK Aptamil,https://rolex-aptaclub-uk-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,Y
 UK Aptamil,https://rolex-aptaclub-uk-prod-64.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,Y,N,N,N
-UK Aptamil,http://rolex-aptaclubuk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+UK Aptamil,https://rolex-aptaclubuk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 UK Aptamil,https://qrt.aptamil-ukie.com,Public prod,ICP in progress,Not ready,Not ready,Y,CN,Y,N,N,N
 UK Aptamil,https://rolex-aptaclubuk-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
 UK Aptamil,https://aptamiluk-staging.content.digital4danone.com.cn,Staging,Ready,Ready,Ready,N,CN,N,N,N,N
@@ -356,12 +356,12 @@ UK C&G,https://qrt.cowgate-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK C&G,https://qr.cgbabyclub.co.uk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 UK C&G,https://qr2.cgbabyclub.co.uk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 UK C&G,https://qrt.cgbabyclub.co.uk,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
-UK C&G,http://qrs.cowandgate.co.uk,Public prod,Ready,Ready,Not ready,N,EU,Y,N,N,N
+UK C&G,https://qrs.cowandgate.co.uk,Public prod,Ready,Ready,Not ready,N,EU,Y,N,N,N
 UK C&G,https://qru.cowgate-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK C&G,https://rolex-cowandgate-uk-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Ready,N,EU,N,N,N,N
 UK C&G,https://qrv.cowgate-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK C&G,https://rolex-cowandgate-uk-prod-64-cn.content.digital4danone.com.cn,Prod Tech,Ready,Ready,Ready,N,CN,Y,N,N,N
-UK C&G,http://rolex-cowandgateuk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
+UK C&G,https://rolex-cowandgateuk-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,N,N,Y
 UK C&G,https://qrw.cowgate-uk.com,Public prod,Ready,Ready,Ready,Y,CN,Y,N,N,N
 UK C&G,https://qrt.cowgate-ukie.com,Public prod,ICP in progress,Not ready,Not ready,Y,CN,Y,N,N,N
 UK C&G,https://rolex-cowandgateuk-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,N,Y,Y
@@ -376,5 +376,5 @@ VN Aptamil,https://qru.aptaclub.com.vn,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,
 VN Aptamil,https://qrv.aptaclub.com.vn,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 VN Aptamil,https://qrw.aptaclub.com.vn,Public prod,Ready,Ready,Ready,N,EU,Y,N,N,N
 VN Aptamil,https://rolex-aptamil-vn-prod-64.content.digital4danone.com,Prod Tech,Ready,Ready,Not Ready,N,EU,N,,,
-VN Aptamil,http://rolex-aptamil-vn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
+VN Aptamil,https://rolex-aptamil-vn-rc-64-eu.aem.digital4danone.com,RC,Ready,Ready,Ready,N,EU,N,,,
 VN Aptamil,https://rolex-aptamil-vn-staging-64-eu.content.digital4danone.com,Staging,Ready,Ready,Ready,N,EU,N,,,

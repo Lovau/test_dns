@@ -1,5 +1,10 @@
-button {
-	float: right;
+button.btn.main {
+  float: right;
+}
+table td button.btn {
+	horizontal-align: middle;
+  display: block;
+  margin:auto;
 }
 
 .warningCell {
@@ -9,4 +14,35 @@ button {
 .errorCell {
 	/*background-color: #db4e44;*/
 	color: #ed3d1a;
+}
+.table-bordered td.updating:after {
+  content: ' .';
+  animation: dots 1s steps(5, end) infinite;
+  color: red;
+  font-size: 150%;
+}
+
+@keyframes dots {
+  0%, 20% {
+    color: rgba(0,0,0,0);
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);
+  }
+  40% {
+    color: white;
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);
+  }
+  60% {
+    text-shadow:
+      .25em 0 0 white,
+      .5em 0 0 rgba(0,0,0,0);
+  }
+  80%, 100% {
+    text-shadow:
+      .25em 0 0 white,
+      .5em 0 0 white;
+  }
 }

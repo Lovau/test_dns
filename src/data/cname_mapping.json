@@ -1,13 +1,29 @@
 {
 	"Doesn't exist": "Doesn't exist",
-	"d2tgrthycnydha.cloudfront.net.": "EU - AEM RC",
-	"d7jfzlujcu3eu.cloudfront.net.": "EU - AEM RC",
-	"d3mn2vqiz3ym21.cloudfront.net.": "EU - AEM staging",
-	"d99wsl52rc9kd.cloudfront.net.": "EU - AEM Tech prod",
-	"djt946bb0danl.cloudfront.net.": "EU - AEM Public prod",
-	"dh80sbhfv2zfi.cloudfront.net.": "EU - AEM Public prod",
-	"qr-staging-lingyun.aptamil.lyuncloud.com.": "CN - AEM staging",
-	"danone-stage64china-elb1cnnorth1-950695756.cn-north-1.elb.amazonaws.com.cn.": "CN - AEM staging",
-	"danone-prod64-china-elb1cnnorth1-208829668.cn-north-1.elb.amazonaws.com.cn.": "CN - AEM Tech prod",
-	"danone.lyuncloud.com.": "CN - AEM Public prod"
+	
+	"d2tgrthycnydha.cloudfront.net": "EU - AEM RC",
+	"d7jfzlujcu3eu.cloudfront.net": "EU - AEM RC",
+	
+	"d3mn2vqiz3ym21.cloudfront.net": "EU - AEM staging",
+	"d1tp18hvhqt84x.cloudfront.net": "EU - AEM staging",
+	"d2720qrflec28g.cloudfront.net": "EU - AEM staging",
+	"d170u1z9c308qx.cloudfront.net": "EU - AEM staging",
+	"d1igjh9ccoc1nd.cloudfront.net": "EU - AEM staging",
+	"dvi1fny3rt29m.cloudfront.net": "EU - AEM staging",
+	"d3ufowzr1o4aka.cloudfront.net": "EU - AEM staging",
+	"d1zzisx9iavnpt.cloudfront.net": "EU - AEM staging",
+	"d2xyvbb3c0c5he.cloudfront.net": "EU - AEM staging",
+	"d99wsl52rc9kd.cloudfront.net": "EU - AEM Tech prod",
+
+	"qr-staging-lingyun.aptamil.lyuncloud.com": "CN - AEM staging",
+	"qr-staging-lingyun.lyuncloud.com": "CN - AEM staging",
+	"danone-stage64china-elb1cnnorth1-950695756.cn-north-1.elb.amazonaws.com.cn": "CN - AEM staging",
+	"Danone-Stage64China-elb1cnnorth1-950695756.cn-north-1.elb.amazonaws.com.cn": "CN - AEM staging",
+	"danone-stage64china-elb1cnnorth1-950695756.cn-north-1.elb": "CN - AEM staging",
+	
+	"djt946bb0danl.cloudfront.net": "EU - AEM Public prod",
+	"dh80sbhfv2zfi.cloudfront.net": "EU - AEM Public prod",
+	
+	"danone-prod64-china-elb1cnnorth1-208829668.cn-north-1.elb.amazonaws.com.cn": "CN - AEM Tech prod",
+	"danone.lyuncloud.com": "CN - AEM Public prod"
 }

@@ -18,6 +18,8 @@ const fetch = require('node-fetch');
 
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
+const SSLError = "Unable to get SSL";
+const RedirectionError = "Unable to get the redirection";
 
 const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
 const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
@@ -30,6 +32,10 @@ class URL extends React.Component {
 
     this.state = {
     	updateInProgress: false,
+    	updateDNSInProgress: false,
+    	updateSSLInProgress: false,
+    	updateRedirWithSGTINInProgress: false,
+    	updateRedirWithoutSGTINInProgress: false,
     	sgtin: Helper.getRandomSGTIN()
     };
     this.state = {
@@ -38,12 +44,40 @@ class URL extends React.Component {
   }
 
   componentDidUpdate() {
-  	if (this.props.update && !this.state.updateInProgress && !this.state.cname) {
-  		// updateInProgress is here to avoid calling the update again while it is already called but 
+  	if (this.props.update === true && !this.state.updateInProgress && (!this.state.cname || !this.state.SSLExpiryDate || !this.state.redirectWithSGTIN || !this.state.redirectWithoutSGTIN)) {
+  		// updateInProgress is here to avoid calling the update again while it is already called
   		this.setState({
-  			updateInProgress: true
+  			updateInProgress: true,
+  			updateDNSInProgress: true,
+  			updateSSLInProgress: true,
+  			updateRedirWithSGTINInProgress: true,
+  			updateRedirWithoutSGTINInProgress: true,
+  		});
+    	this.getAllURLDetails(this.props.domain);
+  	}
+  	else if (this.props.updateDNS === true && !this.state.updateDNSInProgress && !this.state.cname) {
+  		this.setState({
+  			updateDNSInProgress: true,
   		});
     	this.getDNSDetails(this.props.domain);
+  	}
+  	else if (this.props.updateSSL === true && !this.state.updateSSLInProgress && !this.state.SSLExpiryDate) {
+  		this.setState({
+  			updateSSLInProgress: true,
+  		});
+    	this.getSSLDetails(this.props.domain);
+  	}
+  	else if (this.props.updateRedirectionWithoutSGTIN === true && !this.state.updateRedirWithoutSGTINInProgress && !this.state.redirectWithoutSGTIN) {
+  		this.setState({
+  			updateRedirWithoutSGTINInProgress: true,
+  		});
+    	this.getRedirectionDetails(this.props.domain, false);
+  	}
+  	else if (this.props.updateRedirectionWithSGTIN === true && !this.state.updateRedirWithSGTINInProgress && !this.state.redirectWithSGTIN) {
+  		this.setState({
+  			updateRedirWithSGTINInProgress: true,
+  		});
+    	this.getRedirectionDetails(this.props.domain, true);
   	}
   }
 
@@ -102,10 +136,17 @@ class URL extends React.Component {
 
 	async getRedirect(fullURL) {
 		return new Promise((resolve, reject) => {
+			// console.log(API_REDIRECT+domain);
 			fetch(API_REDIRECT+fullURL, {
 					method: 'GET',
 				})
-		    .then(res => res.json())
+		    .then(res => {
+		    	if (!res.ok) {
+			    	console.log("getRedirect err", API_REDIRECT+fullURL, "Not a 200 response");
+			    	reject(res);
+		    	}
+		    	return res.json();
+		    })
         .then(body => resolve(body.redirect))
 		    .catch(err => {
 		    	console.log("getRedirect err", API_REDIRECT+fullURL, err);
@@ -114,112 +155,192 @@ class URL extends React.Component {
 		});
 	}
 
+	// TODO : if API error, handle it and display a dedicated error message. Or even allows to retry.
+  async getAllURLDetails(domain) {
+  	await this.getDNSDetails(domain);
+
+		if (this.state.cname && this.state.cname !== cnameErrorMessage) {
+			await this.getSSLDetails(domain);
+  		await this.getRedirectionDetails(domain, false);
+  		await this.getRedirectionDetails(domain, true);
+  	}
+  	this.setState({
+  		updateInProgress: false,
+  	});
+  }
+
   async getDNSDetails(domain) {
+		var domainAndCnameData = {};
+		try {
+			var cname = await this.dnsExist(Helper._removeDomainProtocol(domain));
+			this.setState({
+				cname: cname
+			});
 
-  	var domainAndCnameData = {};
-  	try {
-  		var cname = await this.dnsExist(Helper._removeDomainProtocol(domain));
-  		this.setState({
-  			cname: cname
-  		});
-
-  		var server;
-  		if (this.props.cnameMapping[cname]) {
-  				server = this.props.cnameMapping[cname];
-  		} else {
-  				server = serverUnknownMessage;
-  		}
+			var server;
+			if (this.props.cnameMapping[cname]) {
+					server = this.props.cnameMapping[cname];
+			} else if (this.props.cnameMapping[cname+"."]) {
+					server = this.props.cnameMapping[cname+"."];
+			} else {
+					server = serverUnknownMessage;
+			}
 			this.setState({
 				server: server
 			});
-	  	domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + ' ' + server;
-	  	this.props.parentCallback(domainAndCnameData);
+			domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + ' ' + server;
+			this.props.parentCallback(domainAndCnameData);
 
-			if (cname) {
-	  		try {
-		  		var SSLExpiryDate = await this.getSSLExpiryDate(Helper._removeDomainProtocol(domain));
-		  		this.setState({
-		  			SSLExpiryDate: SSLExpiryDate
-		  		});
-	  		} catch (err) {
-	  			this.setState({
-	  				SSLExpiryDate: "Unable to get SSL"
-	  			});
-	  			console.log(domain + ": Error", err);
-	  		}
+		} catch (err) {
+			this.setState({
+				cname: cnameErrorMessage
+			});
+			domainAndCnameData[Helper._removeDomainProtocol(domain)] = cnameErrorMessage;
+			this.props.parentCallback(domainAndCnameData);
+			console.log(domain + ": Error", err);
+		}
 
-	  		try {
-	  			//TODO : test if http/https is there
-		  		var redirectWithoutSGTIN = await this.getRedirect(domain);
-		  		if (redirectWithoutSGTIN === domain+"/") {
-		  			redirectWithoutSGTIN = "No redirection";
-		  		}
-		  		this.setState({
-		  			redirectWithoutSGTIN: redirectWithoutSGTIN
-		  		});
-	  		} catch (err) {
-	  			this.setState({
-	  				redirectWithoutSGTIN: "Unable to get the redirection"
-	  			});
-	  			console.log(domain + ": Error", err);
-	  		}
+		this.setState({
+			updateDNSInProgress: false,
+		});
+  }
 
-	  		try {
-		  		//TODO : test if http/https is there
-		  		var redirectWithSGTIN = await this.getRedirect(this.state.url);
-		  		if (redirectWithSGTIN === this.state.url) {
-		  			redirectWithSGTIN = "No redirection";
-		  		}
-		  		this.setState({
-		  			redirectWithSGTIN: redirectWithSGTIN
-		  		});
-	  		} catch (err) {
-		  		this.setState({
-		  			redirectWithSGTIN: "Unable to get the redirection"
-		  		});
-	  			console.log(domain + ": Error", err);
-	  		}
-	  	}
+  async getSSLDetails(domain) {
+		try {
+			var SSLExpiryDate = await this.getSSLExpiryDate(Helper._removeDomainProtocol(domain));
+			this.setState({
+				SSLExpiryDate: SSLExpiryDate
+			});
+		} catch (err) {
+			this.setState({
+				SSLExpiryDate: SSLError
+			});
+			console.log(domain + ": Error", err);
+		}
 
-  	} catch (err) {
-  		this.setState({
-  			cname: cnameErrorMessage
-  		});
-  		domainAndCnameData[Helper._removeDomainProtocol(domain)] = cnameErrorMessage;
-  		this.props.parentCallback(domainAndCnameData);
-  		console.log(domain + ": Error", err);
+		this.setState({
+			updateSSLInProgress: false,
+		});
+  }
+
+  async getRedirectionDetails(domain, withSGTIN) {
+  	if (withSGTIN) {
+			try {
+				//TODO : test if http/https is there
+				var redirectWithSGTIN = await this.getRedirect(this.state.url);
+				if (redirectWithSGTIN === this.state.url) {
+					redirectWithSGTIN = "No redirection";
+				}
+				this.setState({
+					redirectWithSGTIN: redirectWithSGTIN
+				});
+			} catch (err) {
+				this.setState({
+					redirectWithSGTIN: RedirectionError
+				});
+				console.log(domain + ": Error", err);
+			}
+
+			this.setState({
+				updateRedirWithSGTINInProgress: false,
+			});
+
+  	} else {
+			try {
+				//TODO : test if http/https is there
+				var redirectWithoutSGTIN = await this.getRedirect(domain);
+				if (redirectWithoutSGTIN === domain || redirectWithoutSGTIN === domain+"/" || redirectWithoutSGTIN + "/" === domain) {
+					redirectWithoutSGTIN = "No redirection";
+				}
+				this.setState({
+					redirectWithoutSGTIN: redirectWithoutSGTIN
+				});
+			} catch (err) {
+				this.setState({
+					redirectWithoutSGTIN: RedirectionError
+				});
+				console.log(domain + ": Error", err);
+			}
+
+			this.setState({
+				updateRedirWithoutSGTINInProgress: false,
+			});
   	}
-
   }
 
   render() {
+  	if (!this.props.display) {
+  		return null;
+  	}
+
   	var domain = Helper._removeDomainProtocol(this.props.domain);
 
+  	// DNS cell
   	var tdCnameClass = "";
+  	var DNSContent = this.state.cname;
+  	if (this.state.updateDNSInProgress) {
+  		tdCnameClass = "updating";
+  	}
   	if (this.state.server === serverUnknownMessage) {
   		tdCnameClass = "warningCell";
   	} 
   	if (this.state.cname === cnameErrorMessage) {
   		tdCnameClass = "errorCell";
   	}
-  	var cnameCell = <td className={tdCnameClass} >{this.state.cname}</td>;
   	if ("server" in this.state) {
-  		cnameCell = <td className={tdCnameClass} >{this.state.cname}<br/>{this.state.server}</td> 
+  		DNSContent = this.state.cname + "<br/>" + this.state.server 
   	}
 
-  	if (!this.props.display) {
-  		return null;
+  	// SSL cell
+  	var tdSSLClass = "";
+  	var SSLContent = "";
+  	if (this.state.updateSSLInProgress) {
+  		tdSSLClass = "updating";
   	}
+  	if (this.state.SSLExpiryDate === SSLError) {
+  		tdSSLClass = "errorCell";
+  		SSLContent = SSLError
+  	} else if (this.state.SSLExpiryDate < 40) {
+			tdSSLClass = "warningCell";
+		} else if (this.state.SSLExpiryDate) {
+			SSLContent = this.state.SSLExpiryDate + " days";
+  	}
+
+  	// Redirection without SGTIN cell
+  	var tdRedirectionWithoutSGTINClass = "";
+  	var RedirectionWithoutSGTINContent = "";
+  	if (this.state.updateRedirWithoutSGTINInProgress) {
+  		tdRedirectionWithoutSGTINClass = "updating";
+  	}
+  	if (this.state.redirectWithoutSGTIN === RedirectionError) {
+  		tdRedirectionWithoutSGTINClass = "errorCell";
+  		RedirectionWithoutSGTINContent = RedirectionError;
+		} else {
+			RedirectionWithoutSGTINContent = this.state.redirectWithoutSGTIN;
+		}
+
+  	// Redirection with SGTIN cell
+  	var tdRedirectionWithSGTINClass = "";
+  	var RedirectionWithSGTINContent = "";
+  	if (this.state.updateRedirWithSGTINInProgress) {
+  		tdRedirectionWithSGTINClass = "updating";
+  	}
+  	if (this.state.redirectWithSGTIN === RedirectionError) {
+  		tdRedirectionWithSGTINClass = "errorCell";
+  		RedirectionWithSGTINContent = RedirectionError;
+		} else {
+			RedirectionWithSGTINContent = this.state.redirectWithSGTIN;
+		}
 
   	return (
   		<tr>
   			<td>{this.props.site}</td>
   			<td>{this.props.environment}</td>
   			<td>{domain}</td>
-  			{cnameCell}
-  			<td>{this.state.SSLExpiryDate}</td>
-  			<td>{this.state.redirectWithoutSGTIN}</td>
-  			<td>{this.state.redirectWithSGTIN}</td>
+  			<td className={tdCnameClass} dangerouslySetInnerHTML={{__html: DNSContent}}></td>
+  			<td className={tdSSLClass}>{SSLContent}</td>
+  			<td className={tdRedirectionWithoutSGTINClass}>{RedirectionWithoutSGTINContent}</td>
+  			<td className={tdRedirectionWithSGTINClass}>{RedirectionWithSGTINContent}</td>
   		</tr>
 		);
   }

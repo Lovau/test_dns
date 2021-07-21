@@ -4,7 +4,10 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 import URLList from './URLList';
+
+const messageFilterNeedsToBeActive = "Too many URLs to proceed, please use the filters below first. If too many requests are triggered at the same time, some results may be wrong.";
 
 class FilterableURLList extends React.Component {
 
@@ -16,6 +19,11 @@ class FilterableURLList extends React.Component {
     this.handleFilterEnvironmentChange = this.handleFilterEnvironmentChange.bind(this);
     this.handleFilterDomainChange = this.handleFilterDomainChange.bind(this);
     this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
+
+    this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
+    this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
+    this.handleRedirectionWithoutSGTINVerifications = this.handleRedirectionWithoutSGTINVerifications.bind(this);
+    this.handleRedirectionWithSGTINVerifications = this.handleRedirectionWithSGTINVerifications.bind(this);
   }
 
   handleKeyPress(e) {
@@ -27,26 +35,30 @@ class FilterableURLList extends React.Component {
   handleFilterSiteChange(e) {
   	this.setState({
   		site: e.target.value,
-  		update: false
+  		msg: '',
   	});
+  	this.setUpdateToFalse();
   }
   handleFilterEnvironmentChange(e) {
   	this.setState({
   		environment: e.target.value,
-  		update: false
+  		msg: '',
   	});
+  	this.setUpdateToFalse();
   }
   handleFilterDomainChange(e) {
   	this.setState({
   		domain: e.target.value,
-  		update: false
+  		msg: '',
   	});
+  	this.setUpdateToFalse();
   }
   handleFilterCnameChange(e) {
   	this.setState({
   		cname: e.target.value,
-  		update: false
+  		msg: '',
   	});
+  	this.setUpdateToFalse();
   }
 
   componentDidMount() {
@@ -54,13 +66,80 @@ class FilterableURLList extends React.Component {
   		site: '',
   		environment: '',
   		domain: '',
-  		update: false
+  		cname: '',
+  		msg: '',
+  	});
+  	this.setUpdateToFalse();
+  }
+
+  isFilterActive() {
+  	console.log(this.state.site !== "", this.state.environment !== "", this.state.domain !== "", this.state.cname !== "");
+  	return this.state.site !== "" || this.state.environment !== "" || this.state.domain !== "" || this.state.cname !== "";
+  }
+
+  setUpdateToFalse() {
+  	this.setState({
+  		update: false,
+  		updateDNS: false,
+  		updateSSL: false,
+  		updateRedirectionWithoutSGTIN: false,
+  		updateRedirectionWithSGTIN: false
   	});
   }
 
   handleURLsVerifications() {
+  	if (!this.isFilterActive()) {
+  		this.setState({
+  			msg: messageFilterNeedsToBeActive
+  		});
+  		return;
+  	}
   	this.setState({
   		update: true
+  	});
+  }
+  handleDNSVerifications() {
+  	if (!this.isFilterActive()) {
+  		this.setState({
+  			msg: messageFilterNeedsToBeActive
+  		});
+  		return;
+  	}
+  	this.setState({
+  		updateDNS: true
+  	});
+  }
+  handleSSLVerifications() {
+  	if (!this.isFilterActive()) {
+  		this.setState({
+  			msg: messageFilterNeedsToBeActive
+  		});
+  		return;
+  	}
+  	this.setState({
+  		updateSSL: true
+  	});
+  }
+  handleRedirectionWithoutSGTINVerifications() {
+  	if (!this.isFilterActive()) {
+  		this.setState({
+  			msg: messageFilterNeedsToBeActive
+  		});
+  		return;
+  	}
+  	this.setState({
+  		updateRedirectionWithoutSGTIN: true
+  	});
+  }
+  handleRedirectionWithSGTINVerifications() {
+  	if (!this.isFilterActive()) {
+  		this.setState({
+  			msg: messageFilterNeedsToBeActive
+  		});
+  		return;
+  	}
+  	this.setState({
+  		updateRedirectionWithSGTIN: true
   	});
   }
 
@@ -85,24 +164,64 @@ class FilterableURLList extends React.Component {
   	if (this.state != null && 'update' in this.state) {
   		update = this.state.update;
   	}
+  	var updateDNS = false;
+  	if (this.state != null && 'updateDNS' in this.state) {
+  		updateDNS = this.state.updateDNS;
+  	}
+  	var updateSSL = false;
+  	if (this.state != null && 'updateSSL' in this.state) {
+  		updateSSL = this.state.updateSSL;
+  	}
+  	var updateRedirectionWithSGTIN = false;
+  	if (this.state != null && 'updateRedirectionWithSGTIN' in this.state) {
+  		updateRedirectionWithSGTIN = this.state.updateRedirectionWithSGTIN;
+  	}
+  	var updateRedirectionWithoutSGTIN = false;
+  	if (this.state != null && 'updateRedirectionWithoutSGTIN' in this.state) {
+  		updateRedirectionWithoutSGTIN = this.state.updateRedirectionWithoutSGTIN;
+  	}
 
   	return (
   		<Row>
 	  		<Col sm={10}>
 	  		</Col>
 	  		<Col sm={2}>
-		  		<Button variant="primary" onClick={this.handleURLsVerifications} className="mt-2 mb-2" >Verify the URLs</Button>
+		  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Verify everything</Button>
 	  		</Col>
+
+	  		{this.state && this.state.msg && this.state.msg.length > 0 &&
+	  			<Alert variant="danger" >{this.state.msg}</Alert>
+	  		}
 
 	  		<Col sm={12} >
 	  			<Table striped bordered hover responsive size="sm" className="stubLinks">
 		  		  <thead>
 		  		  <tr>
+			  		  <td>
+			  		  </td>
+			  		  <td>
+			  		  </td>
+			  		  <td>
+			  		  </td>
+			  		  <td>
+					  		<Button variant="outline-info" onClick={this.handleDNSVerifications} >Test</Button>
+			  		  </td>
+			  		  <td>
+					  		<Button variant="outline-info" onClick={this.handleSSLVerifications} >Test</Button>
+				  		</td>
+			  		  <td>
+					  		<Button variant="outline-info" onClick={this.handleRedirectionWithoutSGTINVerifications} >Test</Button>
+				  		</td>
+			  		  <td>
+					  		<Button variant="outline-info" onClick={this.handleRedirectionWithSGTINVerifications} >Test</Button>
+				  		</td>
+		  		  </tr>
+		  		  <tr>
 			  		  <td>Site</td>
 			  		  <td>Environment</td>
 			  		  <td>Domain</td>
 			  		  <td>CNAME</td>
-			  		  <td>SSL expiry date</td>
+			  		  <td>SSL validity</td>
 			  		  <td>Redirect without SGTIN</td>
 			  		  <td>Redirect with SGTIN</td>
 		  		  </tr>
@@ -127,12 +246,15 @@ class FilterableURLList extends React.Component {
   		    		    <Form.Control size="sm" type="text" placeholder="CNAME & server" value={cnameFilter} onChange={this.handleFilterCnameChange} onKeyPress={this.handleKeyPress} />
   		    		  </Form>
 			  		  </td>
-			  		  <td></td>
-			  		  <td></td>
-			  		  <td></td>
+			  		  <td>
+				  		</td>
+			  		  <td>
+				  		</td>
+			  		  <td>
+				  		</td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} />
+			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirectionWithSGTIN={updateRedirectionWithSGTIN} updateRedirectionWithoutSGTIN={updateRedirectionWithoutSGTIN} />
 		  		</Table>
 	  		</Col>
   		</Row>

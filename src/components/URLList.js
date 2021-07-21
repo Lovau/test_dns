@@ -64,10 +64,6 @@ class URLList extends React.Component {
     this.getURLs();
   }
 
-  // componentDidUpdate() {
-  //   this.getURLs();
-  // }
-
   URLisFiltered(domain) {
     if (this.props.siteFilter.length > 0 && !(domain.Brand.toLowerCase().includes(this.props.siteFilter.toLowerCase()))) {
       return true;
@@ -105,17 +101,30 @@ class URLList extends React.Component {
   	const listUrls = this.state.urls.map((domain) => {
       
       var update = this.props.update;
+      var updateDNS = this.props.updateDNS;
+      var updateSSL = this.props.updateSSL;
+      var updateRedirectionWithoutSGTIN = this.props.updateRedirectionWithoutSGTIN;
+      var updateRedirectionWithSGTIN = this.props.updateRedirectionWithSGTIN;
       var display = true;
       if (this.URLisFiltered(domain)) {
         update = false;
+        updateDNS = false;
+        updateSSL = false;
+        updateRedirectionWithoutSGTIN = false;
+        updateRedirectionWithSGTIN = false;
         display = false;
       }
+      
   	  return <URL key={domain.URL} 
 				  	  		site={domain.Brand} 
 				  	  		environment={domain.Environment} 
 				  	  		domain={domain.URL} 
                   cnameMapping={cnameMapping}
-				  	  		update={update}
+                  update={update}
+                  updateDNS={updateDNS}
+                  updateSSL={updateSSL}
+                  updateRedirectionWithoutSGTIN={updateRedirectionWithoutSGTIN}
+                  updateRedirectionWithSGTIN={updateRedirectionWithSGTIN}
                   display={display}
                   parentCallback={this.handleCallback}
 		  	  		/>
