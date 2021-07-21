@@ -73,7 +73,6 @@ class FilterableURLList extends React.Component {
   }
 
   isFilterActive() {
-  	console.log(this.state.site !== "", this.state.environment !== "", this.state.domain !== "", this.state.cname !== "");
   	return this.state.site !== "" || this.state.environment !== "" || this.state.domain !== "" || this.state.cname !== "";
   }
 
