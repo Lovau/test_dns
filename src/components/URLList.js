@@ -42,7 +42,6 @@ class URLList extends React.Component {
   	for (var i = 0; i < URLs.length; i++) {
   		URLs[i].update = false;
   	}
-
     this.setState({
     	urls: URLs
     });
