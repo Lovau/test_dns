@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/static/css/main.d62f6455.chunk.css",
-    "main.js": "/static/js/main.5d8e1992.chunk.js",
-    "main.js.map": "/static/js/main.5d8e1992.chunk.js.map",
+    "main.js": "/static/js/main.05097e49.chunk.js",
+    "main.js.map": "/static/js/main.05097e49.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.506127fe.js",
     "runtime-main.js.map": "/static/js/runtime-main.506127fe.js.map",
     "static/js/2.450686ff.chunk.js": "/static/js/2.450686ff.chunk.js",
@@ -12,12 +12,12 @@
     "index.html": "/index.html",
     "static/css/main.d62f6455.chunk.css.map": "/static/css/main.d62f6455.chunk.css.map",
     "static/js/2.450686ff.chunk.js.LICENSE.txt": "/static/js/2.450686ff.chunk.js.LICENSE.txt",
-    "static/media/Rolex_URL_working_copy.1b50c803.csv": "/static/media/Rolex_URL_working_copy.1b50c803.csv"
+    "static/media/Rolex_URL_working_copy.d8703b58.csv": "/static/media/Rolex_URL_working_copy.d8703b58.csv"
   },
   "entrypoints": [
     "static/js/runtime-main.506127fe.js",
     "static/js/2.450686ff.chunk.js",
     "static/css/main.d62f6455.chunk.css",
-    "static/js/main.5d8e1992.chunk.js"
+    "static/js/main.05097e49.chunk.js"
   ]
 }
