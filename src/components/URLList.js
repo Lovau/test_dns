@@ -103,17 +103,17 @@ class URLList extends React.Component {
       var update = this.props.update;
       var updateDNS = this.props.updateDNS;
       var updateSSL = this.props.updateSSL;
-      var updateRedirectionWithoutSGTIN = this.props.updateRedirectionWithoutSGTIN;
-      var updateRedirectionWithSGTIN = this.props.updateRedirectionWithSGTIN;
+      var updateRedirection = this.props.updateRedirection;
       var display = true;
       if (this.URLisFiltered(domain)) {
         update = false;
         updateDNS = false;
         updateSSL = false;
-        updateRedirectionWithoutSGTIN = false;
-        updateRedirectionWithSGTIN = false;
+        updateRedirection = false;
         display = false;
       }
+
+      domain.URL = domain.URL.trim();
       
   	  return <URL key={domain.URL} 
 				  	  		site={domain.Brand} 
@@ -123,8 +123,7 @@ class URLList extends React.Component {
                   update={update}
                   updateDNS={updateDNS}
                   updateSSL={updateSSL}
-                  updateRedirectionWithoutSGTIN={updateRedirectionWithoutSGTIN}
-                  updateRedirectionWithSGTIN={updateRedirectionWithSGTIN}
+                  updateRedirection={updateRedirection}
                   display={display}
                   parentCallback={this.handleCallback}
 		  	  		/>

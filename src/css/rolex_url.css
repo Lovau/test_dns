@@ -21,6 +21,9 @@ table td button.btn {
   color: red;
   font-size: 150%;
 }
+.rolex-experience {
+  color: #07bb07;
+}
 
 @keyframes dots {
   0%, 20% {

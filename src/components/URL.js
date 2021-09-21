@@ -20,6 +20,7 @@ const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 const SSLError = "Unable to get SSL";
 const RedirectionError = "Unable to get the redirection";
+const NoRedirectionMessage = "No redirection - <span class='rolex-experience' >Rolex experience</span>";
 
 const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
 const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
@@ -38,6 +39,7 @@ class URL extends React.Component {
     	updateRedirWithoutSGTINInProgress: false,
     	sgtin: Helper.getRandomSGTIN()
     };
+
     this.state = {
     	url: props.domain + "/" + this.state.sgtin
     };
@@ -67,43 +69,17 @@ class URL extends React.Component {
   		});
     	this.getSSLDetails(this.props.domain);
   	}
-  	else if (this.props.updateRedirectionWithoutSGTIN === true && !this.state.updateRedirWithoutSGTINInProgress && !this.state.redirectWithoutSGTIN) {
+  	else if (this.props.updateRedirection === true 
+  						&& !this.state.updateRedirWithoutSGTINInProgress && !this.state.redirectWithoutSGTIN
+  						&& !this.state.updateRedirWithSGTINInProgress && !this.state.redirectWithSGTIN) {
   		this.setState({
   			updateRedirWithoutSGTINInProgress: true,
-  		});
-    	this.getRedirectionDetails(this.props.domain, false);
-  	}
-  	else if (this.props.updateRedirectionWithSGTIN === true && !this.state.updateRedirWithSGTINInProgress && !this.state.redirectWithSGTIN) {
-  		this.setState({
   			updateRedirWithSGTINInProgress: true,
   		});
-    	this.getRedirectionDetails(this.props.domain, true);
+    	this.getRedirectionDetails(this.props.domain);
   	}
   }
 
-  // async dnsExist(domain) {
-  // 	return new Promise((resolve, reject) => {
-
-  // 		domain = Helper._removeDomainProtocol(domain);
-
-  // 		var url = 'https://dns.google/resolve?name=' + domain;
-
-  // 		fetch(url)
-		//     .then(res => res.json())
-		//     .then(json => {
-		//     	if (json.Answer) {
-		//     		var cname = json.Answer[0].data;
-		// 	  		resolve(cname);
-		//     	}
-		//     	reject(json);
-		//     })
-		//     .catch(err => {
-		//     	console.log(err);
-		//     	reject(err);
-		//     });
-  // 	});
-  // }
-  
   async dnsExist(domain) {
   			return new Promise((resolve, reject) => {
   				// console.log(API_DNS+domain);
@@ -161,8 +137,7 @@ class URL extends React.Component {
 
 		if (this.state.cname && this.state.cname !== cnameErrorMessage) {
 			await this.getSSLDetails(domain);
-  		await this.getRedirectionDetails(domain, false);
-  		await this.getRedirectionDetails(domain, true);
+  		await this.getRedirectionDetails(domain);
   	}
   	this.setState({
   		updateInProgress: false,
@@ -223,57 +198,68 @@ class URL extends React.Component {
 		});
   }
 
-  async getRedirectionDetails(domain, withSGTIN) {
-  	if (withSGTIN) {
-			try {
-				//TODO : test if http/https is there
-				var redirectWithSGTIN = await this.getRedirect(this.state.url);
-				if (redirectWithSGTIN === this.state.url) {
-					redirectWithSGTIN = "No redirection";
-				}
-				this.setState({
-					redirectWithSGTIN: redirectWithSGTIN
-				});
-			} catch (err) {
-				this.setState({
-					redirectWithSGTIN: RedirectionError
-				});
-				console.log(domain + ": Error", err);
+  async getRedirectionDetails(domain) {
+		try {
+			//TODO : test if http/https is there
+			var redirectWithSGTIN = await this.getRedirect(this.state.url);
+			if (redirectWithSGTIN === this.state.url) {
+				redirectWithSGTIN = NoRedirectionMessage;
 			}
-
 			this.setState({
-				updateRedirWithSGTINInProgress: false,
+				redirectWithSGTIN: redirectWithSGTIN
 			});
+		} catch (err) {
+			this.setState({
+				redirectWithSGTIN: RedirectionError
+			});
+			console.log(domain + ": Error", err);
+		}
 
-  	} else {
-			try {
-				//TODO : test if http/https is there
-				var redirectWithoutSGTIN = await this.getRedirect(domain);
-				if (redirectWithoutSGTIN === domain || redirectWithoutSGTIN === domain+"/" || redirectWithoutSGTIN + "/" === domain) {
-					redirectWithoutSGTIN = "No redirection";
-				}
-				this.setState({
-					redirectWithoutSGTIN: redirectWithoutSGTIN
-				});
-			} catch (err) {
-				this.setState({
-					redirectWithoutSGTIN: RedirectionError
-				});
-				console.log(domain + ": Error", err);
+		this.setState({
+			updateRedirWithSGTINInProgress: false,
+		});
+
+
+		try {
+			//TODO : test if http/https is there
+			var redirectWithoutSGTIN = await this.getRedirect(domain);
+			if (redirectWithoutSGTIN === domain || redirectWithoutSGTIN === domain+"/" || redirectWithoutSGTIN + "/" === domain) {
+				redirectWithoutSGTIN = NoRedirectionMessage;
 			}
-
 			this.setState({
-				updateRedirWithoutSGTINInProgress: false,
+				redirectWithoutSGTIN: redirectWithoutSGTIN
 			});
+		} catch (err) {
+			this.setState({
+				redirectWithoutSGTIN: RedirectionError
+			});
+			console.log(domain + ": Error", err);
+		}
+
+		this.setState({
+			updateRedirWithoutSGTINInProgress: false,
+		});
+  }
+
+
+  redirectionsWithSGTINisTheSameAsWithoutSGTIN() {
+  	if (!this.state.redirectWithoutSGTIN || this.state.redirectWithoutSGTIN.length < 1 || !this.state.redirectWithSGTIN || this.state.redirectWithSGTIN.length < 1 ) {
+  		return true;
   	}
+
+  	if (this.state.redirectWithoutSGTIN === this.state.redirectWithSGTIN || this.state.redirectWithSGTIN.includes(this.state.redirectWithoutSGTIN)) {
+  		return true;
+  	}
+  	return false;
   }
 
   render() {
   	if (!this.props.display) {
   		return null;
   	}
+  	// console.log(this.props, this.state.updateRedirWithoutSGTINInProgress);
 
-  	var domain = Helper._removeDomainProtocol(this.props.domain);
+  	var domain = Helper._removeDomainProtocol(this.props.domain, this.state.url);
 
   	// DNS cell
   	var tdCnameClass = "";
@@ -306,31 +292,27 @@ class URL extends React.Component {
 			SSLContent = this.state.SSLExpiryDate + " days";
   	}
 
-  	// Redirection without SGTIN cell
-  	var tdRedirectionWithoutSGTINClass = "";
-  	var RedirectionWithoutSGTINContent = "";
+  	// Redirection
+  	var tdRedirectionClass = "";
+  	var RedirectionContent = "";
+  	var sameRedirectionsWithOrWithoutSGTIN = true;
+  	if (typeof this.state.redirectWithoutSGTIN !== "undefined" && typeof this.state.redirectWithSGTIN !== "undefined") {
+  		sameRedirectionsWithOrWithoutSGTIN = this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
+  	}
+
   	if (this.state.updateRedirWithoutSGTINInProgress) {
-  		tdRedirectionWithoutSGTINClass = "updating";
+  		tdRedirectionClass = "updating";
   	}
   	if (this.state.redirectWithoutSGTIN === RedirectionError) {
-  		tdRedirectionWithoutSGTINClass = "errorCell";
-  		RedirectionWithoutSGTINContent = RedirectionError;
+  		tdRedirectionClass = "errorCell";
+  		RedirectionContent = RedirectionError;
 		} else {
-			RedirectionWithoutSGTINContent = this.state.redirectWithoutSGTIN;
+			RedirectionContent = this.state.redirectWithoutSGTIN;
 		}
-
-  	// Redirection with SGTIN cell
-  	var tdRedirectionWithSGTINClass = "";
-  	var RedirectionWithSGTINContent = "";
-  	if (this.state.updateRedirWithSGTINInProgress) {
-  		tdRedirectionWithSGTINClass = "updating";
+  	if (!sameRedirectionsWithOrWithoutSGTIN) {
+  		tdRedirectionClass = "warningCell";
+  		RedirectionContent = "Without SGTIN: "+ RedirectionContent+"<br/>With SGTIN:" + this.state.redirectWithSGTIN;
   	}
-  	if (this.state.redirectWithSGTIN === RedirectionError) {
-  		tdRedirectionWithSGTINClass = "errorCell";
-  		RedirectionWithSGTINContent = RedirectionError;
-		} else {
-			RedirectionWithSGTINContent = this.state.redirectWithSGTIN;
-		}
 
   	return (
   		<tr>
@@ -339,8 +321,7 @@ class URL extends React.Component {
   			<td>{domain}</td>
   			<td className={tdCnameClass} dangerouslySetInnerHTML={{__html: DNSContent}}></td>
   			<td className={tdSSLClass}>{SSLContent}</td>
-  			<td className={tdRedirectionWithoutSGTINClass}>{RedirectionWithoutSGTINContent}</td>
-  			<td className={tdRedirectionWithSGTINClass}>{RedirectionWithSGTINContent}</td>
+  			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}></td>
   		</tr>
 		);
   }

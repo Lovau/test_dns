@@ -22,8 +22,7 @@ class FilterableURLList extends React.Component {
 
     this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
     this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
-    this.handleRedirectionWithoutSGTINVerifications = this.handleRedirectionWithoutSGTINVerifications.bind(this);
-    this.handleRedirectionWithSGTINVerifications = this.handleRedirectionWithSGTINVerifications.bind(this);
+    this.handleRedirection = this.handleRedirection.bind(this);
   }
 
   handleKeyPress(e) {
@@ -81,8 +80,7 @@ class FilterableURLList extends React.Component {
   		update: false,
   		updateDNS: false,
   		updateSSL: false,
-  		updateRedirectionWithoutSGTIN: false,
-  		updateRedirectionWithSGTIN: false
+  		updateRedirection: false,
   	});
   }
 
@@ -119,7 +117,7 @@ class FilterableURLList extends React.Component {
   		updateSSL: true
   	});
   }
-  handleRedirectionWithoutSGTINVerifications() {
+  handleRedirection() {
   	if (!this.isFilterActive()) {
   		this.setState({
   			msg: messageFilterNeedsToBeActive
@@ -127,18 +125,7 @@ class FilterableURLList extends React.Component {
   		return;
   	}
   	this.setState({
-  		updateRedirectionWithoutSGTIN: true
-  	});
-  }
-  handleRedirectionWithSGTINVerifications() {
-  	if (!this.isFilterActive()) {
-  		this.setState({
-  			msg: messageFilterNeedsToBeActive
-  		});
-  		return;
-  	}
-  	this.setState({
-  		updateRedirectionWithSGTIN: true
+  		updateRedirection: true
   	});
   }
 
@@ -171,13 +158,9 @@ class FilterableURLList extends React.Component {
   	if (this.state != null && 'updateSSL' in this.state) {
   		updateSSL = this.state.updateSSL;
   	}
-  	var updateRedirectionWithSGTIN = false;
-  	if (this.state != null && 'updateRedirectionWithSGTIN' in this.state) {
-  		updateRedirectionWithSGTIN = this.state.updateRedirectionWithSGTIN;
-  	}
-  	var updateRedirectionWithoutSGTIN = false;
-  	if (this.state != null && 'updateRedirectionWithoutSGTIN' in this.state) {
-  		updateRedirectionWithoutSGTIN = this.state.updateRedirectionWithoutSGTIN;
+  	var updateRedirection = false;
+  	if (this.state != null && 'updateRedirection' in this.state) {
+  		updateRedirection = this.state.updateRedirection;
   	}
 
   	return (
@@ -209,10 +192,7 @@ class FilterableURLList extends React.Component {
 					  		<Button variant="outline-info" onClick={this.handleSSLVerifications} >Test</Button>
 				  		</td>
 			  		  <td>
-					  		<Button variant="outline-info" onClick={this.handleRedirectionWithoutSGTINVerifications} >Test</Button>
-				  		</td>
-			  		  <td>
-					  		<Button variant="outline-info" onClick={this.handleRedirectionWithSGTINVerifications} >Test</Button>
+					  		<Button variant="outline-info" onClick={this.handleRedirection} >Test</Button>
 				  		</td>
 		  		  </tr>
 		  		  <tr>
@@ -221,8 +201,7 @@ class FilterableURLList extends React.Component {
 			  		  <td>Domain</td>
 			  		  <td>CNAME</td>
 			  		  <td>SSL validity</td>
-			  		  <td>Redirect without SGTIN</td>
-			  		  <td>Redirect with SGTIN</td>
+			  		  <td>Redirect</td>
 		  		  </tr>
 		  		  <tr>
 			  		  <td>
@@ -249,11 +228,9 @@ class FilterableURLList extends React.Component {
 				  		</td>
 			  		  <td>
 				  		</td>
-			  		  <td>
-				  		</td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirectionWithSGTIN={updateRedirectionWithSGTIN} updateRedirectionWithoutSGTIN={updateRedirectionWithoutSGTIN} />
+			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} />
 		  		</Table>
 	  		</Col>
   		</Row>
