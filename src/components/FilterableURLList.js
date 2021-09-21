@@ -168,7 +168,7 @@ class FilterableURLList extends React.Component {
 	  		<Col sm={10}>
 	  		</Col>
 	  		<Col sm={2}>
-		  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Verify everything</Button>
+		  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Test all</Button>
 	  		</Col>
 
 	  		{this.state && this.state.msg && this.state.msg.length > 0 &&

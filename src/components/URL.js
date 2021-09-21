@@ -22,9 +22,11 @@ const SSLError = "Unable to get SSL";
 const RedirectionError = "Unable to get the redirection";
 const NoRedirectionMessage = "No redirection - <span class='rolex-experience' >Rolex experience</span>";
 
+// curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
 const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
 const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
 const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=";
+const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6";
 
 class URL extends React.Component {
 
@@ -85,6 +87,9 @@ class URL extends React.Component {
   				// console.log(API_DNS+domain);
   				fetch(API_DNS+domain, {
   						method: 'GET',
+  						headers:  {
+  							'x-api-key': API_KEY
+  						}
   					})
   			    .then(res => res.json())
   	        .then(body => resolve(body.CNAME[0]))
@@ -95,11 +100,15 @@ class URL extends React.Component {
   			});
   }
 
+  // TODO loop if error
   async getSSLExpiryDate(domain) {
 		return new Promise((resolve, reject) => {
 			// console.log(API_SSL+domain);
 			fetch(API_SSL+domain, {
 					method: 'GET',
+					headers:  {
+						'x-api-key': API_KEY
+					}
 				})
 		    .then(res => res.json())
         .then(body => resolve(body.daysRemaining))
@@ -115,6 +124,9 @@ class URL extends React.Component {
 			// console.log(API_REDIRECT+domain);
 			fetch(API_REDIRECT+fullURL, {
 					method: 'GET',
+					headers:  {
+						'x-api-key': API_KEY
+					}
 				})
 		    .then(res => {
 		    	if (!res.ok) {
