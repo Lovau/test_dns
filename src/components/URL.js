@@ -48,7 +48,9 @@ class URL extends React.Component {
   }
 
   componentDidUpdate() {
-  	if (this.props.update === true && !this.state.updateInProgress && (!this.state.cname || !this.state.SSLExpiryDate || !this.state.redirectWithSGTIN || !this.state.redirectWithoutSGTIN)) {
+  	if (this.props.update === true && !this.state.updateInProgress && !this.state.cname) {
+  	// || !this.state.SSLExpiryDate || !this.state.redirectWithSGTIN || !this.state.redirectWithoutSGTIN)) {
+  	
   		// updateInProgress is here to avoid calling the update again while it is already called
   		this.setState({
   			updateInProgress: true,
@@ -66,6 +68,7 @@ class URL extends React.Component {
     	this.getDNSDetails(this.props.domain);
   	}
   	else if (this.props.updateSSL === true && !this.state.updateSSLInProgress && !this.state.SSLExpiryDate) {
+  		console.log("this.props.updateSSL", this.props.updateSSL, "this.state.updateSSLInProgress", this.state.updateSSLInProgress, "this.state.SSLExpiryDate", this.state.SSLExpiryDate);
   		this.setState({
   			updateSSLInProgress: true,
   		});
@@ -92,9 +95,15 @@ class URL extends React.Component {
   						}
   					})
   			    .then(res => res.json())
-  	        .then(body => resolve(body.CNAME[0]))
+  	        .then(body => {
+  	        	if (!body.CNAME || !body.CNAME[0]) {
+	  			    	console.log("getDNS err1", API_DNS+domain, body);
+  	        		return reject(body);
+  	        	}
+  	        	resolve(body.CNAME[0])
+  	        })
   			    .catch(err => {
-  			    	console.log("getDNS err", API_DNS+domain, err);
+  			    	console.log("getDNS err2", API_DNS+domain, err);
   			    	reject(err);
   			    });
   			});
@@ -111,9 +120,15 @@ class URL extends React.Component {
 					}
 				})
 		    .then(res => res.json())
-        .then(body => resolve(body.daysRemaining))
+        .then(body => {
+        		if (!body.daysRemaining) {
+        			console.log("getSSL err1", API_SSL+domain, body);
+        			return reject(body);
+        		}
+        		return resolve(body.daysRemaining);
+        	})
 		    .catch(err => {
-		    	console.log("getSSL err", API_SSL+domain, err);
+		    	console.log("getSSL err2", API_SSL+domain, err);
 		    	reject(err);
 		    });
 		});
@@ -150,6 +165,13 @@ class URL extends React.Component {
 		if (this.state.cname && this.state.cname !== cnameErrorMessage) {
 			await this.getSSLDetails(domain);
   		await this.getRedirectionDetails(domain);
+  	} else {
+  		this.setState({
+  			SSLExpiryDate: SSLError,
+  			redirectWithoutSGTIN: RedirectionError,
+  			redirectWithSGTIN: RedirectionError
+
+  		});
   	}
   	this.setState({
   		updateInProgress: false,
