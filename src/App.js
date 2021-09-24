@@ -7,17 +7,25 @@ import './css/rolex_url.css';
 
 import Container from 'react-bootstrap/Container';
 
-import Navbar from 'react-bootstrap/Navbar';
 import FilterableURLList from './components/FilterableURLList';
 
 
 function App() {
+
+
+  // trim spaces when copying a text 
+  React.useEffect(() => {
+    window.addEventListener('copy', function(e) {
+      const text_only = document.getSelection().toString().trim();
+      const clipdata = e.clipboardData || window.clipboardData;  
+      clipdata.setData('text/plain', text_only);
+      clipdata.setData('text/html', text_only);
+      e.preventDefault();
+    });
+  }, []);
+
   const rolexURL = 
     <Container fluid>
-      <Navbar expand="lg" variant="dark" bg="dark">
-        <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
-      </Navbar>
-
       <FilterableURLList />
 
     </Container>

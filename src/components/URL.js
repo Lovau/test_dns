@@ -20,7 +20,8 @@ const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 const SSLError = "Unable to get SSL";
 const RedirectionError = "Unable to get the redirection";
-const NoRedirectionMessage = "No redirection - <span class='rolex-experience' >Rolex experience</span>";
+const NoRedirectionMessage = "No redirection";
+const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience</span>";
 
 // curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
 const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
@@ -75,8 +76,11 @@ class URL extends React.Component {
     	this.getSSLDetails(this.props.domain);
   	}
   	else if (this.props.updateRedirection === true 
-  						&& !this.state.updateRedirWithoutSGTINInProgress && !this.state.redirectWithoutSGTIN
-  						&& !this.state.updateRedirWithSGTINInProgress && !this.state.redirectWithSGTIN) {
+  						&& !this.state.updateRedirWithoutSGTINInProgress
+  						&& !this.state.updateRedirWithSGTINInProgress
+  						&& (typeof this.state.redirects === "undefined" 
+  								|| typeof this.state.redirects.redirectWithSGTIN === "undefined"
+  								|| typeof this.state.redirects.redirectWithoutSGTIN === "undefined")) {
   		this.setState({
   			updateRedirWithoutSGTINInProgress: true,
   			updateRedirWithSGTINInProgress: true,
@@ -150,7 +154,7 @@ class URL extends React.Component {
 		    	}
 		    	return res.json();
 		    })
-        .then(body => resolve(body.redirect))
+        .then(body => resolve(body))
 		    .catch(err => {
 		    	console.log("getRedirect err", API_REDIRECT+fullURL, err);
 		    	reject(err);
@@ -168,9 +172,14 @@ class URL extends React.Component {
   	} else {
   		this.setState({
   			SSLExpiryDate: SSLError,
-  			redirectWithoutSGTIN: RedirectionError,
-  			redirectWithSGTIN: RedirectionError
-
+  			redirects: {
+  				redirectWithoutSGTIN: {
+  					msg: RedirectionError 
+  				},
+  				redirectWithSGTIN: {
+  					msg: RedirectionError 
+  				},
+  			}
   		});
   	}
   	this.setState({
@@ -234,18 +243,15 @@ class URL extends React.Component {
 
   async getRedirectionDetails(domain) {
 		try {
-			//TODO : test if http/https is there
-			var redirectWithSGTIN = await this.getRedirect(this.state.url);
-			if (redirectWithSGTIN === this.state.url) {
-				redirectWithSGTIN = NoRedirectionMessage;
+			var redirects = {};
+			redirects.redirectWithSGTIN = {};
+			redirects.redirectWithSGTIN = await this.getRedirect(this.state.url);
+			redirects.redirectWithSGTIN.msg = redirects.redirectWithSGTIN.redirect;
+			if (redirects.redirectWithSGTIN.redirect === this.state.url) {
+				redirects.redirectWithSGTIN.msg = NoRedirectionMessage;
 			}
-			this.setState({
-				redirectWithSGTIN: redirectWithSGTIN
-			});
 		} catch (err) {
-			this.setState({
-				redirectWithSGTIN: RedirectionError
-			});
+			redirects.redirectWithSGTIN.msg = RedirectionError;
 			console.log(domain + ": Error", err);
 		}
 
@@ -253,35 +259,31 @@ class URL extends React.Component {
 			updateRedirWithSGTINInProgress: false,
 		});
 
-
 		try {
-			//TODO : test if http/https is there
-			var redirectWithoutSGTIN = await this.getRedirect(domain);
-			if (redirectWithoutSGTIN === domain || redirectWithoutSGTIN === domain+"/" || redirectWithoutSGTIN + "/" === domain) {
-				redirectWithoutSGTIN = NoRedirectionMessage;
+			redirects.redirectWithoutSGTIN = {};
+			redirects.redirectWithoutSGTIN = await this.getRedirect(domain);
+			redirects.redirectWithoutSGTIN.msg = redirects.redirectWithoutSGTIN.redirect;
+			if (redirects.redirectWithoutSGTIN.redirect === domain || redirects.redirectWithoutSGTIN.redirect === domain+"/" || redirects.redirectWithoutSGTIN.redirect + "/" === domain) {
+				redirects.redirectWithoutSGTIN.msg = NoRedirectionMessage;
 			}
-			this.setState({
-				redirectWithoutSGTIN: redirectWithoutSGTIN
-			});
 		} catch (err) {
-			this.setState({
-				redirectWithoutSGTIN: RedirectionError
-			});
+			redirects.redirectWithoutSGTIN.msg = RedirectionError;
 			console.log(domain + ": Error", err);
 		}
 
 		this.setState({
+			redirects: redirects,
 			updateRedirWithoutSGTINInProgress: false,
 		});
   }
 
 
   redirectionsWithSGTINisTheSameAsWithoutSGTIN() {
-  	if (!this.state.redirectWithoutSGTIN || this.state.redirectWithoutSGTIN.length < 1 || !this.state.redirectWithSGTIN || this.state.redirectWithSGTIN.length < 1 ) {
+  	if (!this.state.redirects.redirectWithoutSGTIN.redirect || this.state.redirects.redirectWithoutSGTIN.redirect.length < 1 || !this.state.redirects.redirectWithSGTIN.redirect || this.state.redirects.redirectWithSGTIN.redirect.length < 1 ) {
   		return true;
   	}
 
-  	if (this.state.redirectWithoutSGTIN === this.state.redirectWithSGTIN || this.state.redirectWithSGTIN.includes(this.state.redirectWithoutSGTIN)) {
+  	if (this.state.redirects.redirectWithoutSGTIN.redirect === this.state.redirects.redirectWithSGTIN.redirect || this.state.redirects.redirectWithSGTIN.redirect.includes(this.state.redirects.redirectWithoutSGTIN.redirect)) {
   		return true;
   	}
   	return false;
@@ -293,7 +295,7 @@ class URL extends React.Component {
   	}
   	// console.log(this.props, this.state.updateRedirWithoutSGTINInProgress);
 
-  	var domain = Helper._removeDomainProtocol(this.props.domain, this.state.url);
+  	var domain = Helper._removeDomainProtocol(this.props.domain, this.state.url).trim();
 
   	// DNS cell
   	var tdCnameClass = "";
@@ -330,29 +332,58 @@ class URL extends React.Component {
   	var tdRedirectionClass = "";
   	var RedirectionContent = "";
   	var sameRedirectionsWithOrWithoutSGTIN = true;
-  	if (typeof this.state.redirectWithoutSGTIN !== "undefined" && typeof this.state.redirectWithSGTIN !== "undefined") {
-  		sameRedirectionsWithOrWithoutSGTIN = this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
-  	}
-
   	if (this.state.updateRedirWithoutSGTINInProgress) {
   		tdRedirectionClass = "updating";
   	}
-  	if (this.state.redirectWithoutSGTIN === RedirectionError) {
-  		tdRedirectionClass = "errorCell";
-  		RedirectionContent = RedirectionError;
-		} else {
-			RedirectionContent = this.state.redirectWithoutSGTIN;
-		}
-  	if (!sameRedirectionsWithOrWithoutSGTIN) {
-  		tdRedirectionClass = "warningCell";
-  		RedirectionContent = "Without SGTIN: "+ RedirectionContent+"<br/>With SGTIN:" + this.state.redirectWithSGTIN;
+  	if (typeof this.state.redirects !== "undefined"
+  			&& typeof this.state.redirects.redirectWithoutSGTIN.redirect !== "undefined" 
+  			&& typeof this.state.redirects.redirectWithSGTIN.redirect !== "undefined") {
+  		
+
+
+  		sameRedirectionsWithOrWithoutSGTIN = this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
+
+	  	if (this.state.redirects.redirectWithoutSGTIN.msg === RedirectionError) {
+	  		tdRedirectionClass = "errorCell";
+	  		RedirectionContent = RedirectionError;
+			} else {
+				RedirectionContent = this.state.redirects.redirectWithoutSGTIN.msg;
+				if (this.state.redirects.redirectWithoutSGTIN.isRolex) {
+					RedirectionContent += " - "  + RolexExperienceMessage;
+				}
+			}
+	  	if (!sameRedirectionsWithOrWithoutSGTIN) {
+	  		tdRedirectionClass = "warningCell";
+	  		RedirectionContent = "Without SGTIN: "+ RedirectionContent+"<br/>With SGTIN:" + this.state.redirects.redirectWithSGTIN.msg;
+	  		if (this.state.redirects.redirectWithSGTIN.isRolex) {
+	  			RedirectionContent += " - "  + RolexExperienceMessage;
+	  		}
+	  	}
   	}
 
+  	// Filter
+  	if ('redirectFilter' in this.props
+  			&& this.props.redirectFilter.length > 0 
+  			&& (RedirectionContent.length < 1 || !RedirectionContent.toLowerCase().includes(this.props.redirectFilter.toLowerCase()))) {
+  		return '';
+  	}
+
+  	var td = [];
+  	var value;
+  	if (this.props && 'columnsFilters' in this.props) {
+			for (var column in this.props.columnsFilters) {
+	  		if (this.props.columnsFilters[column].isVisible) {
+	  			value = ''
+	  			if (column in this.props) {
+	  				value = this.props[column];
+	  			}
+	  			td.push(<td key={column}>{value}</td>);
+	  		}
+			}
+		}
   	return (
   		<tr>
-  			<td>{this.props.site}</td>
-  			<td>{this.props.environment}</td>
-  			<td>{domain}</td>
+  			{td}
   			<td className={tdCnameClass} dangerouslySetInnerHTML={{__html: DNSContent}}></td>
   			<td className={tdSSLClass}>{SSLContent}</td>
   			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}></td>

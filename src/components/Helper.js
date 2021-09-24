@@ -28,6 +28,30 @@ const Helper = {
       domain = domain.slice(0, -1);
     }
   	return domain;
+  },
+
+  getColumnsNames() {
+    return [
+      "Brand",
+      "Environment",
+      "URL",
+      "Live",
+      "GeoDNS",
+      "Server",
+      // "Redirect URL",
+    ];
+  },
+
+  isColumnAlwaysVisible(column) {
+    var columnsVisible = [
+      "Brand",
+      "Environment",
+      "URL",
+    ];
+    if (columnsVisible.indexOf(column) !== -1) {
+      return true;
+    }
+    return false;
   }
 };
 

@@ -65,15 +65,6 @@ class URLList extends React.Component {
   }
 
   URLisFiltered(domain) {
-    if (this.props.siteFilter.length > 0 && !(domain.Brand.toLowerCase().includes(this.props.siteFilter.toLowerCase()))) {
-      return true;
-    }
-    if (this.props.environmentFilter.length > 0 && !(domain.Environment.toLowerCase().includes(this.props.environmentFilter.toLowerCase()))) {
-      return true;
-    }
-    if (this.props.domainFilter.length > 0 && !(domain.URL.toLowerCase().includes(this.props.domainFilter.toLowerCase()))) {
-      return true;
-    }
 
     var dns = Helper._removeDomainProtocol(domain.URL);
     if (this.props.cnameFilter.length > 0 
@@ -81,6 +72,14 @@ class URLList extends React.Component {
         (!(dns in this.state.domainsToCnames) || !(this.state.domainsToCnames[dns].toLowerCase().includes(this.props.cnameFilter.toLowerCase())))
         ) {
         return true;
+    }
+
+    for (var column in this.props.columnsFilters) {
+      if (this.props.columnsFilters[column].isVisible 
+          && this.props.columnsFilters[column].filter && this.props.columnsFilters[column].filter.length > 0
+          && !domain[column].toLowerCase().includes(this.props.columnsFilters[column].filter.toLowerCase())) {
+        return true;
+      }
     }
 
     return false;
@@ -98,6 +97,8 @@ class URLList extends React.Component {
   		);
   	}
 
+    var redirectFilter = this.props.redirectFilter;
+    
   	const listUrls = this.state.urls.map((domain) => {
       
       var update = this.props.update;
@@ -115,10 +116,16 @@ class URLList extends React.Component {
 
       domain.URL = domain.URL.trim();
       
-  	  return <URL key={domain.URL} 
-				  	  		site={domain.Brand} 
-				  	  		environment={domain.Environment} 
-				  	  		domain={domain.URL} 
+  	  return <URL 
+                  key={domain.URL}
+                  domain={domain.URL}
+                  Brand={domain.Brand}              // dynamic field
+                  Environment={domain.Environment}  // dynamic field
+                  URL={domain.URL}                  // dynamic field
+                  Live={domain.Live}                // dynamic field
+                  GeoDNS={domain.GeoDNS}            // dynamic field
+                  Server={domain.Server}            // dynamic field
+                  redirectFilter={redirectFilter}
                   cnameMapping={cnameMapping}
                   update={update}
                   updateDNS={updateDNS}
@@ -126,6 +133,7 @@ class URLList extends React.Component {
                   updateRedirection={updateRedirection}
                   display={display}
                   parentCallback={this.handleCallback}
+                  columnsFilters={this.props.columnsFilters}
 		  	  		/>
   	});
 

@@ -6,6 +6,10 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import URLList from './URLList';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Helper from "./Helper";
+import Column from "./Column";
 
 const messageFilterNeedsToBeActive = "Too many URLs to proceed, please use the filters below first. If too many requests are triggered at the same time, some results may be wrong.";
 
@@ -15,14 +19,15 @@ class FilterableURLList extends React.Component {
     super(props);
 
     this.handleURLsVerifications = this.handleURLsVerifications.bind(this);
-    this.handleFilterSiteChange = this.handleFilterSiteChange.bind(this);
-    this.handleFilterEnvironmentChange = this.handleFilterEnvironmentChange.bind(this);
-    this.handleFilterDomainChange = this.handleFilterDomainChange.bind(this);
+    this.handleFilterColumnChange = this.handleFilterColumnChange.bind(this);
     this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
+    this.handleFilterRedirectChange = this.handleFilterRedirectChange.bind(this);
 
     this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
     this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
     this.handleRedirection = this.handleRedirection.bind(this);
+
+    this.handleColumnChange = this.handleColumnChange.bind(this);
   }
 
   handleKeyPress(e) {
@@ -31,27 +36,16 @@ class FilterableURLList extends React.Component {
   	}
   }
 
-  handleFilterSiteChange(e) {
+  handleFilterColumnChange(e) {
+  	var columnName = e.target.placeholder;
+  	var columnsFilters = this.state.columnsFilters;
+  	columnsFilters[columnName].filter = e.target.value;
   	this.setState({
-  		site: e.target.value,
-  		msg: '',
-  	});
+  		columnsFilters: columnsFilters
+  	})
   	this.setUpdateToFalse();
   }
-  handleFilterEnvironmentChange(e) {
-  	this.setState({
-  		environment: e.target.value,
-  		msg: '',
-  	});
-  	this.setUpdateToFalse();
-  }
-  handleFilterDomainChange(e) {
-  	this.setState({
-  		domain: e.target.value,
-  		msg: '',
-  	});
-  	this.setUpdateToFalse();
-  }
+
   handleFilterCnameChange(e) {
   	this.setState({
   		cname: e.target.value,
@@ -60,8 +54,36 @@ class FilterableURLList extends React.Component {
   	this.setUpdateToFalse();
   }
 
-  componentDidMount() {
+  handleFilterRedirectChange(e) {
   	this.setState({
+  		redirectFilter: e.target.value,
+  		msg: '',
+  	});
+  	this.setUpdateToFalse();
+  }
+
+  handleColumnChange(columnName, isVisible) {
+  	var columnsFilters = this.state.columnsFilters;
+  	columnsFilters[columnName] = {
+  		isVisible: isVisible,
+  		filter: '',
+  	};
+  	this.setState({
+  		columnsFilters: columnsFilters
+  	})
+  }
+
+  componentDidMount() {
+  	var columns = Helper.getColumnsNames();
+  	var columnsFilters = [];
+  	for (var i = 0; i < columns.length; i++) {
+  		columnsFilters[columns[i]] = {
+	  		isVisible: Helper.isColumnAlwaysVisible(columns[i]),
+	  		filter: '',
+	  	};
+  	}
+  	this.setState({
+  		columnsFilters: columnsFilters,
   		site: '',
   		environment: '',
   		domain: '',
@@ -72,7 +94,12 @@ class FilterableURLList extends React.Component {
   }
 
   isFilterActive() {
-  	return this.state.site !== "" || this.state.environment !== "" || this.state.domain !== "" || this.state.cname !== "";
+  	for (var column in this.state.columnsFilters) {
+  		if (this.state.columnsFilters[column].isVisible && this.state.columnsFilters[column].filter && this.state.columnsFilters[column].filter.length > 1) {
+  			return true;
+  		}
+  	}
+  	return false;
   }
 
   setUpdateToFalse() {
@@ -130,21 +157,13 @@ class FilterableURLList extends React.Component {
   }
 
   render() {
-  	var siteFilter = '';
-  	if (this.state != null && 'site' in this.state) {
-  		siteFilter = this.state.site;
-  	}
-  	var environmentFilter = '';
-  	if (this.state != null && 'environment' in this.state) {
-  		environmentFilter = this.state.environment;
-  	}
-  	var domainFilter = '';
-  	if (this.state != null && 'domain' in this.state) {
-  		domainFilter = this.state.domain;
-  	}
   	var cnameFilter = '';
   	if (this.state != null && 'cname' in this.state) {
   		cnameFilter = this.state.cname;
+  	}
+  	var redirectFilter = '';
+  	if (this.state != null && 'redirectFilter' in this.state) {
+  		redirectFilter = this.state.redirectFilter;
   	}
   	var update = false;
   	if (this.state != null && 'update' in this.state) {
@@ -163,13 +182,44 @@ class FilterableURLList extends React.Component {
   		updateRedirection = this.state.updateRedirection;
   	}
 
+
+  	var checkboxes = [];
+  	var header1 = [];
+  	var header2 = [];
+  	var header3 = [];
+  	var columnsFilters = [];
+  	if (this.state && 'columnsFilters' in this.state) {
+  		columnsFilters = this.state.columnsFilters;
+  		for (var column in this.state.columnsFilters) {
+  			var isVisible = this.state.columnsFilters[column].isVisible;
+	  		if (isVisible) {
+	  			header1.push(<td key={column}></td>);
+	  			header2.push(<td key={column}>{column}</td>);
+	  			header3.push(<td key={column}><Form>
+		  	  		    			<Form.Control size="sm" type="text" placeholder={column} value={this.state.columnsFilters[column].filter} onChange={this.handleFilterColumnChange} onKeyPress={this.handleKeyPress} />
+		  	  		  			</Form></td>);
+	  		} 
+				checkboxes.push(<Column key={column} columnName={column} onChange={this.handleColumnChange} defaultChecked={isVisible} />);
+  		}
+  	}
+
   	return (
+  		<Container fluid>
+
+  		<Navbar expand="lg" variant="dark" bg="dark">
+  		  <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
+	    		<Col sm={9}>
+	  	  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Test all</Button>
+	    		</Col>
+  		</Navbar>
   		<Row>
-	  		<Col sm={10}>
-	  		</Col>
-	  		<Col sm={2}>
-		  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Test all</Button>
-	  		</Col>
+    		<Col sm={9}>
+    			<Form>
+    				{checkboxes}
+					</Form>
+    		</Col>
+  		</Row>
+  		<Row>
 
 	  		{this.state && this.state.msg && this.state.msg.length > 0 &&
 	  			<Alert variant="danger" >{this.state.msg}</Alert>
@@ -179,12 +229,7 @@ class FilterableURLList extends React.Component {
 	  			<Table striped bordered hover responsive size="sm" className="stubLinks">
 		  		  <thead>
 		  		  <tr>
-			  		  <td>
-			  		  </td>
-			  		  <td>
-			  		  </td>
-			  		  <td>
-			  		  </td>
+				  		{header1}
 			  		  <td>
 					  		<Button variant="outline-info" onClick={this.handleDNSVerifications} >Test</Button>
 			  		  </td>
@@ -196,29 +241,13 @@ class FilterableURLList extends React.Component {
 				  		</td>
 		  		  </tr>
 		  		  <tr>
-			  		  <td>Site</td>
-			  		  <td>Environment</td>
-			  		  <td>Domain</td>
+				  		{header2}
 			  		  <td>CNAME</td>
 			  		  <td>SSL validity</td>
 			  		  <td>Redirect</td>
 		  		  </tr>
 		  		  <tr>
-			  		  <td>
-		  		  		<Form>
-		  	  		    <Form.Control size="sm" type="text" placeholder="Site" value={siteFilter} onChange={this.handleFilterSiteChange} onKeyPress={this.handleKeyPress} />
-		  	  		  </Form>
-			  		  </td>
-			  		  <td>
-  		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="Envt" value={environmentFilter} onChange={this.handleFilterEnvironmentChange} onKeyPress={this.handleKeyPress} />
-  		    		  </Form>
-			  		  </td>
-			  		  <td>
-  		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="Domain" value={domainFilter} onChange={this.handleFilterDomainChange} onKeyPress={this.handleKeyPress} />
-  		    		  </Form>
-			  		  </td>
+				  		{header3}
 			  		  <td>
   		  	  		<Form>
   		    		    <Form.Control size="sm" type="text" placeholder="CNAME & server" value={cnameFilter} onChange={this.handleFilterCnameChange} onKeyPress={this.handleKeyPress} />
@@ -227,13 +256,17 @@ class FilterableURLList extends React.Component {
 			  		  <td>
 				  		</td>
 			  		  <td>
+  		  	  		<Form>
+  		    		    <Form.Control size="sm" type="text" placeholder="Redirect" value={redirectFilter} onChange={this.handleFilterRedirectChange} onKeyPress={this.handleKeyPress} />
+  		    		  </Form>
 				  		</td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList siteFilter={siteFilter} environmentFilter={environmentFilter} domainFilter={domainFilter} cnameFilter={cnameFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} />
+			  			<URLList cnameFilter={cnameFilter} redirectFilter={redirectFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} columnsFilters={columnsFilters} />
 		  		</Table>
 	  		</Col>
   		</Row>
+  		</Container>
 		);
   }
 }
