@@ -69,7 +69,6 @@ class URL extends React.Component {
     	this.getDNSDetails(this.props.domain);
   	}
   	else if (this.props.updateSSL === true && !this.state.updateSSLInProgress && !this.state.SSLExpiryDate) {
-  		console.log("this.props.updateSSL", this.props.updateSSL, "this.state.updateSSLInProgress", this.state.updateSSLInProgress, "this.state.SSLExpiryDate", this.state.SSLExpiryDate);
   		this.setState({
   			updateSSLInProgress: true,
   		});
@@ -90,33 +89,30 @@ class URL extends React.Component {
   }
 
   async dnsExist(domain) {
-  			return new Promise((resolve, reject) => {
-  				// console.log(API_DNS+domain);
-  				fetch(API_DNS+domain, {
-  						method: 'GET',
-  						headers:  {
-  							'x-api-key': API_KEY
-  						}
-  					})
-  			    .then(res => res.json())
-  	        .then(body => {
-  	        	if (!body.CNAME || !body.CNAME[0]) {
-	  			    	console.log("getDNS err1", API_DNS+domain, body);
-  	        		return reject(body);
-  	        	}
-  	        	resolve(body.CNAME[0])
-  	        })
-  			    .catch(err => {
-  			    	console.log("getDNS err2", API_DNS+domain, err);
-  			    	reject(err);
-  			    });
-  			});
+		return new Promise((resolve, reject) => {
+			fetch(API_DNS+domain, {
+					method: 'GET',
+					headers:  {
+						'x-api-key': API_KEY
+					}
+				})
+		    .then(res => res.json())
+        .then(body => {
+        	if (!body.CNAME || !body.CNAME[0]) {
+			    	console.log("getDNS err1", API_DNS+domain, body);
+        		return reject(body);
+        	}
+        	resolve(body.CNAME[0])
+        })
+		    .catch(err => {
+		    	console.log("getDNS err2", API_DNS+domain, err);
+		    	reject(err);
+		    });
+		});
   }
 
-  // TODO loop if error
   async getSSLExpiryDate(domain) {
 		return new Promise((resolve, reject) => {
-			// console.log(API_SSL+domain);
 			fetch(API_SSL+domain, {
 					method: 'GET',
 					headers:  {
@@ -140,7 +136,6 @@ class URL extends React.Component {
 
 	async getRedirect(fullURL) {
 		return new Promise((resolve, reject) => {
-			// console.log(API_REDIRECT+domain);
 			fetch(API_REDIRECT+fullURL, {
 					method: 'GET',
 					headers:  {
@@ -184,9 +179,15 @@ class URL extends React.Component {
   	}
   	this.setState({
   		updateInProgress: false,
+  		updateDNSInProgress: false,
+  		updateSSLInProgress: false,
+  		updateRedirWithoutSGTINInProgress: false,
+  		updateRedirWithSGTINInProgress: false,
   	});
   }
 
+
+  // TODO: when no CNAME, check if the DNS exists with another record
   async getDNSDetails(domain) {
 		var domainAndCnameData = {};
 		try {

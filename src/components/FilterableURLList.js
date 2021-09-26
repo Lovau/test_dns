@@ -70,7 +70,8 @@ class FilterableURLList extends React.Component {
   	};
   	this.setState({
   		columnsFilters: columnsFilters
-  	})
+  	});
+  	this.setUpdateToFalse();
   }
 
   componentDidMount() {
@@ -95,7 +96,9 @@ class FilterableURLList extends React.Component {
 
   isFilterActive() {
   	for (var column in this.state.columnsFilters) {
-  		if (this.state.columnsFilters[column].isVisible && this.state.columnsFilters[column].filter && this.state.columnsFilters[column].filter.length > 1) {
+  		if (this.state.columnsFilters[column].isVisible 
+  				&& this.state.columnsFilters[column].filter 
+  				&& this.state.columnsFilters[column].filter.length > 0) {
   			return true;
   		}
   	}
