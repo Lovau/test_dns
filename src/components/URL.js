@@ -49,7 +49,7 @@ class URL extends React.Component {
   }
 
   componentDidUpdate() {
-  	if (this.props.update === true && !this.state.updateInProgress && !this.state.cname) {
+  	if (this.props.update === true && !this.state.updateInProgress && !this.state.cname && !this.state.otherRecords) {
   	// || !this.state.SSLExpiryDate || !this.state.redirectWithSGTIN || !this.state.redirectWithoutSGTIN)) {
   	
   		// updateInProgress is here to avoid calling the update again while it is already called
@@ -62,7 +62,7 @@ class URL extends React.Component {
   		});
     	this.getAllURLDetails(this.props.domain);
   	}
-  	else if (this.props.updateDNS === true && !this.state.updateDNSInProgress && !this.state.cname) {
+  	else if (this.props.updateDNS === true && !this.state.updateDNSInProgress && !this.state.cname && !this.state.otherRecords) {
   		this.setState({
   			updateDNSInProgress: true,
   		});
@@ -98,11 +98,7 @@ class URL extends React.Component {
 				})
 		    .then(res => res.json())
         .then(body => {
-        	if (!body.CNAME || !body.CNAME[0]) {
-			    	console.log("getDNS err1", API_DNS+domain, body);
-        		return reject(body);
-        	}
-        	resolve(body.CNAME[0])
+        	resolve(body);
         })
 		    .catch(err => {
 		    	console.log("getDNS err2", API_DNS+domain, err);
@@ -161,7 +157,7 @@ class URL extends React.Component {
   async getAllURLDetails(domain) {
   	await this.getDNSDetails(domain);
 
-		if (this.state.cname && this.state.cname !== cnameErrorMessage) {
+		if ((this.state.cname || this.state.otherRecords) && this.state.cname !== cnameErrorMessage) {
 			await this.getSSLDetails(domain);
   		await this.getRedirectionDetails(domain);
   	} else {
@@ -191,9 +187,20 @@ class URL extends React.Component {
   async getDNSDetails(domain) {
 		var domainAndCnameData = {};
 		try {
-			var cname = await this.dnsExist(Helper._removeDomainProtocol(domain));
+			var response = await this.dnsExist(Helper._removeDomainProtocol(domain));
+			console.log("DNS response", response);
+			var cname, otherRecords;
+			if ('CNAME' in response && response.CNAME[0]) {
+				cname = response.CNAME[0];
+			} else if ('otherrecords' in response) {
+				otherRecords = response.otherrecords;
+			} else {
+				throw Error("Record not found");
+			}
+
 			this.setState({
-				cname: cname
+				cname: cname,
+				otherRecords: otherRecords
 			});
 
 			var server;
@@ -311,7 +318,7 @@ class URL extends React.Component {
   		tdCnameClass = "errorCell";
   	}
   	if ("server" in this.state) {
-  		DNSContent = this.state.cname + "<br/>" + this.state.server 
+  		DNSContent = (this.state.cname ? this.state.cname + "<br/>" : '') + this.state.server 
   	}
 
   	// SSL cell

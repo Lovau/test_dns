@@ -245,7 +245,7 @@ class FilterableURLList extends React.Component {
 		  		  </tr>
 		  		  <tr>
 				  		{header2}
-			  		  <td>CNAME</td>
+			  		  <td>DNS</td>
 			  		  <td>SSL validity</td>
 			  		  <td>Redirect</td>
 		  		  </tr>
@@ -253,7 +253,7 @@ class FilterableURLList extends React.Component {
 				  		{header3}
 			  		  <td>
   		  	  		<Form>
-  		    		    <Form.Control size="sm" type="text" placeholder="CNAME & server" value={cnameFilter} onChange={this.handleFilterCnameChange} onKeyPress={this.handleKeyPress} />
+  		    		    <Form.Control size="sm" type="text" placeholder="DNS & server" value={cnameFilter} onChange={this.handleFilterCnameChange} onKeyPress={this.handleKeyPress} />
   		    		  </Form>
 			  		  </td>
 			  		  <td>
