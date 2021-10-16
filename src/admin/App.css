@@ -1,0 +1,38 @@
+.list {
+  text-align: left;
+  /*max-width: 750px;*/
+  margin: auto;
+}
+
+.submit-form {
+  max-width: 300px;
+  margin: auto;
+}
+
+.edit-form {
+  max-width: 300px;
+  margin: auto;
+}
+.adminTable tr.notselected {
+  cursor: pointer;
+}
+table .badge {
+  position: relative;
+  right: -10px;
+}
+.deletebutton {
+  float: left;
+}
+.validatebutton {
+  float: right;
+}
+.msgValidation {
+  clear: both;
+  margin-top: 15px;
+}
+.adminTitle {
+  padding-top: 15px;
+}
+.fuzzyresultNotSelected {
+  display: none;
+}

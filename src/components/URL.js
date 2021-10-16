@@ -24,10 +24,16 @@ const NoRedirectionMessage = "No redirection";
 const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience</span>";
 
 // curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
-const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
-const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
-const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=";
-const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6";
+// curl --location --request https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04'
+
+// const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS="; // sandbox
+// const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS="; // sandbox
+// const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL="; // sandbox
+// const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6"; //sandbox
+const API_DNS = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS="; // prod
+const API_SSL = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS="; // prod
+const API_REDIRECT = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL="; // prod
+const API_KEY = "ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04"; // prod
 
 class URL extends React.Component {
 
@@ -301,9 +307,6 @@ class URL extends React.Component {
   	if (!this.props.display) {
   		return null;
   	}
-  	// console.log(this.props, this.state.updateRedirWithoutSGTINInProgress);
-
-  	var domain = Helper._removeDomainProtocol(this.props.domain, this.state.url).trim();
 
   	// DNS cell
   	var tdCnameClass = "";

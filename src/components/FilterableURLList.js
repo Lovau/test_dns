@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import URLList from './URLList';
-import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Helper from "./Helper";
 import Column from "./Column";
@@ -209,12 +208,9 @@ class FilterableURLList extends React.Component {
   	return (
   		<Container fluid>
 
-  		<Navbar expand="lg" variant="dark" bg="dark">
-  		  <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
 	    		<Col sm={9}>
 	  	  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Test all</Button>
 	    		</Col>
-  		</Navbar>
   		<Row>
     		<Col sm={9}>
     			<Form>
