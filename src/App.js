@@ -11,7 +11,7 @@ import FilterableURLList from './components/FilterableURLList';
 import Header from './components/Header';
 import AddDomain from "./admin/components/add-domain.component";
 import Domain from "./admin/components/domain.component";
-import DomainsList from "./admin/components/domains-list.component";
+// import DomainsList from "./admin/components/domains-list.component";
 import "./admin/App.css";
 
 function App() {
@@ -33,8 +33,12 @@ function App() {
       <BrowserRouter>
         <Header />
         <Switch>
-            <Route exact path="/" component={FilterableURLList} />
-            <Route exact path={["/admin/", "/admin/domains"]} component={DomainsList} />
+            <Route exact path="/" >
+              <FilterableURLList isadmin={false} />
+            </Route>
+            <Route exact path="/isadmin" >
+              <FilterableURLList isadmin={true} />
+            </Route>
             <Route exact path="/admin/add" component={AddDomain} />
             <Route path="/admin/domains/:id" component={Domain} />
         </Switch>

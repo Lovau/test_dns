@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import DomainDataService from "../services/domain.service";
-import Helper from "../Helper";
+import Helper from "../../components/Helper";
+const isValidDomain = require('is-valid-domain');
+
+//TODO : make comment a textarea
+// Merge the update & add
+// change the design a bit 
 
 export default class AddDomain extends Component {
   constructor(props) {
@@ -12,8 +17,6 @@ export default class AddDomain extends Component {
     this.onChangeComment = this.onChangeComment.bind(this);
     this.saveDomain = this.saveDomain.bind(this);
     this.newDomain = this.newDomain.bind(this);
-
-    this.newDomain();
   }
 
   componentDidMount() {
@@ -46,25 +49,57 @@ export default class AddDomain extends Component {
     });
   }
 
-  randomString(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-  }
-
   saveDomain() {
-    var id = this.randomString(12);
+    var id = Helper._randomstring(12);
+
+    var URL = this.state.domain;
+
+    // clean the domain
+    URL = URL.toLowerCase();
+    URL = URL.trim();
+    
+    // remove trailing slash
+    URL = URL.replace(/\/$/, "");
+    
+    // check for https
+    if (!URL.startsWith("https://")) {
+      console.log("["+URL+"] should start with \"https://\".");
+      this.setState({
+        validationMsg: "["+URL+"] should start with \"https://\"."
+      });
+      return;
+    }
+
+    // check if DNS is correct
+    var domain = URL.replace("https://", "");
+    if (!isValidDomain(domain)) {
+      console.log("["+domain+"] is not a valid domain.");
+      this.setState({
+        validationMsg: "["+domain+"] is not a valid domain."
+      });
+      return;
+    }
+
+    // Check the brand exists
+    if (!this.state.brand) {
+      console.log("The brand should not be empty.");
+      this.setState({
+        validationMsg: "The brand should not be empty."
+      });
+      return;
+    }
+
+    this.setState({
+      validationMsg: ""
+    });
+
     var data = {
       uuid: id,
-      domain: this.state.domain,
-      brand: this.state.brand,
+      domain: URL,
+      brand: this.state.brand.trim(),
       environment: this.state.environment,
       live: this.state.live,
-      comment: this.state.comment,
+      comment: this.state.comment.trim(),
     };
 
     console.log("Adding domain", data);
@@ -85,10 +120,11 @@ export default class AddDomain extends Component {
       id: null,
       domain: "",
       brand: "",
-      environment: "",
+      environment: "RC",
       live: "N",
       comment: "",
 
+      validationMsg: "",
       submitted: false
     });
   }
@@ -108,6 +144,9 @@ export default class AddDomain extends Component {
 
     return (
       <div className="submit-form">
+        {this.state && this.state.validationMsg && 
+          <div className="alert alert-danger">{this.state.validationMsg}</div>
+        }
         {this.state && this.state.hide && 
           <p>{this.props.domain} has been saved.</p>
         }

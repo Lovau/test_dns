@@ -74,11 +74,12 @@ class FilterableURLList extends React.Component {
   }
 
   componentDidMount() {
+
   	var columns = Helper.getColumnsNames();
   	var columnsFilters = [];
   	for (var i = 0; i < columns.length; i++) {
-  		columnsFilters[columns[i]] = {
-	  		isVisible: Helper.isColumnAlwaysVisible(columns[i]),
+  		columnsFilters[columns[i].columnNameToDisplay] = {
+	  		isVisible: Helper.isColumnAlwaysVisible(columns[i].columnNameToDisplay),
 	  		filter: '',
 	  	};
   	}
@@ -92,6 +93,10 @@ class FilterableURLList extends React.Component {
   	});
   	this.setUpdateToFalse();
   }
+
+	componentDidUpdate() {
+		console.log("update", this.props);	
+	}
 
   isFilterActive() {
   	for (var column in this.state.columnsFilters) {
@@ -261,7 +266,7 @@ class FilterableURLList extends React.Component {
 				  		</td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList cnameFilter={cnameFilter} redirectFilter={redirectFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} columnsFilters={columnsFilters} />
+			  			<URLList cnameFilter={cnameFilter} redirectFilter={redirectFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} columnsFilters={columnsFilters} isadmin={this.props.isadmin} />
 		  		</Table>
 	  		</Col>
   		</Row>

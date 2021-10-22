@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DomainDataService from "../services/domain.service";
-import Helper from "../Helper";
+import Helper from "../../components/Helper";
 
 export default class Domain extends Component {
   constructor(props) {

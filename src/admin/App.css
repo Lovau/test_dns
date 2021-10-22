@@ -18,7 +18,7 @@
 }
 table .badge {
   position: relative;
-  right: -10px;
+  left: -4px;
 }
 .deletebutton {
   float: left;

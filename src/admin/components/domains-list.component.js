@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import DomainDataService from "../services/domain.service";
 import { Link } from "react-router-dom";
 import FuzzySearch from "react-fuzzy/dist/index.js";
+import Helper from "../../components/Helper";
 
 export default class DomainsList extends Component {
   constructor(props) {
@@ -22,6 +23,18 @@ export default class DomainsList extends Component {
   }
 
   componentDidMount() {
+    var columns = Helper.getColumnsNames();
+    var columnsFilters = [];
+    for (var i = 0; i < columns.length; i++) {
+      columnsFilters[columns[i]] = {
+        isVisible: "true",//Helper.isColumnAlwaysVisible(columns[i]),
+        filter: '',
+      };
+    }
+    this.setState({
+      columnsFilters: columnsFilters,
+    });
+
     this.retrieveDomains();
   }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import Helper from "./Helper";
+import { Link } from "react-router-dom";
 
 const fetch = require('node-fetch');
 // const sslChecker = require("ssl-checker");
@@ -40,6 +41,8 @@ class URL extends React.Component {
   constructor(props) {
     super(props);
 
+    this.setActiveDomain = this.setActiveDomain.bind(this);
+
     this.state = {
     	updateInProgress: false,
     	updateDNSInProgress: false,
@@ -50,8 +53,15 @@ class URL extends React.Component {
     };
 
     this.state = {
-    	url: props.domain + "/" + this.state.sgtin
+    	url: props.domain + "/" + this.state.sgtin,
+      isSelected: false
     };
+  }
+  
+  setActiveDomain() {
+    this.setState({
+      isSelected: true
+    });
   }
 
   componentDidUpdate() {
@@ -379,25 +389,34 @@ class URL extends React.Component {
   		return '';
   	}
 
-  	var td = [];
+  	var TDs = [];
+  	var countTD = 0;
   	var value;
+		var editLink = "";
   	if (this.props && 'columnsFilters' in this.props) {
 			for (var column in this.props.columnsFilters) {
 	  		if (this.props.columnsFilters[column].isVisible) {
-	  			value = ''
+	  			value = '';
+	  			editLink = '';
 	  			if (column in this.props) {
 	  				value = this.props[column];
 	  			}
-	  			td.push(<td key={column}>{value}</td>);
+	  			// if it is the 1st cell, we display here the edit button
+	  			if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
+	  				editLink = <Link to={"/admin/domains/" + this.props.uuid} className="badge badge-warning" >Edit</Link>
+	  			}
+	  			countTD++;
+	  			TDs.push(<td key={column}>{editLink}{value}</td>);
 	  		}
 			}
 		}
   	return (
-  		<tr>
-  			{td}
+  		<tr onClick={() => this.setActiveDomain()} >
+  			{TDs}
   			<td className={tdCnameClass} dangerouslySetInnerHTML={{__html: DNSContent}}></td>
   			<td className={tdSSLClass}>{SSLContent}</td>
-  			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}></td>
+  			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}>
+  			</td>
   		</tr>
 		);
   }
