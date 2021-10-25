@@ -15,44 +15,75 @@ export default class AddDomain extends Component {
     this.onChangeEnvironment = this.onChangeEnvironment.bind(this);
     this.onChangeLive = this.onChangeLive.bind(this);
     this.onChangeComment = this.onChangeComment.bind(this);
-    this.saveDomain = this.saveDomain.bind(this);
+    this.createNewDomain = this.createNewDomain.bind(this);
+    this.updateDomain = this.updateDomain.bind(this);
+    this.deleteDomain = this.deleteDomain.bind(this);
     this.newDomain = this.newDomain.bind(this);
+
+    this.state = {
+      currentDomain: {
+        uuid: null,
+        domain: "",
+        brand: "",
+        environment: "RC",
+        live: "N",
+        comment: ""
+      },
+      validationMsg: "",
+      submitted: false
+    };
   }
 
   componentDidMount() {
-    this.newDomain();
+    if (this.props.match.params.id) {
+      console.log("update page");
+      this.setState({
+        validationMsg: "",
+        submitted: false,
+        isNew: false
+      });
+      this.loadDomain(this.props.match.params.id);
+    } else {
+      console.log("creation page");
+      this.newDomain();
+    }
   }
 
-  onChangeDomain(e) {
+  newDomain() {
     this.setState({
-      domain: e.target.value
-    });
-  }
-  onChangeBrand(e) {
-    this.setState({
-      brand: e.target.value
-    });
-  }
-  onChangeEnvironment(e) {
-    this.setState({
-      environment: e.target.value
-    });
-  }
-  onChangeLive(e) {
-    this.setState({
-      live: e.target.value
-    });
-  }
-  onChangeComment(e) {
-    this.setState({
-      comment: e.target.value
+      currentDomain: {
+        uuid: null,
+        domain: "",
+        brand: "",
+        environment: "RC",
+        live: "N",
+        comment: "",
+      },
+
+      validationMsg: "",
+      submitted: false,
+      isNew: true
     });
   }
 
-  saveDomain() {
-    var id = Helper._randomstring(12);
+  loadDomain(id) {
+    DomainDataService.get(id)
+      .then(response => {
+          this.setState({
+            currentDomain: response.data.Item
+          });
+        console.log("Getting item", response.data.Item);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
 
-    var URL = this.state.domain;
+  validateAndCleanDomain(URL) {
+    // Check the domain is not empty
+    if (!URL) {
+      throw new Error("The domain should not be empty.");
+    }
 
     // clean the domain
     URL = URL.toLowerCase();
@@ -60,33 +91,44 @@ export default class AddDomain extends Component {
     
     // remove trailing slash
     URL = URL.replace(/\/$/, "");
-    
+
     // check for https
     if (!URL.startsWith("https://")) {
-      console.log("["+URL+"] should start with \"https://\".");
-      this.setState({
-        validationMsg: "["+URL+"] should start with \"https://\"."
-      });
-      return;
+      throw new Error("["+URL+"] should start with \"https://\".");
     }
 
     // check if DNS is correct
     var domain = URL.replace("https://", "");
     if (!isValidDomain(domain)) {
-      console.log("["+domain+"] is not a valid domain.");
-      this.setState({
-        validationMsg: "["+domain+"] is not a valid domain."
-      });
-      return;
+      throw new Error("["+domain+"] is not a valid domain name.");
     }
 
+    return URL;
+  }
+
+  validateBrand(brand) {
     // Check the brand exists
-    if (!this.state.brand) {
-      console.log("The brand should not be empty.");
+    if (!brand) {
+      throw new Error("The brand should not be empty.");
+    }
+  }
+
+  validateAndCleanData() {
+    var URL = this.state.currentDomain.domain;
+
+    try {
+      URL = this.validateAndCleanDomain(URL);
+      this.validateBrand(this.state.currentDomain.brand);
+      
+      // Check the domain that the domain doesn't already exist in the DB
+      //TODO
+
+    } catch(e) {
+      console.log(e.message);
       this.setState({
-        validationMsg: "The brand should not be empty."
+        validationMsg: e.message
       });
-      return;
+      return null;
     }
 
     this.setState({
@@ -94,20 +136,31 @@ export default class AddDomain extends Component {
     });
 
     var data = {
-      uuid: id,
+      uuid: this.state.currentDomain.uuid ? this.state.currentDomain.uuid : Helper._randomstring(12),
       domain: URL,
-      brand: this.state.brand.trim(),
-      environment: this.state.environment,
-      live: this.state.live,
-      comment: this.state.comment.trim(),
+      brand: this.state.currentDomain.brand.trim(),
+      environment: this.state.currentDomain.environment,
+      live: this.state.currentDomain.live,
+      comment: this.state.currentDomain.comment ? this.state.currentDomain.comment.trim() : "",
     };
 
-    console.log("Adding domain", data);
+    return data;
+  }
+
+  createNewDomain() {
+    var data = this.validateAndCleanData();
+    if (!data) {
+      console.log("No data - not creating anything");
+      return;
+    }
+    console.log("Creating ...", data);
 
     DomainDataService.create(data)
       .then(response => {
-        data.submitted = true;
-        this.setState(data);
+        this.setState({
+          currentDomain: data,
+          submitted: true
+        });
         console.log(response.data);
       })
       .catch(e => {
@@ -115,49 +168,116 @@ export default class AddDomain extends Component {
       });
   }
 
-  newDomain() {
-    this.setState({
-      id: null,
-      domain: "",
-      brand: "",
-      environment: "RC",
-      live: "N",
-      comment: "",
+  updateDomain() {
+    var data = this.validateAndCleanData();
+    if (!data) {
+      console.log("No data - not creating anything");
+      return;
+    }
 
-      validationMsg: "",
-      submitted: false
+    console.log("Updating", data, data.uuid);
+    DomainDataService.update(
+      data.uuid,
+      data
+    )
+      .then(response => {
+        console.log(response.data);
+        this.setState({
+          submitted: true,
+          message: "The domain was updated successfully!"
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  deleteDomain() {
+    console.log("Deleting domain", this.state.currentDomain, this.state.currentDomain.uuid);
+    DomainDataService.delete(this.state.currentDomain.uuid)
+      .then(response => {
+        console.log(response.data);
+        this.props.history.push('/isadmin')
+        // this.setState({
+        //   message: "The domain was deleted successfully!"
+        // });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  onChangeDomain(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.domain = e.target.value;
+    this.setState({
+      currentDomain: currentDomain
+    });
+  }
+  onChangeBrand(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.brand = e.target.value;
+    this.setState({
+      currentDomain: currentDomain
+    });
+  }
+  onChangeEnvironment(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.environment = e.target.value;
+    this.setState({
+      currentDomain: currentDomain
+    });
+  }
+  onChangeLive(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.live = e.target.value;
+    this.setState({
+      currentDomain: currentDomain
+    });
+  }
+  onChangeComment(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.comment = e.target.value;
+    this.setState({
+      currentDomain: currentDomain
     });
   }
 
-
   render() {
-
-    var domain = "";
-    var brand = "";
-    var comment = "";
-
-    if (this.state) {
-      domain = this.state.domain;
-      brand = this.state.brand;
-      comment = this.state.comment;      
-    }
+    const { currentDomain } = this.state;
 
     return (
       <div className="submit-form">
+
+        {/* Validation */}
         {this.state && this.state.validationMsg && 
           <div className="alert alert-danger">{this.state.validationMsg}</div>
         }
-        {this.state && this.state.hide && 
-          <p>{this.props.domain} has been saved.</p>
+
+        {/* Update: domain not found */}
+        {this.state && !this.state.isNew && (!currentDomain || !currentDomain.uuid) &&
+          <div className="alert alert-primary"><b>The domain has not been found.</b></div>
         }
-        {this.state && !(this.state.hide) && this.state.submitted ? (
+
+        {/* Creation ok */}
+        {this.state && this.state.isNew && this.state.submitted &&
           <div>
-            <h4>You submitted successfully!</h4>
+            <div className="alert alert-success">The domain <b>"{currentDomain.domain}"</b> has been successfully created!</div>
             <button className="btn btn-success" onClick={this.newDomain}>
               Add another
             </button>
           </div>
-        ) : (
+        }
+
+        {/* Update ok */}
+        {this.state && !this.state.isNew && this.state.submitted &&
+          <div>
+            <div className="alert alert-success">The domain <b>{currentDomain.domain}</b> has been successfully updated!</div>
+          </div>
+        }
+
+        {/* Display the form */}
+        {this.state && currentDomain && (!this.state.isNew || (this.state.isNew && !this.state.submitted)) &&
           <div>
             <div className="form-group">
               <label htmlFor="domain">Domain</label>
@@ -166,7 +286,7 @@ export default class AddDomain extends Component {
                 className="form-control"
                 id="domain"
                 required
-                value={domain}
+                defaultValue={currentDomain.domain}
                 onChange={this.onChangeDomain}
                 name="domain"
               />
@@ -178,7 +298,7 @@ export default class AddDomain extends Component {
                 className="form-control"
                 id="brand"
                 required
-                value={brand}
+                defaultValue={currentDomain.brand}
                 onChange={this.onChangeBrand}
                 name="brand"
               />
@@ -191,6 +311,7 @@ export default class AddDomain extends Component {
                 required
                 onChange={this.onChangeEnvironment}
                 name="environment"
+                value={currentDomain.environment}
                 >
                 {Helper.getEnvironmentList().map((option) => (
                   <option value={option}>{option}</option>
@@ -205,6 +326,7 @@ export default class AddDomain extends Component {
                 required
                 onChange={this.onChangeLive}
                 name="live"
+                defaultValue={currentDomain.live}
                 >
                   <option value="N">N</option>
                   <option value="Y">Y</option>
@@ -212,23 +334,41 @@ export default class AddDomain extends Component {
             </div>
             <div className="form-group">
               <label htmlFor="comment">Comment</label>
-              <input
-                type="text"
-                className="form-control"
-                id="comment"
-                required
-                value={comment}
-                onChange={this.onChangeComment}
-                name="comment"
-              />
+              <textarea name="comment" id="comment" className="form-control" onChange={this.onChangeComment} defaultValue={currentDomain.comment} rows="6">
+              </textarea>
             </div>
 
-            <button onClick={this.saveDomain} className="btn btn-success">
-              Submit
-            </button>
-          </div>
-        )}
+            {/* Creation validation button */}
+            {this.state && this.state.isNew && !this.state.submitted &&
+              <button onClick={this.createNewDomain} className="btn btn-success">
+                Submit
+              </button>
+            }
 
+            {/* Update validation button */}
+            {this.state && !this.state.isNew &&
+              <>
+              <div className="deletebutton" >
+                <button
+                  className="badge badge-danger mr-2"
+                  onClick={this.deleteDomain}
+                >
+                  Delete
+                </button>
+              </div>
+              <div className="validatebutton" >
+                <button
+                  type="submit"
+                  className="badge badge-success"
+                  onClick={this.updateDomain}
+                >
+                  Update
+                </button>
+              </div>
+              </>
+            }
+          </div>
+        }
       </div>
     );
   }

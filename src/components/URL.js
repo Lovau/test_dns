@@ -60,7 +60,7 @@ class URL extends React.Component {
   
   setActiveDomain() {
     this.setState({
-      isSelected: true
+      isSelected: !this.state.isSelected
     });
   }
 
@@ -401,9 +401,10 @@ class URL extends React.Component {
 	  			if (column in this.props) {
 	  				value = this.props[column];
 	  			}
+
 	  			// if it is the 1st cell, we display here the edit button
 	  			if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
-	  				editLink = <Link to={"/admin/domains/" + this.props.uuid} className="badge badge-warning" >Edit</Link>
+	  				editLink = <Link to={"/admin/update/" + this.props.uuid} className="badge badge-warning" >Edit</Link>
 	  			}
 	  			countTD++;
 	  			TDs.push(<td key={column}>{editLink}{value}</td>);

@@ -36,7 +36,7 @@ class URLList extends React.Component {
     });
   }
 
-  async getURLs() {
+  async getURLsFromCSV() {
   	// if (URLs && URLs.length > 0) {
   	// 	return URLs;
   	// }
@@ -83,8 +83,6 @@ class URLList extends React.Component {
         });
 
         this.orderDomains();
-
-        console.log("All domains", URLs);
       })
       .catch(e => {
         console.log(e);
@@ -92,8 +90,6 @@ class URLList extends React.Component {
   }
   
   orderDomains() {
-    // console.log("ORDER1", this.state.domains);
-    // console.log("ORDER2", this.state.domains.sort((a, b) => (a.brand.localeCompare(b.brand))));
     this.setState({
       domains: this.state.domains.sort((a, b) => {
         var brandcompare = a.brand.localeCompare(b.brand);
@@ -106,7 +102,7 @@ class URLList extends React.Component {
   }
 
   componentDidMount() {
-    // this.getURLs();
+    // this.getURLsFromCSV();
     this.retrieveDomains();
   }
 
@@ -181,6 +177,7 @@ class URLList extends React.Component {
                   Environment={domain.environment}  // dynamic field
                   URL={domain.domain}                  // dynamic field
                   Live={domain.live}                // dynamic field
+                  Comment={domain.comment}                // dynamic field
                   redirectFilter={redirectFilter}
                   cnameMapping={cnameMapping}
                   update={update}

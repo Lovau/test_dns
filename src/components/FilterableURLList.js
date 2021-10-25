@@ -95,7 +95,7 @@ class FilterableURLList extends React.Component {
   }
 
 	componentDidUpdate() {
-		console.log("update", this.props);	
+		// console.log("update", this.props);	
 	}
 
   isFilterActive() {

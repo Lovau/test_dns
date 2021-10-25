@@ -10,7 +10,7 @@ import Container from 'react-bootstrap/Container';
 import FilterableURLList from './components/FilterableURLList';
 import Header from './components/Header';
 import AddDomain from "./admin/components/add-domain.component";
-import Domain from "./admin/components/domain.component";
+// import Domain from "./admin/components/domain.component";
 // import DomainsList from "./admin/components/domains-list.component";
 import "./admin/App.css";
 
@@ -40,7 +40,7 @@ function App() {
               <FilterableURLList isadmin={true} />
             </Route>
             <Route exact path="/admin/add" component={AddDomain} />
-            <Route path="/admin/domains/:id" component={Domain} />
+            <Route path="/admin/update/:id" component={AddDomain} />
         </Switch>
       </BrowserRouter>
 
