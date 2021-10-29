@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import URLList from './URLList';
-import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Helper from "./Helper";
 import Column from "./Column";
@@ -38,8 +37,9 @@ class FilterableURLList extends React.Component {
 
   handleFilterColumnChange(e) {
   	var columnName = e.target.placeholder;
+  	var columnDBName = Helper.getDBNameFromDisplayName(columnName);
   	var columnsFilters = this.state.columnsFilters;
-  	columnsFilters[columnName].filter = e.target.value;
+  	columnsFilters[columnDBName].filter = e.target.value;
   	this.setState({
   		columnsFilters: columnsFilters
   	})
@@ -62,11 +62,13 @@ class FilterableURLList extends React.Component {
   	this.setUpdateToFalse();
   }
 
-  handleColumnChange(columnName, isVisible) {
+  handleColumnChange(columnDisplayName, isVisible) {
+  	var columnDBName = Helper.getDBNameFromDisplayName(columnDisplayName);
   	var columnsFilters = this.state.columnsFilters;
-  	columnsFilters[columnName] = {
+  	columnsFilters[columnDBName] = {
   		isVisible: isVisible,
   		filter: '',
+  		displayName: columnDisplayName,
   	};
   	this.setState({
   		columnsFilters: columnsFilters
@@ -75,12 +77,14 @@ class FilterableURLList extends React.Component {
   }
 
   componentDidMount() {
+
   	var columns = Helper.getColumnsNames();
   	var columnsFilters = [];
   	for (var i = 0; i < columns.length; i++) {
-  		columnsFilters[columns[i]] = {
-	  		isVisible: Helper.isColumnAlwaysVisible(columns[i]),
+  		columnsFilters[columns[i].columnNameDB] = {
+	  		isVisible: Helper.isColumnAlwaysVisible(columns[i].columnNameDB),
 	  		filter: '',
+	  		displayName: columns[i].columnNameToDisplay,
 	  	};
   	}
   	this.setState({
@@ -93,6 +97,10 @@ class FilterableURLList extends React.Component {
   	});
   	this.setUpdateToFalse();
   }
+
+	componentDidUpdate() {
+		// console.log("update", this.props);	
+	}
 
   isFilterActive() {
   	for (var column in this.state.columnsFilters) {
@@ -185,7 +193,6 @@ class FilterableURLList extends React.Component {
   		updateRedirection = this.state.updateRedirection;
   	}
 
-
   	var checkboxes = [];
   	var header1 = [];
   	var header2 = [];
@@ -193,28 +200,26 @@ class FilterableURLList extends React.Component {
   	var columnsFilters = [];
   	if (this.state && 'columnsFilters' in this.state) {
   		columnsFilters = this.state.columnsFilters;
+
   		for (var column in this.state.columnsFilters) {
   			var isVisible = this.state.columnsFilters[column].isVisible;
 	  		if (isVisible) {
 	  			header1.push(<td key={column}></td>);
-	  			header2.push(<td key={column}>{column}</td>);
+	  			header2.push(<td key={column}>{this.state.columnsFilters[column].displayName}</td>);
 	  			header3.push(<td key={column}><Form>
-		  	  		    			<Form.Control size="sm" type="text" placeholder={column} value={this.state.columnsFilters[column].filter} onChange={this.handleFilterColumnChange} onKeyPress={this.handleKeyPress} />
+		  	  		    			<Form.Control size="sm" type="text" placeholder={this.state.columnsFilters[column].displayName} value={this.state.columnsFilters[column].filter} onChange={this.handleFilterColumnChange} onKeyPress={this.handleKeyPress} />
 		  	  		  			</Form></td>);
 	  		} 
-				checkboxes.push(<Column key={column} columnName={column} onChange={this.handleColumnChange} defaultChecked={isVisible} />);
+				checkboxes.push(<Column key={column} columnName={this.state.columnsFilters[column].displayName} onChange={this.handleColumnChange} defaultChecked={isVisible} />);
   		}
   	}
 
   	return (
   		<Container fluid>
 
-  		<Navbar expand="lg" variant="dark" bg="dark">
-  		  <Navbar.Brand href="#">Rolex - URLs verification tool</Navbar.Brand>
 	    		<Col sm={9}>
 	  	  		<Button variant="outline-warning" onClick={this.handleURLsVerifications} className="mt-2 mb-2 main" >Test all</Button>
 	    		</Col>
-  		</Navbar>
   		<Row>
     		<Col sm={9}>
     			<Form>
@@ -265,7 +270,7 @@ class FilterableURLList extends React.Component {
 				  		</td>
 		  		  </tr>
 		  		  </thead>
-			  			<URLList cnameFilter={cnameFilter} redirectFilter={redirectFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} columnsFilters={columnsFilters} />
+			  			<URLList cnameFilter={cnameFilter} redirectFilter={redirectFilter} update={update} updateDNS={updateDNS} updateSSL={updateSSL} updateRedirection={updateRedirection} columnsFilters={columnsFilters} isadmin={this.props.isadmin} />
 		  		</Table>
 	  		</Col>
   		</Row>

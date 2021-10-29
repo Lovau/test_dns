@@ -1,5 +1,17 @@
 const Helper = {
 
+  isAdmin(location) {
+    //destructuring pathname from location
+    const { pathname } = location;
+    
+    //Javascript split method to get the name of the path in array
+    const splitLocation = pathname.split("/");
+    if (splitLocation[1] === "isadmin") {
+      return true;
+    }
+    return false;
+  },
+
   _randomstring(length, hasCharacters = true) {
       var result           = '';
       var characters       = '0123456789';
@@ -11,6 +23,15 @@ const Helper = {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
      }
      return result;
+  },
+
+  getEnvironmentList() {
+    return [
+      "RC",
+      "Staging",
+      "Prod Tech",
+      "Public prod",
+    ];
   },
 
   getRandomSGTIN() {
@@ -30,28 +51,64 @@ const Helper = {
   	return domain;
   },
 
+  //mapping: columnNameInDB => column name displayed
   getColumnsNames() {
     return [
-      "Brand",
-      "Environment",
-      "URL",
-      "Live",
-      "GeoDNS",
-      "Server",
-      // "Redirect URL",
+      { 
+        "columnNameDB": "brand",
+        "columnNameToDisplay": "Brand"
+      },
+      { 
+        "columnNameDB": "environment",
+        "columnNameToDisplay": "Environment"
+      },
+      { 
+        "columnNameDB": "domain",
+        "columnNameToDisplay": "URL"
+      },
+      { 
+        "columnNameDB": "live",
+        "columnNameToDisplay": "Live"
+      },
+      { 
+        "columnNameDB": "comment",
+        "columnNameToDisplay": "Comment"
+      },
+      { 
+        "columnNameDB": "updated",
+        "columnNameToDisplay": "Last update"
+      }
     ];
   },
 
   isColumnAlwaysVisible(column) {
     var columnsVisible = [
-      "Brand",
-      "Environment",
-      "URL",
+      "brand",
+      "environment",
+      "domain",
     ];
     if (columnsVisible.indexOf(column) !== -1) {
       return true;
     }
     return false;
+  },
+
+  getDBNameFromDisplayName(displayName) {
+    var columns = this.getColumnsNames();
+    for (var i = 0; i < columns.length; i++) {
+      if (columns[i].columnNameToDisplay === displayName) {
+        return columns[i].columnNameDB;
+      }
+    }
+  },
+
+  getDisplayNameFromDBName(fieldDBName) {
+    var columns = this.getColumnsNames();
+    for (var i = 0; i < columns.length; i++) {
+      if (columns[i].columnNameDB === fieldDBName) {
+        return columns[i].columnNameToDisplay;
+      }
+    }
   }
 };
 

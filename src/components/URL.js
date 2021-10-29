@@ -1,5 +1,6 @@
 import React from "react";
 import Helper from "./Helper";
+import { Link } from "react-router-dom";
 
 const fetch = require('node-fetch');
 // const sslChecker = require("ssl-checker");
@@ -24,15 +25,23 @@ const NoRedirectionMessage = "No redirection";
 const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience</span>";
 
 // curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
-const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=";
-const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=";
-const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=";
-const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6";
+// curl --location --request https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04'
+
+// const API_DNS = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS="; // sandbox
+// const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS="; // sandbox
+// const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL="; // sandbox
+// const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6"; //sandbox
+const API_DNS = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS="; // prod
+const API_SSL = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS="; // prod
+const API_REDIRECT = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL="; // prod
+const API_KEY = "ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04"; // prod
 
 class URL extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.setActiveDomain = this.setActiveDomain.bind(this);
 
     this.state = {
     	updateInProgress: false,
@@ -44,8 +53,19 @@ class URL extends React.Component {
     };
 
     this.state = {
-    	url: props.domain + "/" + this.state.sgtin
+    	url: props.domain + "/" + this.state.sgtin,
+      isSelected: false
     };
+  }
+  
+  setActiveDomain() {
+    this.setState({
+      isSelected: !this.state.isSelected
+    });
+  }
+
+  componentDidMount() {
+
   }
 
   componentDidUpdate() {
@@ -301,9 +321,6 @@ class URL extends React.Component {
   	if (!this.props.display) {
   		return null;
   	}
-  	// console.log(this.props, this.state.updateRedirWithoutSGTINInProgress);
-
-  	var domain = Helper._removeDomainProtocol(this.props.domain, this.state.url).trim();
 
   	// DNS cell
   	var tdCnameClass = "";
@@ -376,25 +393,39 @@ class URL extends React.Component {
   		return '';
   	}
 
-  	var td = [];
+  	var TDs = [];
+  	var countTD = 0;
   	var value;
+		var editLink = "";
+		// if (this.props.domain === "https://qrt.aptaclub.de") {
+		// 	console.log("DE Aptamil", this.props);
+		// }
   	if (this.props && 'columnsFilters' in this.props) {
 			for (var column in this.props.columnsFilters) {
 	  		if (this.props.columnsFilters[column].isVisible) {
-	  			value = ''
+	  			value = '';
+	  			editLink = '';
+	  			// console.log("column", column, this.props[column]);
 	  			if (column in this.props) {
 	  				value = this.props[column];
 	  			}
-	  			td.push(<td key={column}>{value}</td>);
+
+	  			// if it is the 1st cell, we display here the edit button
+	  			if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
+	  				editLink = <Link to={"/admin/update/" + this.props.uuid} className="badge badge-warning" >Edit</Link>
+	  			}
+	  			countTD++;
+	  			TDs.push(<td key={column}>{editLink}{value}</td>);
 	  		}
 			}
 		}
   	return (
-  		<tr>
-  			{td}
+  		<tr onClick={() => this.setActiveDomain()} >
+  			{TDs}
   			<td className={tdCnameClass} dangerouslySetInnerHTML={{__html: DNSContent}}></td>
   			<td className={tdSSLClass}>{SSLContent}</td>
-  			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}></td>
+  			<td className={tdRedirectionClass} dangerouslySetInnerHTML={{__html: RedirectionContent}}>
+  			</td>
   		</tr>
 		);
   }
