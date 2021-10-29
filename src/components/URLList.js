@@ -119,7 +119,10 @@ class URLList extends React.Component {
     for (var column in this.props.columnsFilters) {
       if (this.props.columnsFilters[column].isVisible 
           && this.props.columnsFilters[column].filter && this.props.columnsFilters[column].filter.length > 0
-          && !domain[Helper.getDBNameFromDisplayName(column)].toLowerCase().includes(this.props.columnsFilters[column].filter.toLowerCase())) {
+          && (!domain[column]
+              || !domain[column].toLowerCase().includes(this.props.columnsFilters[column].filter.toLowerCase())
+             )
+        ) {
         return true;
       }
     }
@@ -154,6 +157,7 @@ class URLList extends React.Component {
   	// const listUrls = this.state.urls.map((domain) => {
     const listUrls = this.state.domains.map((domain) => {
       
+
       var update = this.props.update;
       var updateDNS = this.props.updateDNS;
       var updateSSL = this.props.updateSSL;
@@ -173,11 +177,11 @@ class URLList extends React.Component {
                   key={domain.domain}
                   uuid={domain.uuid}
                   domain={domain.domain}
-                  Brand={domain.brand}              // dynamic field
-                  Environment={domain.environment}  // dynamic field
-                  URL={domain.domain}                  // dynamic field
-                  Live={domain.live}                // dynamic field
-                  Comment={domain.comment}                // dynamic field
+                  brand={domain.brand}              // dynamic field
+                  environment={domain.environment}  // dynamic field
+                  live={domain.live}                // dynamic field
+                  comment={domain.comment}                // dynamic field
+                  updated={domain.updated}                // dynamic field
                   redirectFilter={redirectFilter}
                   cnameMapping={cnameMapping}
                   update={update}

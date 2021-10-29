@@ -64,6 +64,10 @@ class URL extends React.Component {
     });
   }
 
+  componentDidMount() {
+
+  }
+
   componentDidUpdate() {
   	if (this.props.update === true && !this.state.updateInProgress && !this.state.cname && !this.state.otherRecords) {
   	// || !this.state.SSLExpiryDate || !this.state.redirectWithSGTIN || !this.state.redirectWithoutSGTIN)) {
@@ -393,11 +397,15 @@ class URL extends React.Component {
   	var countTD = 0;
   	var value;
 		var editLink = "";
+		// if (this.props.domain === "https://qrt.aptaclub.de") {
+		// 	console.log("DE Aptamil", this.props);
+		// }
   	if (this.props && 'columnsFilters' in this.props) {
 			for (var column in this.props.columnsFilters) {
 	  		if (this.props.columnsFilters[column].isVisible) {
 	  			value = '';
 	  			editLink = '';
+	  			// console.log("column", column, this.props[column]);
 	  			if (column in this.props) {
 	  				value = this.props[column];
 	  			}

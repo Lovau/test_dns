@@ -37,8 +37,9 @@ class FilterableURLList extends React.Component {
 
   handleFilterColumnChange(e) {
   	var columnName = e.target.placeholder;
+  	var columnDBName = Helper.getDBNameFromDisplayName(columnName);
   	var columnsFilters = this.state.columnsFilters;
-  	columnsFilters[columnName].filter = e.target.value;
+  	columnsFilters[columnDBName].filter = e.target.value;
   	this.setState({
   		columnsFilters: columnsFilters
   	})
@@ -61,11 +62,13 @@ class FilterableURLList extends React.Component {
   	this.setUpdateToFalse();
   }
 
-  handleColumnChange(columnName, isVisible) {
+  handleColumnChange(columnDisplayName, isVisible) {
+  	var columnDBName = Helper.getDBNameFromDisplayName(columnDisplayName);
   	var columnsFilters = this.state.columnsFilters;
-  	columnsFilters[columnName] = {
+  	columnsFilters[columnDBName] = {
   		isVisible: isVisible,
   		filter: '',
+  		displayName: columnDisplayName,
   	};
   	this.setState({
   		columnsFilters: columnsFilters
@@ -78,9 +81,10 @@ class FilterableURLList extends React.Component {
   	var columns = Helper.getColumnsNames();
   	var columnsFilters = [];
   	for (var i = 0; i < columns.length; i++) {
-  		columnsFilters[columns[i].columnNameToDisplay] = {
-	  		isVisible: Helper.isColumnAlwaysVisible(columns[i].columnNameToDisplay),
+  		columnsFilters[columns[i].columnNameDB] = {
+	  		isVisible: Helper.isColumnAlwaysVisible(columns[i].columnNameDB),
 	  		filter: '',
+	  		displayName: columns[i].columnNameToDisplay,
 	  	};
   	}
   	this.setState({
@@ -189,7 +193,6 @@ class FilterableURLList extends React.Component {
   		updateRedirection = this.state.updateRedirection;
   	}
 
-
   	var checkboxes = [];
   	var header1 = [];
   	var header2 = [];
@@ -197,16 +200,17 @@ class FilterableURLList extends React.Component {
   	var columnsFilters = [];
   	if (this.state && 'columnsFilters' in this.state) {
   		columnsFilters = this.state.columnsFilters;
+
   		for (var column in this.state.columnsFilters) {
   			var isVisible = this.state.columnsFilters[column].isVisible;
 	  		if (isVisible) {
 	  			header1.push(<td key={column}></td>);
-	  			header2.push(<td key={column}>{column}</td>);
+	  			header2.push(<td key={column}>{this.state.columnsFilters[column].displayName}</td>);
 	  			header3.push(<td key={column}><Form>
-		  	  		    			<Form.Control size="sm" type="text" placeholder={column} value={this.state.columnsFilters[column].filter} onChange={this.handleFilterColumnChange} onKeyPress={this.handleKeyPress} />
+		  	  		    			<Form.Control size="sm" type="text" placeholder={this.state.columnsFilters[column].displayName} value={this.state.columnsFilters[column].filter} onChange={this.handleFilterColumnChange} onKeyPress={this.handleKeyPress} />
 		  	  		  			</Form></td>);
 	  		} 
-				checkboxes.push(<Column key={column} columnName={column} onChange={this.handleColumnChange} defaultChecked={isVisible} />);
+				checkboxes.push(<Column key={column} columnName={this.state.columnsFilters[column].displayName} onChange={this.handleColumnChange} defaultChecked={isVisible} />);
   		}
   	}
 

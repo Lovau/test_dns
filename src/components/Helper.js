@@ -73,15 +73,19 @@ const Helper = {
       { 
         "columnNameDB": "comment",
         "columnNameToDisplay": "Comment"
+      },
+      { 
+        "columnNameDB": "updated",
+        "columnNameToDisplay": "Last update"
       }
     ];
   },
 
   isColumnAlwaysVisible(column) {
     var columnsVisible = [
-      "Brand",
-      "Environment",
-      "URL",
+      "brand",
+      "environment",
+      "domain",
     ];
     if (columnsVisible.indexOf(column) !== -1) {
       return true;
@@ -94,6 +98,15 @@ const Helper = {
     for (var i = 0; i < columns.length; i++) {
       if (columns[i].columnNameToDisplay === displayName) {
         return columns[i].columnNameDB;
+      }
+    }
+  },
+
+  getDisplayNameFromDBName(fieldDBName) {
+    var columns = this.getColumnsNames();
+    for (var i = 0; i < columns.length; i++) {
+      if (columns[i].columnNameDB === fieldDBName) {
+        return columns[i].columnNameToDisplay;
       }
     }
   }
