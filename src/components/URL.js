@@ -1,5 +1,6 @@
 import React from "react";
 import Helper from "./Helper";
+import DomainDataService from "../admin/services/domain.service";
 import { Link } from "react-router-dom";
 
 const fetch = require('node-fetch');
@@ -42,6 +43,10 @@ class URL extends React.Component {
     super(props);
 
     this.setActiveDomain = this.setActiveDomain.bind(this);
+    this.setEditMode = this.setEditMode.bind(this);
+    this.cancelEditMode = this.cancelEditMode.bind(this);
+    this.validateComment = this.validateComment.bind(this);
+    this.onChangeComment = this.onChangeComment.bind(this);
 
     this.state = {
     	updateInProgress: false,
@@ -54,10 +59,66 @@ class URL extends React.Component {
 
     this.state = {
     	url: props.domain + "/" + this.state.sgtin,
-      isSelected: false
+      isSelected: false,
+      editMode: false
     };
   }
   
+  setEditMode(e) {
+  	if (!this.state.editMode) {
+	  	this.setState({
+	  		editMode: true
+	  	});
+  	}
+  }  
+
+  onChangeComment(e) {
+  	console.log("comment updated");
+    this.setState({
+      comment: e.target.value
+    });
+  }
+ 
+  cancelEditMode(e) {
+  	console.log("Cancel comment");
+  	this.setState({
+  		editMode: false,
+  		comment: null
+  	});
+  }
+
+  validateComment(e) {
+  	if (!this.state.comment) {
+  		this.setState({
+  			editMode: false,
+  		});
+  		return;
+  	}
+
+  	var domain = Object.assign({}, this.props);
+  	domain.comment = this.state.comment;
+  	console.log("validate comment", domain);
+
+  	DomainDataService.update(
+  	  domain.uuid,
+  	  domain
+  	)
+  	  .then(response => {
+  	    console.log(response.data);
+  	    this.setState({
+  	      submitted: true,
+  	      message: "The domain was updated successfully!"
+  	    });
+  	  })
+  	  .catch(e => {
+  	    console.log(e);
+  	  });
+
+  	this.setState({
+  		editMode: false
+  	});
+  }
+
   setActiveDomain() {
     this.setState({
       isSelected: !this.state.isSelected
@@ -305,7 +366,6 @@ class URL extends React.Component {
 		});
   }
 
-
   redirectionsWithSGTINisTheSameAsWithoutSGTIN() {
   	if (!this.state.redirects.redirectWithoutSGTIN.redirect || this.state.redirects.redirectWithoutSGTIN.redirect.length < 1 || !this.state.redirects.redirectWithSGTIN.redirect || this.state.redirects.redirectWithSGTIN.redirect.length < 1 ) {
   		return true;
@@ -397,9 +457,6 @@ class URL extends React.Component {
   	var countTD = 0;
   	var value;
 		var editLink = "";
-		// if (this.props.domain === "https://qrt.aptaclub.de") {
-		// 	console.log("DE Aptamil", this.props);
-		// }
   	if (this.props && 'columnsFilters' in this.props) {
 			for (var column in this.props.columnsFilters) {
 	  		if (this.props.columnsFilters[column].isVisible) {
@@ -409,13 +466,29 @@ class URL extends React.Component {
 	  			if (column in this.props) {
 	  				value = this.props[column];
 	  			}
+	  			if (column === "comment" && this.state.comment) {
+	  				value = this.state.comment;
+	  			}
+	  			if (column === "comment" && !this.state.editMode) {
+	  				value = value.replace(/(?:\r\n|\r|\n)/g, '<br>');
+	  			}
 
 	  			// if it is the 1st cell, we display here the edit button
 	  			if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
-	  				editLink = <Link to={"/isadmin/update/" + this.props.uuid} className="badge badge-warning" target="_blank">Edit</Link>
+	  				editLink = <Link to={"/isadmin/update/" + this.props.uuid} className="edit badge badge-warning" target="_blank">Edit</Link>
 	  			}
 	  			countTD++;
-	  			TDs.push(<td key={column}>{editLink}{value}</td>);
+	  			if (column === "comment" && this.state.editMode) {
+	  				TDs.push(<td key={column} onClick={this.setEditMode}>
+		  				<textarea name="comment" id="comment" className="form-control" onChange={this.onChangeComment} defaultValue={value} rows="3"></textarea>
+		  				<button onClick={this.cancelEditMode} className="badge badge-warning comment">Cancel</button>
+		  				<button onClick={this.validateComment} className="badge badge-success comment">Submit</button>
+  					</td>);
+	  			} else if (column === "comment") {
+	  				TDs.push(<td key={column} onClick={this.setEditMode} dangerouslySetInnerHTML={{__html: value}}></td>);
+	  			} else {
+	  				TDs.push(<td key={column} >{editLink}{value}</td>);
+	  			}
 	  		}
 			}
 		}
