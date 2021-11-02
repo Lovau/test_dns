@@ -205,7 +205,7 @@ export default class DomainsList extends Component {
                 <td >{domain.comment}
                 {currentDomain && currentIndex === index ? (
                     <Link
-                      to={"/admin/domains/" + currentDomain.uuid}
+                      to={"/isadmin/update/" + currentDomain.uuid}
                       className="badge badge-warning"
                     >
                       Edit

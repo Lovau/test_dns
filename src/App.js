@@ -39,8 +39,8 @@ function App() {
             <Route exact path="/isadmin" >
               <FilterableURLList isadmin={true} />
             </Route>
-            <Route exact path="/admin/add" component={AddDomain} />
-            <Route path="/admin/update/:id" component={AddDomain} />
+            <Route exact path="/isadmin/add" component={AddDomain} />
+            <Route path="/isadmin/update/:id" component={AddDomain} />
         </Switch>
       </BrowserRouter>
 

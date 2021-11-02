@@ -17,8 +17,21 @@
   cursor: pointer;
 }
 table .badge {
-  position: relative;
-  left: -4px;
+/*  position: relative;
+  left: -4px;*/
+  position: absolute;
+  left: -12px;
+  margin-top: 2px;
+  font-size: 85%;
+}
+
+table .badge:after {
+  content: "\00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0";
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAQAAAD8fJRsAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCwINGQTDMSdZAAAAl0lEQVQY03XPMQ4BURSF4e+NSeyEXUhMawUswFiDRKXREaXaFrQKy6BDJ1GN4kUmoyCMiFPd+5+T3HOZubopFKIF5qJKEVwtbTUQnO21TfQl3HR8FAwdrMVUpVHDubGpnQuF7huPHOXCc/0YA6cXblnUjZ7+K52Jae3w5j1V7ok/SgTlDy2FVJRRq0wpE4OZoabq68lo9QAAaSvF6GZn5wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0xMS0wMlQxMzoyNDoyOSswMDowMIhuSuIAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMTEtMDJUMTM6MjQ6MjkrMDA6MDD5M/JeAAAAAElFTkSuQmCC);
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position-x: right;
+  background-position-y: 1px;
 }
 .deletebutton {
   float: left;

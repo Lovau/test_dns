@@ -21,7 +21,10 @@ const Header = () => {
         <Navbar.Collapse>
           <Nav>
             {isAdmin &&
-              <Nav.Link as={Link} className="link" to="/admin/add">Add</Nav.Link>
+              <>
+              <Nav.Link as={Link} className="link" to="/isadmin">Admin</Nav.Link>
+              <Nav.Link as={Link} className="link" to="/isadmin/add">Add</Nav.Link>
+              </>
             }
           </Nav>
         </Navbar.Collapse>
