@@ -8,16 +8,6 @@ const fetch = require('node-fetch');
 // const checkCertExpiration = require('check-cert-expiration');
 // const sslCertificate = require('get-ssl-certificate-next')
 
-
-// from: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
-// Generated with:
-// 	git clone https://github.com/Rob--W/cors-anywhere.git
-// 	cd cors-anywhere/
-// 	npm install
-// 	heroku create
-// 	git push heroku master
-// const CORS_PROXY = 'https://infinite-crag-06340.herokuapp.com/';
-
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 const SSLError = "Unable to get SSL";
@@ -32,6 +22,7 @@ const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience
 // const API_SSL = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS="; // sandbox
 // const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL="; // sandbox
 // const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6"; //sandbox
+
 const API_DNS = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS="; // prod
 const API_SSL = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS="; // prod
 const API_REDIRECT = "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL="; // prod

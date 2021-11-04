@@ -326,7 +326,7 @@ export default class AddDomain extends Component {
                 required
                 onChange={this.onChangeLive}
                 name="live"
-                defaultValue={currentDomain.live}
+                value={currentDomain.live}
                 >
                   <option value="N">N</option>
                   <option value="Y">Y</option>
