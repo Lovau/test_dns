@@ -3,18 +3,16 @@ import Helper from "./Helper";
 import DomainDataService from "../admin/services/domain.service";
 import { Link } from "react-router-dom";
 
-const fetch = require("node-fetch");
-// const sslChecker = require("ssl-checker");
-// const checkCertExpiration = require('check-cert-expiration');
-// const sslCertificate = require('get-ssl-certificate-next')
+import DNS from "./api/dns";
+import Redirect from "./api/redirect";
+import SSL from "./api/ssl";
 
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 const SSLError = "Unable to get SSL";
 const RedirectionError = "Unable to get the redirection";
 const NoRedirectionMessage = "No redirection";
-const RolexExperienceMessage =
-  "<span class='rolex-experience' >Rolex experience</span>";
+const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience</span>";
 
 // curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
 // curl --location --request https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04'
@@ -24,14 +22,6 @@ const RolexExperienceMessage =
 // const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL="; // sandbox
 // const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6"; //sandbox
 
-const API_DNS =
-  "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS="; // prod
-const API_SSL =
-  "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS="; // prod
-const API_REDIRECT =
-  "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL="; // prod
-const API_KEY = "ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04"; // prod
-
 class URL extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +30,9 @@ class URL extends React.Component {
     this.setEditMode = this.setEditMode.bind(this);
     this.cancelEditMode = this.cancelEditMode.bind(this);
     this.validateComment = this.validateComment.bind(this);
+    this.validateChangesTodo = this.validateChangesTodo.bind(this);
     this.onChangeComment = this.onChangeComment.bind(this);
+    this.onChangeChangesTodo = this.onChangeChangesTodo.bind(this);
 
     this.state = {
       updateInProgress: false,
@@ -59,6 +51,7 @@ class URL extends React.Component {
   }
 
   setEditMode() {
+    console.log("edit domain", this.props);
     if (!this.state.editMode) {
       this.setState({
         editMode: true,
@@ -73,6 +66,16 @@ class URL extends React.Component {
     });
   }
 
+  onChangeChangesTodo() {
+    var val = this.props.changesTodo;
+    if (this.state && this.state.changesTodo) {
+      val = this.state.changesTodo;
+    }
+    this.setState({
+      changesTodo: val === "Y" ? "N" : "Y",
+    });
+  }
+
   cancelEditMode() {
     console.log("Cancel comment");
     this.setState({
@@ -82,10 +85,10 @@ class URL extends React.Component {
   }
 
   validateComment() {
+    this.setState({
+      editMode: false,
+    });
     if (!this.state.comment) {
-      this.setState({
-        editMode: false,
-      });
       return;
     }
 
@@ -104,10 +107,31 @@ class URL extends React.Component {
       .catch((e) => {
         console.log(e);
       });
+  }
 
+  validateChangesTodo() {
     this.setState({
       editMode: false,
     });
+    if (!("changesTodo" in this.state)) {
+      return;
+    }
+
+    var domain = Object.assign({}, this.props);
+    domain.changesTodo = this.state.changesTodo === "Y" ? true : false;
+    console.log("validate changesTodo", domain);
+
+    DomainDataService.update(domain.uuid, domain)
+      .then((response) => {
+        console.log(response.data);
+        this.setState({
+          submitted: true,
+          message: "The domain was updated successfully!",
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   setActiveDomain() {
@@ -115,8 +139,6 @@ class URL extends React.Component {
       isSelected: !this.state.isSelected,
     });
   }
-
-  componentDidMount() {}
 
   componentDidUpdate() {
     if (
@@ -171,83 +193,11 @@ class URL extends React.Component {
     }
   }
 
-  async dnsExist(domain) {
-    return new Promise((resolve, reject) => {
-      fetch(API_DNS + domain, {
-        method: "GET",
-        headers: {
-          "x-api-key": API_KEY,
-        },
-      })
-        .then((res) => res.json())
-        .then((body) => {
-          resolve(body);
-        })
-        .catch((err) => {
-          console.log("getDNS err2", API_DNS + domain, err);
-          reject(err);
-        });
-    });
-  }
-
-  async getSSLExpiryDate(domain) {
-    return new Promise((resolve, reject) => {
-      fetch(API_SSL + domain, {
-        method: "GET",
-        headers: {
-          "x-api-key": API_KEY,
-        },
-      })
-        .then((res) => res.json())
-        .then((body) => {
-          if (!body.daysRemaining) {
-            console.log("getSSL err1", API_SSL + domain, body);
-            return reject(body);
-          }
-          return resolve(body.daysRemaining);
-        })
-        .catch((err) => {
-          console.log("getSSL err2", API_SSL + domain, err);
-          reject(err);
-        });
-    });
-  }
-
-  async getRedirect(fullURL) {
-    return new Promise((resolve, reject) => {
-      fetch(API_REDIRECT + fullURL, {
-        method: "GET",
-        headers: {
-          "x-api-key": API_KEY,
-        },
-      })
-        .then((res) => {
-          if (!res.ok) {
-            console.log(
-              "getRedirect err",
-              API_REDIRECT + fullURL,
-              "Not a 200 response"
-            );
-            reject(res);
-          }
-          return res.json();
-        })
-        .then((body) => resolve(body))
-        .catch((err) => {
-          console.log("getRedirect err", API_REDIRECT + fullURL, err);
-          reject(err);
-        });
-    });
-  }
-
   // TODO : if API error, handle it and display a dedicated error message. Or even allows to retry.
   async getAllURLDetails(domain) {
     await this.getDNSDetails(domain);
 
-    if (
-      (this.state.cname || this.state.otherRecords) &&
-      this.state.cname !== cnameErrorMessage
-    ) {
+    if ((this.state.cname || this.state.otherRecords) && this.state.cname !== cnameErrorMessage) {
       await this.getSSLDetails(domain);
       await this.getRedirectionDetails(domain);
     } else {
@@ -272,11 +222,10 @@ class URL extends React.Component {
     });
   }
 
-  // TODO: when no CNAME, check if the DNS exists with another record
   async getDNSDetails(domain) {
     var domainAndCnameData = {};
     try {
-      var response = await this.dnsExist(Helper._removeDomainProtocol(domain));
+      var response = await DNS.dnsExist(Helper._removeDomainProtocol(domain));
       console.log("DNS response", response);
       var cname, otherRecords;
       if ("CNAME" in response && response.CNAME[0]) {
@@ -303,15 +252,13 @@ class URL extends React.Component {
       this.setState({
         server: server,
       });
-      domainAndCnameData[Helper._removeDomainProtocol(domain)] =
-        cname + " " + server;
+      domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + " " + server;
       this.props.parentCallback(domainAndCnameData);
     } catch (err) {
       this.setState({
         cname: cnameErrorMessage,
       });
-      domainAndCnameData[Helper._removeDomainProtocol(domain)] =
-        cnameErrorMessage;
+      domainAndCnameData[Helper._removeDomainProtocol(domain)] = cnameErrorMessage;
       this.props.parentCallback(domainAndCnameData);
       console.log(domain + ": Error", err);
     }
@@ -323,9 +270,7 @@ class URL extends React.Component {
 
   async getSSLDetails(domain) {
     try {
-      var SSLExpiryDate = await this.getSSLExpiryDate(
-        Helper._removeDomainProtocol(domain)
-      );
+      var SSLExpiryDate = await SSL.getSSLExpiryDate(Helper._removeDomainProtocol(domain));
       this.setState({
         SSLExpiryDate: SSLExpiryDate,
       });
@@ -345,7 +290,7 @@ class URL extends React.Component {
     try {
       var redirects = {};
       redirects.redirectWithSGTIN = {};
-      redirects.redirectWithSGTIN = await this.getRedirect(this.state.url);
+      redirects.redirectWithSGTIN = await Redirect.getRedirect(this.state.url);
       redirects.redirectWithSGTIN.msg = redirects.redirectWithSGTIN.redirect;
       if (redirects.redirectWithSGTIN.redirect === this.state.url) {
         redirects.redirectWithSGTIN.msg = NoRedirectionMessage;
@@ -361,9 +306,8 @@ class URL extends React.Component {
 
     try {
       redirects.redirectWithoutSGTIN = {};
-      redirects.redirectWithoutSGTIN = await this.getRedirect(domain);
-      redirects.redirectWithoutSGTIN.msg =
-        redirects.redirectWithoutSGTIN.redirect;
+      redirects.redirectWithoutSGTIN = await Redirect.getRedirect(domain);
+      redirects.redirectWithoutSGTIN.msg = redirects.redirectWithoutSGTIN.redirect;
       if (
         redirects.redirectWithoutSGTIN.redirect === domain ||
         redirects.redirectWithoutSGTIN.redirect === domain + "/" ||
@@ -422,9 +366,7 @@ class URL extends React.Component {
       tdCnameClass = "errorCell";
     }
     if ("server" in this.state) {
-      DNSContent =
-        (this.state.cname ? this.state.cname + "<br/>" : "") +
-        this.state.server;
+      DNSContent = (this.state.cname ? this.state.cname + "<br/>" : "") + this.state.server;
     }
 
     // SSL cell
@@ -451,12 +393,10 @@ class URL extends React.Component {
     }
     if (
       typeof this.state.redirects !== "undefined" &&
-      typeof this.state.redirects.redirectWithoutSGTIN.redirect !==
-        "undefined" &&
+      typeof this.state.redirects.redirectWithoutSGTIN.redirect !== "undefined" &&
       typeof this.state.redirects.redirectWithSGTIN.redirect !== "undefined"
     ) {
-      sameRedirectionsWithOrWithoutSGTIN =
-        this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
+      sameRedirectionsWithOrWithoutSGTIN = this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
 
       if (this.state.redirects.redirectWithoutSGTIN.msg === RedirectionError) {
         tdRedirectionClass = "errorCell";
@@ -485,9 +425,7 @@ class URL extends React.Component {
       "redirectFilter" in this.props &&
       this.props.redirectFilter.length > 0 &&
       (RedirectionContent.length < 1 ||
-        !RedirectionContent.toLowerCase().includes(
-          this.props.redirectFilter.toLowerCase()
-        ))
+        !RedirectionContent.toLowerCase().includes(this.props.redirectFilter.toLowerCase()))
     ) {
       return "";
     }
@@ -496,7 +434,7 @@ class URL extends React.Component {
     var countTD = 0;
     var value;
     var editLink = "";
-    
+
     if (this.props && "columnsFilters" in this.props) {
       for (var column in this.props.columnsFilters) {
         if (this.props.columnsFilters[column].isVisible) {
@@ -509,17 +447,18 @@ class URL extends React.Component {
           if (column === "comment" && this.state.comment) {
             value = this.state.comment;
           }
+          if (column === "changesTodo" && this.state.changesTodo) {
+            value = this.state.changesTodo;
+          }
+          if (column === "changesTodo" && this.state.editMode) {
+            value = value === "Y" ? true : false;
+          }
           if (column === "comment" && !this.state.editMode) {
             value = value.replace(/(?:\r\n|\r|\n)/g, "<br>");
           }
 
           // if it is the 1st cell, we display here the edit button
-          if (
-            this.props.isadmin &&
-            countTD === 0 &&
-            this.state &&
-            this.state.isSelected
-          ) {
+          if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
             editLink = (
               <Link
                 to={"/isadmin/update/" + this.props.uuid}
@@ -542,16 +481,10 @@ class URL extends React.Component {
                   defaultValue={value}
                   rows="3"
                 ></textarea>
-                <button
-                  onClick={this.cancelEditMode}
-                  className="badge badge-warning comment"
-                >
+                <button onClick={this.cancelEditMode} className="badge badge-warning comment">
                   Cancel
                 </button>
-                <button
-                  onClick={this.validateComment}
-                  className="badge badge-success comment"
-                >
+                <button onClick={this.validateComment} className="badge badge-success comment">
                   Submit
                 </button>
               </td>
@@ -563,6 +496,25 @@ class URL extends React.Component {
                 onClick={this.setEditMode}
                 dangerouslySetInnerHTML={{ __html: value }}
               ></td>
+            );
+          } else if (column === "changesTodo" && this.state.editMode) {
+            TDs.push(
+              <td key={column} onClick={this.setEditMode}>
+                <input
+                  type="checkbox"
+                  name="changesTodo"
+                  id="changesTodo"
+                  className="form-control"
+                  onChange={this.onChangeChangesTodo}
+                  checked={value}
+                />
+                <button onClick={this.cancelEditMode} className="badge badge-warning comment">
+                  Cancel
+                </button>
+                <button onClick={this.validateChangesTodo} className="badge badge-success comment">
+                  Submit
+                </button>
+              </td>
             );
           } else {
             TDs.push(

@@ -1,0 +1,6 @@
+{
+	"API_KEY": "ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04",
+	"API_DNS": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=",
+	"API_SSL": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS=",
+	"API_REDIRECT": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL=" 
+}
