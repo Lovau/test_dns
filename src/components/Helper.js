@@ -1,9 +1,8 @@
 const Helper = {
-
   isAdmin(location) {
     //destructuring pathname from location
     const { pathname } = location;
-    
+
     //Javascript split method to get the name of the path in array
     const splitLocation = pathname.split("/");
     if (splitLocation[1] === "isadmin") {
@@ -13,80 +12,83 @@ const Helper = {
   },
 
   _randomstring(length, hasCharacters = true) {
-      var result           = '';
-      var characters       = '0123456789';
-      if (hasCharacters) {
-      	characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      }
-      var charactersLength = characters.length;
-      for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-     }
-     return result;
+    var result = "";
+    var characters = "0123456789";
+    if (hasCharacters) {
+      characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    }
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   },
 
   getEnvironmentList() {
-    return [
-      "RC",
-      "Staging",
-      "Prod Tech",
-      "Public prod",
-    ];
+    return ["RC", "Staging", "Prod Tech", "Public prod"];
   },
 
   getRandomSGTIN() {
-  	// return '0' + this._randomstring(12, false) + '9' + this._randomstring(11, true);
-  	return this._randomstring(3, false);
+    // return '0' + this._randomstring(12, false) + '9' + this._randomstring(11, true);
+    return this._randomstring(3, false);
   },
 
   _removeDomainProtocol(domain) {
-  	if (domain.includes("https://")) {
-  		 domain = domain.replace("https://", "");
-  	} else if (domain.includes("http://")) {
-  		 domain = domain.replace("http://", "");
-  	} 
+    if (domain.includes("https://")) {
+      domain = domain.replace("https://", "");
+    } else if (domain.includes("http://")) {
+      domain = domain.replace("http://", "");
+    }
     if (domain.slice(domain.length - 1) === "/") {
       domain = domain.slice(0, -1);
     }
-  	return domain;
+    return domain;
   },
 
   //mapping: columnNameInDB => column name displayed
   getColumnsNames() {
     return [
-      { 
-        "columnNameDB": "brand",
-        "columnNameToDisplay": "Brand"
+      {
+        columnNameDB: "brand",
+        columnNameToDisplay: "Brand",
       },
-      { 
-        "columnNameDB": "environment",
-        "columnNameToDisplay": "Environment"
+      {
+        columnNameDB: "environment",
+        columnNameToDisplay: "Environment",
       },
-      { 
-        "columnNameDB": "domain",
-        "columnNameToDisplay": "URL"
+      {
+        columnNameDB: "domain",
+        columnNameToDisplay: "URL",
       },
-      { 
-        "columnNameDB": "live",
-        "columnNameToDisplay": "Live"
+      {
+        columnNameDB: "live",
+        columnNameToDisplay: "Live",
       },
-      { 
-        "columnNameDB": "comment",
-        "columnNameToDisplay": "Comment"
+      {
+        columnNameDB: "comment",
+        columnNameToDisplay: "Comment",
       },
-      { 
-        "columnNameDB": "updated",
-        "columnNameToDisplay": "Last update"
-      }
+      {
+        columnNameDB: "updated",
+        columnNameToDisplay: "Last update",
+      },
+      {
+        columnNameDB: "expectedRedirectEU",
+        columnNameToDisplay: "Expected redirection EU",
+      },
+      {
+        columnNameDB: "expectedRedirectCN",
+        columnNameToDisplay: "Expected redirection CN",
+      },
+      {
+        columnNameDB: "changesTodo",
+        columnNameToDisplay: "Changes in progress",
+      },
     ];
   },
 
   isColumnAlwaysVisible(column) {
-    var columnsVisible = [
-      "brand",
-      "environment",
-      "domain",
-    ];
+    var columnsVisible = ["brand", "environment", "domain"];
     if (columnsVisible.indexOf(column) !== -1) {
       return true;
     }
@@ -109,7 +111,7 @@ const Helper = {
         return columns[i].columnNameToDisplay;
       }
     }
-  }
+  },
 };
 
 export default Helper;

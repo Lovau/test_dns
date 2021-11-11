@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "eslint:recommended", 
+    "plugin:react/recommended"
+  ],
+  "rules": {
+    "react/prop-types": 0,
+    "react/no-array-index-key": 1,
+    "react/jsx-key": 1
+  }
+}
