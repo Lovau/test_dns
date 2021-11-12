@@ -62,7 +62,11 @@ const Helper = {
       },
       {
         columnNameDB: "live",
-        columnNameToDisplay: "Live",
+        columnNameToDisplay: "Live EU",
+      },
+      {
+        columnNameDB: "liveCN",
+        columnNameToDisplay: "Live CN",
       },
       {
         columnNameDB: "comment",

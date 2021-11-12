@@ -14,11 +14,10 @@ export default class AddDomain extends Component {
     this.onChangeBrand = this.onChangeBrand.bind(this);
     this.onChangeEnvironment = this.onChangeEnvironment.bind(this);
     this.onChangeLive = this.onChangeLive.bind(this);
+    this.onChangeLiveCN = this.onChangeLiveCN.bind(this);
     this.onChangeComment = this.onChangeComment.bind(this);
-    this.onChangeExpectedRedirectEU =
-      this.onChangeExpectedRedirectEU.bind(this);
-    this.onChangeExpectedRedirectCN =
-      this.onChangeExpectedRedirectCN.bind(this);
+    this.onChangeExpectedRedirectEU = this.onChangeExpectedRedirectEU.bind(this);
+    this.onChangeExpectedRedirectCN = this.onChangeExpectedRedirectCN.bind(this);
     this.onChangeChangesTodo = this.onChangeChangesTodo.bind(this);
     this.createNewDomain = this.createNewDomain.bind(this);
     this.updateDomain = this.updateDomain.bind(this);
@@ -32,6 +31,7 @@ export default class AddDomain extends Component {
         brand: "",
         environment: "RC",
         live: "N",
+        liveCN: "N",
         comment: "",
         expectedRedirectEU: "",
         expectedRedirectCN: "",
@@ -65,6 +65,7 @@ export default class AddDomain extends Component {
         brand: "",
         environment: "RC",
         live: "N",
+        liveCN: "N",
         comment: "",
         expectedRedirectEU: "",
         expectedRedirectCN: "",
@@ -152,17 +153,16 @@ export default class AddDomain extends Component {
       domain: URL,
       brand: this.state.currentDomain.brand.trim(),
       environment: this.state.currentDomain.environment,
-      live: this.state.currentDomain.live,
-      comment: this.state.currentDomain.comment
-        ? this.state.currentDomain.comment.trim()
-        : "",
+      live: this.state.currentDomain.live ? "Y" : "N",
+      liveCN: this.state.currentDomain.liveCN ? "Y" : "N",
+      comment: this.state.currentDomain.comment ? this.state.currentDomain.comment.trim() : "",
       expectedRedirectEU: this.state.currentDomain.expectedRedirectEU
         ? this.state.currentDomain.expectedRedirectEU.trim()
         : "",
       expectedRedirectCN: this.state.currentDomain.expectedRedirectCN
         ? this.state.currentDomain.expectedRedirectCN.trim()
         : "",
-      changesTodo: this.state.currentDomain.changesTodo,
+      changesTodo: this.state.currentDomain.changesTodo ? true : false,
     };
 
     return data;
@@ -185,6 +185,9 @@ export default class AddDomain extends Component {
         console.log(response.data);
       })
       .catch((e) => {
+        this.setState({
+          validationMsg: e.toString(),
+        });
         console.log(e);
       });
   }
@@ -206,16 +209,15 @@ export default class AddDomain extends Component {
         });
       })
       .catch((e) => {
+        this.setState({
+          validationMsg: e.toString(),
+        });
         console.log(e);
       });
   }
 
   deleteDomain() {
-    console.log(
-      "Deleting domain",
-      this.state.currentDomain,
-      this.state.currentDomain.uuid
-    );
+    console.log("Deleting domain", this.state.currentDomain, this.state.currentDomain.uuid);
     DomainDataService.delete(this.state.currentDomain.uuid)
       .then((response) => {
         console.log(response.data);
@@ -225,6 +227,9 @@ export default class AddDomain extends Component {
         // });
       })
       .catch((e) => {
+        this.setState({
+          validationMsg: e.toString(),
+        });
         console.log(e);
       });
   }
@@ -256,6 +261,14 @@ export default class AddDomain extends Component {
   onChangeLive(e) {
     var currentDomain = this.state.currentDomain;
     currentDomain.live = e.target.value;
+    this.setState({
+      currentDomain: currentDomain,
+    });
+  }
+
+  onChangeLiveCN(e) {
+    var currentDomain = this.state.currentDomain;
+    currentDomain.liveCN = e.target.value;
     this.setState({
       currentDomain: currentDomain,
     });
@@ -312,20 +325,17 @@ export default class AddDomain extends Component {
         )}
 
         {/* Update: domain not found */}
-        {this.state &&
-          !this.state.isNew &&
-          (!currentDomain || !currentDomain.uuid) && (
-            <div className="alert alert-primary">
-              <b>The domain has not been found.</b>
-            </div>
-          )}
+        {this.state && !this.state.isNew && (!currentDomain || !currentDomain.uuid) && (
+          <div className="alert alert-primary">
+            <b>The domain has not been found.</b>
+          </div>
+        )}
 
         {/* Creation ok */}
         {this.state && this.state.isNew && this.state.submitted && (
           <div>
             <div className="alert alert-success">
-              The domain <b>&quot;{currentDomain.domain}&quot;</b> has been
-              successfully created!
+              The domain <b>&quot;{currentDomain.domain}&quot;</b> has been successfully created!
             </div>
             <button className="btn btn-success" onClick={this.newDomain}>
               Add another
@@ -337,8 +347,7 @@ export default class AddDomain extends Component {
         {this.state && !this.state.isNew && this.state.submitted && (
           <div>
             <div className="alert alert-success">
-              The domain <b>{currentDomain.domain}</b> has been successfully
-              updated!
+              The domain <b>{currentDomain.domain}</b> has been successfully updated!
             </div>
           </div>
         )}
@@ -346,8 +355,7 @@ export default class AddDomain extends Component {
         {/* Display the form */}
         {this.state &&
           currentDomain &&
-          (!this.state.isNew ||
-            (this.state.isNew && !this.state.submitted)) && (
+          (!this.state.isNew || (this.state.isNew && !this.state.submitted)) && (
             <div>
               <div className="form-group">
                 <label htmlFor="domain">Domain</label>
@@ -391,7 +399,7 @@ export default class AddDomain extends Component {
                 </select>
               </div>
               <div className="form-group">
-                <label htmlFor="live">Live</label>
+                <label htmlFor="live">Live EU</label>
                 <select
                   className="custom-select"
                   id="live"
@@ -399,6 +407,20 @@ export default class AddDomain extends Component {
                   onChange={this.onChangeLive}
                   name="live"
                   value={currentDomain.live}
+                >
+                  <option value="N">N</option>
+                  <option value="Y">Y</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="liveCN">Live CN</label>
+                <select
+                  className="custom-select"
+                  id="liveCN"
+                  required
+                  onChange={this.onChangeLiveCN}
+                  name="liveCN"
+                  value={currentDomain.liveCN}
                 >
                   <option value="N">N</option>
                   <option value="Y">Y</option>
@@ -416,9 +438,7 @@ export default class AddDomain extends Component {
                 ></textarea>
               </div>
               <div className="form-group">
-                <label htmlFor="expectedRedirectEU">
-                  Expected redirection in EU
-                </label>
+                <label htmlFor="expectedRedirectEU">Expected redirection in EU</label>
                 <textarea
                   name="expectedRedirectEU"
                   id="expectedRedirectEU"
@@ -429,9 +449,7 @@ export default class AddDomain extends Component {
                 ></textarea>
               </div>
               <div className="form-group">
-                <label htmlFor="expectedRedirectCN">
-                  Expected redirection in CN
-                </label>
+                <label htmlFor="expectedRedirectCN">Expected redirection in CN</label>
                 <textarea
                   name="expectedRedirectCN"
                   id="expectedRedirectCN"
@@ -457,10 +475,7 @@ export default class AddDomain extends Component {
 
               {/* Creation validation button */}
               {this.state && this.state.isNew && !this.state.submitted && (
-                <button
-                  onClick={this.createNewDomain}
-                  className="btn btn-success"
-                >
+                <button onClick={this.createNewDomain} className="btn btn-success">
                   Submit
                 </button>
               )}
@@ -469,10 +484,7 @@ export default class AddDomain extends Component {
               {this.state && !this.state.isNew && (
                 <>
                   <div className="deletebutton">
-                    <button
-                      className="badge badge-danger mr-2"
-                      onClick={this.deleteDomain}
-                    >
+                    <button className="badge badge-danger mr-2" onClick={this.deleteDomain}>
                       Delete
                     </button>
                   </div>

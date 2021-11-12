@@ -148,11 +148,7 @@ class URLList extends React.Component {
           </tr>
         </tbody>
       );
-    } else if (
-      !this.state ||
-      !("domains" in this.state) ||
-      this.state.domains.length < 1
-    ) {
+    } else if (!this.state || !("domains" in this.state) || this.state.domains.length < 1) {
       return (
         <tbody>
           <tr>
@@ -191,6 +187,7 @@ class URLList extends React.Component {
           brand={domain.brand} // dynamic field
           environment={domain.environment} // dynamic field
           live={domain.live} // dynamic field
+          liveCN={domain.liveCN} // dynamic field
           comment={domain.comment} // dynamic field
           updated={domain.updated} // dynamic field
           expectedRedirectEU={domain.expectedRedirectEU} // dynamic field

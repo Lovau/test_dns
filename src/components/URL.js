@@ -444,6 +444,9 @@ class URL extends React.Component {
           if (column in this.props) {
             value = this.props[column];
           }
+          if (column === "liveCN" && !this.props.liveCN) {
+            value = "N";
+          }
           if (column === "comment" && this.state.comment) {
             value = this.state.comment;
           }
