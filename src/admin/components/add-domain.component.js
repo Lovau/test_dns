@@ -153,8 +153,8 @@ export default class AddDomain extends Component {
       domain: URL,
       brand: this.state.currentDomain.brand.trim(),
       environment: this.state.currentDomain.environment,
-      live: this.state.currentDomain.live ? "Y" : "N",
-      liveCN: this.state.currentDomain.liveCN ? "Y" : "N",
+      live: this.state.currentDomain.live ? this.state.currentDomain.live : "N",
+      liveCN: this.state.currentDomain.liveCN ? this.state.currentDomain.liveCN : "N",
       comment: this.state.currentDomain.comment ? this.state.currentDomain.comment.trim() : "",
       expectedRedirectEU: this.state.currentDomain.expectedRedirectEU
         ? this.state.currentDomain.expectedRedirectEU.trim()
