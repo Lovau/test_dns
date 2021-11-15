@@ -9,6 +9,7 @@ import Container from "react-bootstrap/Container";
 import FilterableURLList from "./components/FilterableURLList";
 import Header from "./components/Header";
 import AddDomain from "./admin/components/add-domain.component";
+import Footer from "./components/Footer";
 import "./admin/App.css";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/isadmin/update/:id" component={AddDomain} />
         </Switch>
       </BrowserRouter>
+      <Footer />
     </Container>
   );
 }

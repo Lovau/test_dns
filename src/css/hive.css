@@ -1,0 +1,129 @@
+.modal-dialog .modal-header {
+  background: #006cb7;
+}
+.modal-dialog .modal-title {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+.modal-dialog button.close {
+  outline: none;
+  position: absolute;
+  right: 1em;
+  color: #fff;
+  opacity: 1 !important;
+}
+
+.modal-dialog.modal-hive .modal-header {
+  background-image: url("img/blue-texture-bg.jpg");
+  background-size: 100% 100%;
+}
+.modal-dialog.modal-hive .modal-body {
+  padding: 1rem;
+  background: #fff;
+}
+.modal-dialog.modal-hive .modal-title {
+  display: block;
+  text-align: center;
+  margin: auto;
+  font-size: 40px;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+.modal-dialog.modal-hive button.close {
+  outline: none;
+  position: absolute;
+  right: 1em;
+  color: #fff;
+  opacity: 1 !important;
+}
+.modal-dialog.modal-hive span.heading {
+  font-size: 2em;
+  line-height: 1.5;
+  text-align: center;
+  display: block;
+  color: #212529;
+  font-family: system-ui;
+}
+.modal-dialog.modal-hive ul.features-list {
+  display: flex;
+  align-items: flex-start;
+  height: 320px;
+  list-style: none;
+  padding: 0;
+  color: #006cb7;
+}
+.modal-dialog.modal-hive ul.features-list li {
+  width: 33.33333%;
+  padding: 5%;
+}
+.modal-dialog.modal-hive ul.features-list li:hover {
+  background: #eee;
+  -webkit-transition: all 0.6s 0s ease;
+  -moz-transition: all 0.6s 0s ease;
+  -o-transition: all 0.6s 0s ease;
+  transition: all 0.6s 0s ease;
+}
+.modal-dialog.modal-hive ul.features-list li a {
+  font-size: 20px;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+}
+.modal-dialog.modal-hive ul.features-list li a:hover + div.div-detail {
+  display: block;
+}
+.modal-dialog.modal-hive ul.features-list li .div-detail {
+  display: none;
+}
+.modal-dialog.modal-hive ul.features-list li .card {
+  padding: 20px 0;
+  border: none;
+  background: no-repeat;
+  box-shadow: none;
+}
+.modal-dialog.modal-hive ul.features-list li .card-body {
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+}
+.modal-dialog.modal-hive ul.features-list li p {
+  margin: 0;
+  margin-bottom: 10px;
+  color: #212529;
+}
+.modal-dialog.modal-hive img.hive-popup-points {
+  width: 100%;
+}
+
+@media screen and (max-width: 991px) {
+  .modal-dialog.modal-hive span.heading {
+    font-size: 1.5em;
+  }
+  .modal-dialog.modal-hive ul.features-list li {
+    padding: 5% 2%;
+  }
+  .modal-dialog.modal-hive ul.features-list li a {
+    font-size: 1.4em;
+    line-height: 1.2;
+  }
+  .modal-dialog.modal-hive ul.features-list li p {
+    font-size: 1em;
+    line-height: 1.2;
+  }
+}
+@media screen and (max-width: 575px) {
+  .modal-dialog.modal-hive ul.features-list li a {
+    font-size: 1.1em;
+    line-height: 1.2;
+  }
+  .modal-dialog.modal-hive ul.features-list li p {
+    font-size: 0.8em;
+    line-height: 1.2;
+  }
+}
