@@ -29,7 +29,7 @@ class Footer extends React.Component {
 		var show = this.state ? this.state.show : false;
 
 		return (
-			<div className="row">
+			<div className="row clear">
 				<div className="col-md-6">
 					Built by Digital team - Powered by{" "}
 					<a
