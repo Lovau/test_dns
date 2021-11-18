@@ -4,20 +4,11 @@
   margin: auto;
 }
 
-.submit-form {
-  max-width: 300px;
-  margin: auto;
-}
-
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
 .adminTable tr.notselected {
   cursor: pointer;
 }
 table .edit.badge {
-/*  position: relative;
+  /*  position: relative;
   left: -4px;*/
   position: absolute;
   left: -12px;
@@ -56,4 +47,7 @@ table .badge-success.comment {
 }
 .fuzzyresultNotSelected {
   display: none;
+}
+.addEdit .label {
+  text-align: right;
 }

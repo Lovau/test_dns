@@ -1,8 +1,9 @@
 import React from "react";
-import Helper from "./Helper";
-import DomainDataService from "../admin/services/domain.service";
 import { Link } from "react-router-dom";
 
+import DomainDataService from "../admin/services/domain.service";
+import Helper from "../helpers/Helper";
+import { alertService } from "../services/AlertService";
 import DNS from "./api/dns";
 import Redirect from "./api/redirect";
 import SSL from "./api/ssl";
@@ -96,17 +97,7 @@ class URL extends React.Component {
     domain.comment = this.state.comment;
     console.log("validate comment", domain);
 
-    DomainDataService.update(domain.uuid, domain)
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          submitted: true,
-          message: "The domain was updated successfully!",
-        });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    this.updateDomain(domain);
   }
 
   validateChangesTodo() {
@@ -121,16 +112,22 @@ class URL extends React.Component {
     domain.changesTodo = this.state.changesTodo === "Y" ? true : false;
     console.log("validate changesTodo", domain);
 
+    this.updateDomain(domain);
+  }
+
+  updateDomain(domain) {
     DomainDataService.update(domain.uuid, domain)
       .then((response) => {
         console.log(response.data);
-        this.setState({
-          submitted: true,
-          message: "The domain was updated successfully!",
-        });
+        alertService.success(
+          `The domain <b>[${Helper._removeDomainProtocol(
+            domain.domain
+          )}]</b> was updated successfully!`
+        );
       })
       .catch((e) => {
         console.log(e);
+        alertService.error(e.toString());
       });
   }
 
@@ -430,6 +427,35 @@ class URL extends React.Component {
       return "";
     }
 
+    var message = "";
+    // Display a message after a domain is updated
+    //           submitted: true,
+    // updateError: false,
+    // message
+    // Update success
+    if (this.state && this.state.message && !this.state.updateError) {
+      message = (
+        <div className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div className="toast-header">
+            <img src="..." className="rounded me-2" alt="..." />
+            <strong className="me-auto">Bootstrap</strong>
+            <small>11 mins ago</small>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="toast-body">Hello, world! This is a toast message.</div>
+        </div>
+      );
+    }
+    // Update error
+    else if (this.state && this.state.message && this.state.updateError) {
+      console.log("ERROR");
+    }
+
     var TDs = [];
     var countTD = 0;
     var value;
@@ -463,13 +489,16 @@ class URL extends React.Component {
           // if it is the 1st cell, we display here the edit button
           if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
             editLink = (
-              <Link
-                to={"/isadmin/update/" + this.props.uuid}
-                className="edit badge badge-warning"
-                target="_blank"
-              >
-                Edit
-              </Link>
+              <>
+                <Link
+                  to={"/isadmin/update/" + this.props.uuid}
+                  className="edit badge badge-warning"
+                  target="_blank"
+                >
+                  Edit
+                </Link>
+                {message}
+              </>
             );
           }
           countTD++;
@@ -492,32 +521,37 @@ class URL extends React.Component {
                 </button>
               </td>
             );
-          } else if (column === "comment") {
+          } else if (column === "changesTodo" && this.state.editMode) {
+            TDs.push(
+              <td key={column} onClick={this.setEditMode}>
+                <span className="changesTodoForm mt-1">
+                  <input
+                    type="checkbox"
+                    name="changesTodo"
+                    id="changesTodo"
+                    className="form-control"
+                    onChange={this.onChangeChangesTodo}
+                    checked={value}
+                  />
+                  <button onClick={this.cancelEditMode} className="badge badge-warning comment">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={this.validateChangesTodo}
+                    className="badge badge-success comment"
+                  >
+                    Submit
+                  </button>
+                </span>
+              </td>
+            );
+          } else if (column === "comment" || column === "changesTodo") {
             TDs.push(
               <td
                 key={column}
                 onClick={this.setEditMode}
                 dangerouslySetInnerHTML={{ __html: value }}
               ></td>
-            );
-          } else if (column === "changesTodo" && this.state.editMode) {
-            TDs.push(
-              <td key={column} onClick={this.setEditMode}>
-                <input
-                  type="checkbox"
-                  name="changesTodo"
-                  id="changesTodo"
-                  className="form-control"
-                  onChange={this.onChangeChangesTodo}
-                  checked={value}
-                />
-                <button onClick={this.cancelEditMode} className="badge badge-warning comment">
-                  Cancel
-                </button>
-                <button onClick={this.validateChangesTodo} className="badge badge-success comment">
-                  Submit
-                </button>
-              </td>
             );
           } else {
             TDs.push(

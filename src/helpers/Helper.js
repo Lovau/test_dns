@@ -69,12 +69,12 @@ const Helper = {
         columnNameToDisplay: "Live CN",
       },
       {
-        columnNameDB: "comment",
-        columnNameToDisplay: "Comment",
+        columnNameDB: "changesTodo",
+        columnNameToDisplay: "Changes in progress",
       },
       {
-        columnNameDB: "updated",
-        columnNameToDisplay: "Last update",
+        columnNameDB: "comment",
+        columnNameToDisplay: "Comment",
       },
       {
         columnNameDB: "expectedRedirectEU",
@@ -85,8 +85,8 @@ const Helper = {
         columnNameToDisplay: "Expected redirection CN",
       },
       {
-        columnNameDB: "changesTodo",
-        columnNameToDisplay: "Changes in progress",
+        columnNameDB: "updated",
+        columnNameToDisplay: "Last update",
       },
     ];
   },

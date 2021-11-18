@@ -4,11 +4,13 @@ import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
+// import Alert from "react-bootstrap/Alert";
 import URLList from "./URLList";
 import Container from "react-bootstrap/Container";
-import Helper from "./Helper";
+import Helper from "../helpers/Helper";
 import Column from "./Column";
+import { Alert } from "./Alert";
+import { alertService } from "../services/AlertService";
 
 const messageFilterNeedsToBeActive =
   "Too many URLs to proceed, please use the filters below first. If too many requests are triggered at the same time, some results may be wrong.";
@@ -39,8 +41,7 @@ class FilterableURLList extends React.Component {
     this.handleURLsVerifications = this.handleURLsVerifications.bind(this);
     this.handleFilterColumnChange = this.handleFilterColumnChange.bind(this);
     this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
-    this.handleFilterRedirectChange =
-      this.handleFilterRedirectChange.bind(this);
+    this.handleFilterRedirectChange = this.handleFilterRedirectChange.bind(this);
 
     this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
     this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
@@ -148,6 +149,9 @@ class FilterableURLList extends React.Component {
 
   componentDidUpdate() {
     // console.log("update", this.props);
+    if (this.state && this.state.msg && this.state.msg.length > 0) {
+      alertService.warn(this.state.msg);
+    }
   }
 
   isFilterActive() {
@@ -265,20 +269,26 @@ class FilterableURLList extends React.Component {
     var header2 = [];
     var header3 = [];
     var columnsFilters = [];
+    var classes;
     if (this.state && "columnsFilters" in this.state) {
       columnsFilters = this.state.columnsFilters;
 
       for (var column in this.state.columnsFilters) {
         var isVisible = this.state.columnsFilters[column].isVisible;
         if (isVisible) {
-          header1.push(<td key={column}></td>);
+          classes = "";
+          if (column === "comment") {
+            classes = "comment";
+          }
+
+          header1.push(<th className={classes} key={column}></th>);
           header2.push(
-            <td key={column}>
+            <th className={classes} key={column}>
               {this.state.columnsFilters[column].displayName}
-            </td>
+            </th>
           );
           header3.push(
-            <td key={column}>
+            <th className={classes} key={column}>
               <Form>
                 <Form.Control
                   size="sm"
@@ -289,7 +299,7 @@ class FilterableURLList extends React.Component {
                   onKeyPress={this.handleKeyPress}
                 />
               </Form>
-            </td>
+            </th>
           );
         }
         checkboxes.push(
@@ -311,18 +321,15 @@ class FilterableURLList extends React.Component {
         if (isVisible) {
           if (column === "DNS") {
             header1.push(
-              <td key="headerDNS1">
-                <Button
-                  variant="outline-info"
-                  onClick={this.handleDNSVerifications}
-                >
+              <th key="headerDNS1">
+                <Button variant="outline-info" onClick={this.handleDNSVerifications}>
                   Test
                 </Button>
-              </td>
+              </th>
             );
-            header2.push(<td key="headerDNS2">DNS</td>);
+            header2.push(<th key="headerDNS2">DNS</th>);
             header3.push(
-              <td key="headerDNS3">
+              <th key="headerDNS3">
                 <Form>
                   <Form.Control
                     size="sm"
@@ -333,32 +340,29 @@ class FilterableURLList extends React.Component {
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
-              </td>
+              </th>
             );
           } else if (column === "SSL") {
             header1.push(
-              <td key="headerSSL1">
-                <Button
-                  variant="outline-info"
-                  onClick={this.handleSSLVerifications}
-                >
+              <th key="headerSSL1">
+                <Button variant="outline-info" onClick={this.handleSSLVerifications}>
                   Test
                 </Button>
-              </td>
+              </th>
             );
-            header2.push(<td key="headerSSL2">SSL validity</td>);
-            header3.push(<td key="headerSSL3"></td>);
+            header2.push(<th key="headerSSL2">SSL validity</th>);
+            header3.push(<th key="headerSSL3"></th>);
           } else if (column === "Redirection EU") {
             header1.push(
-              <td key="headerRedirEU1">
+              <th key="headerRedirEU1">
                 <Button variant="outline-info" onClick={this.handleRedirection}>
                   Test
                 </Button>
-              </td>
+              </th>
             );
-            header2.push(<td key="headerRedirEU2">Redirect EU</td>);
+            header2.push(<th key="headerRedirEU2">Redirect EU</th>);
             header3.push(
-              <td key="headerRedirEU3">
+              <th key="headerRedirEU3">
                 <Form>
                   <Form.Control
                     size="sm"
@@ -369,22 +373,19 @@ class FilterableURLList extends React.Component {
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
-              </td>
+              </th>
             );
           } else if (column === "Redirection CN") {
             header1.push(
-              <td key="headerRedirCN1">
-                <Button
-                  variant="outline-info"
-                  onClick={this.handleRedirectionCN}
-                >
+              <th key="headerRedirCN1">
+                <Button variant="outline-info" onClick={this.handleRedirectionCN}>
                   Test
                 </Button>
-              </td>
+              </th>
             );
-            header2.push(<td key="headerRedirCN2">Redirect CN</td>);
+            header2.push(<th key="headerRedirCN2">Redirect CN</th>);
             header3.push(
-              <td key="headerRedirCN3">
+              <th key="headerRedirCN3">
                 <Form>
                   <Form.Control
                     size="sm"
@@ -395,7 +396,7 @@ class FilterableURLList extends React.Component {
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
-              </td>
+              </th>
             );
           }
         }
@@ -433,20 +434,10 @@ class FilterableURLList extends React.Component {
             </Form>
           </Col>
         </Row>
+        <Alert autoClose={false} />
         <Row>
-          {this.state && this.state.msg && this.state.msg.length > 0 && (
-            <Alert variant="danger">{this.state.msg}</Alert>
-          )}
-
           <Col sm={12}>
-            <Table
-              striped
-              bordered
-              hover
-              responsive
-              size="sm"
-              className="stubLinks"
-            >
+            <Table striped bordered hover size="sm" className="stubLinks">
               <thead>
                 <tr>{header1}</tr>
                 <tr>{header2}</tr>

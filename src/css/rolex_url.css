@@ -47,3 +47,13 @@ table td button.btn {
 .clear {
   clear: both;
 }
+/*
+Only works if table layout is fixed - but then the bootstrap table is not really as expected
+table th.comment {
+  width: 400px;
+}
+*/
+.changesTodoForm {
+  display: inline-block;
+  width: 110px;
+}

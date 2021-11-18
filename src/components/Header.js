@@ -3,7 +3,7 @@ import { Navbar, Nav } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import Helper from "./Helper";
+import Helper from "../helpers/Helper";
 
 const Header = () => {
   //assigning location variable

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import DomainDataService from "../services/domain.service";
-import Helper from "../../components/Helper";
+import Helper from "../../helpers/Helper";
+import { Alert } from "../../components/Alert";
+import { alertService } from "../../services/AlertService";
 const isValidDomain = require("is-valid-domain");
 
 //TODO : make comment a textarea
@@ -37,7 +39,6 @@ export default class AddDomain extends Component {
         expectedRedirectCN: "",
         changesTodo: false,
       },
-      validationMsg: "",
       submitted: false,
     };
   }
@@ -46,7 +47,6 @@ export default class AddDomain extends Component {
     if (this.props.match.params.id) {
       console.log("update page");
       this.setState({
-        validationMsg: "",
         submitted: false,
         isNew: false,
       });
@@ -54,6 +54,32 @@ export default class AddDomain extends Component {
     } else {
       console.log("creation page");
       this.newDomain();
+    }
+  }
+
+  componentDidUpdate() {
+    // Update: domain not found
+    if (
+      this.state &&
+      !this.state.loading &&
+      !this.state.isNew &&
+      (!this.state.currentDomain || !this.state.currentDomain.uuid)
+    ) {
+      alertService.warn("<b>The domain has not been found.</b>");
+    }
+
+    // Creation ok
+    if (this.state && this.state.isNew && this.state.submitted) {
+      alertService.success(
+        `The domain <b>${this.state.currentDomain.domain}</b> has been successfully created!`
+      );
+    }
+
+    // Update ok
+    if (this.state && !this.state.isNew && this.state.submitted) {
+      alertService.success(
+        `The domain <b>${this.state.currentDomain.domain}</b> has been successfully updated!`
+      );
     }
   }
 
@@ -72,22 +98,30 @@ export default class AddDomain extends Component {
         changesTodo: false,
       },
 
-      validationMsg: "",
       submitted: false,
       isNew: true,
     });
   }
 
   loadDomain(id) {
+    this.setState({
+      loading: true,
+    });
     DomainDataService.get(id)
       .then((response) => {
         this.setState({
           currentDomain: response.data.Item,
         });
         console.log("Getting item", response.data.Item);
+        this.setState({
+          loading: false,
+        });
       })
       .catch((e) => {
         console.log(e);
+        this.setState({
+          loading: false,
+        });
       });
   }
 
@@ -136,15 +170,9 @@ export default class AddDomain extends Component {
       //TODO
     } catch (e) {
       console.log(e.message);
-      this.setState({
-        validationMsg: e.message,
-      });
+      alertService.error(e.message);
       return null;
     }
-
-    this.setState({
-      validationMsg: "",
-    });
 
     var data = {
       uuid: this.state.currentDomain.uuid
@@ -185,9 +213,7 @@ export default class AddDomain extends Component {
         console.log(response.data);
       })
       .catch((e) => {
-        this.setState({
-          validationMsg: e.toString(),
-        });
+        alertService.error(e.toString());
         console.log(e);
       });
   }
@@ -205,13 +231,10 @@ export default class AddDomain extends Component {
         console.log(response.data);
         this.setState({
           submitted: true,
-          message: "The domain was updated successfully!",
         });
       })
       .catch((e) => {
-        this.setState({
-          validationMsg: e.toString(),
-        });
+        alertService.error(e.toString());
         console.log(e);
       });
   }
@@ -222,14 +245,10 @@ export default class AddDomain extends Component {
       .then((response) => {
         console.log(response.data);
         this.props.history.push("/isadmin");
-        // this.setState({
-        //   message: "The domain was deleted successfully!"
-        // });
+        alertService.success("The domain was deleted successfully!");
       })
       .catch((e) => {
-        this.setState({
-          validationMsg: e.toString(),
-        });
+        alertService.error(e.toString());
         console.log(e);
       });
   }
@@ -317,191 +336,188 @@ export default class AddDomain extends Component {
       currentDomain.changesTodo = true;
     }
 
+    if (!this.state || !currentDomain || this.state.submitted) {
+      return (
+        <>
+          <Alert />
+        </>
+      );
+    }
+
+    /*
+    {this.state &&
+      currentDomain &&
+      (!this.state.isNew || (this.state.isNew && !this.state.submitted)) && (
+     */
+
     return (
-      <div className="submit-form">
-        {/* Validation */}
-        {this.state && this.state.validationMsg && (
-          <div className="alert alert-danger">{this.state.validationMsg}</div>
-        )}
+      <>
+        <Alert />
 
-        {/* Update: domain not found */}
-        {this.state && !this.state.isNew && (!currentDomain || !currentDomain.uuid) && (
-          <div className="alert alert-primary">
-            <b>The domain has not been found.</b>
+        <div className="row addEdit">
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="domain">Domain</label>
           </div>
-        )}
+          <div className="col-4 mt-2">
+            <input
+              type="text"
+              className="form-control"
+              id="domain"
+              required
+              defaultValue={currentDomain.domain}
+              onChange={this.onChangeDomain}
+              name="domain"
+            />
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="brand">Brand</label>
+          </div>
+          <div className="col-4 mt-2">
+            <input
+              type="text"
+              className="form-control"
+              id="brand"
+              required
+              defaultValue={currentDomain.brand}
+              onChange={this.onChangeBrand}
+              name="brand"
+            />
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="environment">Environment</label>
+          </div>
+          <div className="col-4 mt-2">
+            <select
+              className="custom-select"
+              id="environment"
+              required
+              onChange={this.onChangeEnvironment}
+              name="environment"
+              value={currentDomain.environment}
+            >
+              {Helper.getEnvironmentList().map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="live">Live EU</label>
+          </div>
+          <div className="col-4 mt-2">
+            <select
+              className="custom-select"
+              id="live"
+              required
+              onChange={this.onChangeLive}
+              name="live"
+              value={currentDomain.live}
+            >
+              <option value="N">N</option>
+              <option value="Y">Y</option>
+            </select>
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="liveCN">Live CN</label>
+          </div>
+          <div className="col-4 mt-2">
+            <select
+              className="custom-select"
+              id="liveCN"
+              required
+              onChange={this.onChangeLiveCN}
+              name="liveCN"
+              value={currentDomain.liveCN}
+            >
+              <option value="N">N</option>
+              <option value="Y">Y</option>
+            </select>
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="comment">Comment</label>
+          </div>
+          <div className="col-4 mt-2">
+            <textarea
+              name="comment"
+              id="comment"
+              className="form-control"
+              onChange={this.onChangeComment}
+              defaultValue={currentDomain.comment}
+              rows="6"
+            ></textarea>
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="expectedRedirectEU">Expected redirection in EU</label>
+          </div>
+          <div className="col-4 mt-2">
+            <textarea
+              name="expectedRedirectEU"
+              id="expectedRedirectEU"
+              className="form-control"
+              onChange={this.onChangeExpectedRedirectEU}
+              defaultValue={currentDomain.expectedRedirectEU}
+              rows="2"
+            ></textarea>
+          </div>
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="expectedRedirectCN">Expected redirection in CN</label>
+          </div>
+          <div className="col-4 mt-2">
+            <textarea
+              name="expectedRedirectCN"
+              id="expectedRedirectCN"
+              className="form-control"
+              onChange={this.onChangeExpectedRedirectCN}
+              defaultValue={currentDomain.expectedRedirectCN}
+              rows="2"
+            ></textarea>
+          </div>
 
-        {/* Creation ok */}
-        {this.state && this.state.isNew && this.state.submitted && (
-          <div>
-            <div className="alert alert-success">
-              The domain <b>&quot;{currentDomain.domain}&quot;</b> has been successfully created!
+          <div className="offset-md-2 col-3 mt-2 label">
+            <label htmlFor="changesTodo">Changes in progress</label>
+          </div>
+          <div className="col-4 mt-2">
+            <input
+              type="checkbox"
+              checked={currentDomain.changesTodo}
+              name="changesTodo"
+              id="changesTodo"
+              className="form-control"
+              onChange={this.onChangeChangesTodo}
+            />
+          </div>
+        </div>
+
+        {/* Creation validation button */}
+        {this.state && this.state.isNew && !this.state.submitted && (
+          <div className="row">
+            <div className="offset-md-8 col-4">
+              <button onClick={this.createNewDomain} className="btn btn-success">
+                Submit
+              </button>
             </div>
-            <button className="btn btn-success" onClick={this.newDomain}>
-              Add another
-            </button>
           </div>
         )}
 
-        {/* Update ok */}
-        {this.state && !this.state.isNew && this.state.submitted && (
-          <div>
-            <div className="alert alert-success">
-              The domain <b>{currentDomain.domain}</b> has been successfully updated!
-            </div>
-          </div>
-        )}
-
-        {/* Display the form */}
-        {this.state &&
-          currentDomain &&
-          (!this.state.isNew || (this.state.isNew && !this.state.submitted)) && (
-            <div>
-              <div className="form-group">
-                <label htmlFor="domain">Domain</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="domain"
-                  required
-                  defaultValue={currentDomain.domain}
-                  onChange={this.onChangeDomain}
-                  name="domain"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="brand">Brand</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="brand"
-                  required
-                  defaultValue={currentDomain.brand}
-                  onChange={this.onChangeBrand}
-                  name="brand"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="environment">Environment</label>
-                <select
-                  className="custom-select"
-                  id="environment"
-                  required
-                  onChange={this.onChangeEnvironment}
-                  name="environment"
-                  value={currentDomain.environment}
-                >
-                  {Helper.getEnvironmentList().map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="live">Live EU</label>
-                <select
-                  className="custom-select"
-                  id="live"
-                  required
-                  onChange={this.onChangeLive}
-                  name="live"
-                  value={currentDomain.live}
-                >
-                  <option value="N">N</option>
-                  <option value="Y">Y</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="liveCN">Live CN</label>
-                <select
-                  className="custom-select"
-                  id="liveCN"
-                  required
-                  onChange={this.onChangeLiveCN}
-                  name="liveCN"
-                  value={currentDomain.liveCN}
-                >
-                  <option value="N">N</option>
-                  <option value="Y">Y</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="comment">Comment</label>
-                <textarea
-                  name="comment"
-                  id="comment"
-                  className="form-control"
-                  onChange={this.onChangeComment}
-                  defaultValue={currentDomain.comment}
-                  rows="6"
-                ></textarea>
-              </div>
-              <div className="form-group">
-                <label htmlFor="expectedRedirectEU">Expected redirection in EU</label>
-                <textarea
-                  name="expectedRedirectEU"
-                  id="expectedRedirectEU"
-                  className="form-control"
-                  onChange={this.onChangeExpectedRedirectEU}
-                  defaultValue={currentDomain.expectedRedirectEU}
-                  rows="2"
-                ></textarea>
-              </div>
-              <div className="form-group">
-                <label htmlFor="expectedRedirectCN">Expected redirection in CN</label>
-                <textarea
-                  name="expectedRedirectCN"
-                  id="expectedRedirectCN"
-                  className="form-control"
-                  onChange={this.onChangeExpectedRedirectCN}
-                  defaultValue={currentDomain.expectedRedirectCN}
-                  rows="2"
-                ></textarea>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="changesTodo">Changes in progress</label>
-
-                <input
-                  type="checkbox"
-                  checked={currentDomain.changesTodo}
-                  name="changesTodo"
-                  id="changesTodo"
-                  className="form-control"
-                  onChange={this.onChangeChangesTodo}
-                />
-              </div>
-
-              {/* Creation validation button */}
-              {this.state && this.state.isNew && !this.state.submitted && (
-                <button onClick={this.createNewDomain} className="btn btn-success">
-                  Submit
+        {/* Update validation button */}
+        {this.state && !this.state.isNew && (
+          <div className="row">
+            <div className="offset-md-5 col-4">
+              <div className="deletebutton">
+                <button className="badge badge-danger mr-2" onClick={this.deleteDomain}>
+                  Delete
                 </button>
-              )}
-
-              {/* Update validation button */}
-              {this.state && !this.state.isNew && (
-                <>
-                  <div className="deletebutton">
-                    <button className="badge badge-danger mr-2" onClick={this.deleteDomain}>
-                      Delete
-                    </button>
-                  </div>
-                  <div className="validatebutton">
-                    <button
-                      type="submit"
-                      className="badge badge-success"
-                      onClick={this.updateDomain}
-                    >
-                      Update
-                    </button>
-                  </div>
-                </>
-              )}
+              </div>
+              <div className="validatebutton">
+                <button type="submit" className="badge badge-success" onClick={this.updateDomain}>
+                  Update
+                </button>
+              </div>
             </div>
-          )}
-      </div>
+          </div>
+        )}
+      </>
     );
   }
 }

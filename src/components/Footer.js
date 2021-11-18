@@ -143,8 +143,6 @@ class Footer extends React.Component {
 						</div>
 					</div>
 				</div>
-
-				<div className="col-md-6"></div>
 			</div>
 		);
 	}

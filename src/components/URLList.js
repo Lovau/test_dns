@@ -4,7 +4,7 @@ import URL from "./URL";
 // import CSV from "../data/urls.csv";
 import CSV from "../data/Rolex_URL_working_copy.csv";
 import cnameMapping from "../data/cname_mapping.json";
-import Helper from "./Helper";
+import Helper from "../helpers/Helper";
 import DomainDataService from "../admin/services/domain.service";
 
 const fetch = require("node-fetch");
@@ -61,6 +61,42 @@ class URLList extends React.Component {
       });
   }
 
+  // some domains were created before new fields were introduced
+  // so the fields are incomplete. Make sure we set default values here
+  cleanDomainData(domain) {
+    var cleanedDomain = domain;
+
+    cleanedDomain.update = false;
+
+    if (cleanedDomain.changesTodo) {
+      cleanedDomain.changesTodo = "Y";
+    } else {
+      cleanedDomain.changesTodo = "N";
+    }
+
+    if (cleanedDomain.live) {
+      cleanedDomain.live = "Y";
+    } else {
+      cleanedDomain.live = "N";
+    }
+
+    if (cleanedDomain.liveCN) {
+      cleanedDomain.liveCN = "Y";
+    } else {
+      cleanedDomain.liveCN = "N";
+    }
+
+    if (!cleanedDomain.expectedRedirectEU) {
+      cleanedDomain.expectedRedirectEU = "";
+    }
+
+    if (!cleanedDomain.expectedRedirectCN) {
+      cleanedDomain.expectedRedirectCN = "";
+    }
+
+    return cleanedDomain;
+  }
+
   async retrieveDomains() {
     this.setState({
       loadingURLs: true,
@@ -70,12 +106,7 @@ class URLList extends React.Component {
       .then((response) => {
         var URLs = response.data.Items;
         for (var i = 0; i < URLs.length; i++) {
-          URLs[i].update = false;
-          if (URLs[i].changesTodo) {
-            URLs[i].changesTodo = "Y";
-          } else {
-            URLs[i].changesTodo = "N";
-          }
+          URLs[i] = this.cleanDomainData(URLs[i]);
         }
 
         this.setState({

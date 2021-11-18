@@ -1,15 +1,16 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import "./css/bootstrap_darky.min.css";
-import "./css/rolex_url.css";
-
 import Container from "react-bootstrap/Container";
 import FilterableURLList from "./components/FilterableURLList";
 import Header from "./components/Header";
 import AddDomain from "./admin/components/add-domain.component";
 import Footer from "./components/Footer";
+import { history } from "./helpers/History";
+
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import "./css/bootstrap_darky.min.css";
+import "./css/rolex_url.css";
 import "./admin/App.css";
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
 
   return (
     <Container fluid>
-      <BrowserRouter>
+      <BrowserRouter history={history}>
         <Header />
         <Switch>
           <Route exact path="/">
