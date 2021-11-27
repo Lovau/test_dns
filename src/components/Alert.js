@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { history } from "../helpers/History";
-import { alertService, alertType } from "../services/AlertService";
+import { history } from "helpers/History";
+import { alertService, alertType } from "services/AlertService";
 
 const propTypes = {
     id: PropTypes.string,

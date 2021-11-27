@@ -51,3 +51,6 @@ table .badge-success.comment {
 .addEdit .label {
   text-align: right;
 }
+.invalid-feedback {
+  display: block;
+}

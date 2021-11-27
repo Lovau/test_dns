@@ -1,37 +1,52 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
+import { useState, useEffect } from "react";
 
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import Helper from "../helpers/Helper";
+import { Login } from "admin/Login";
+import { Logout } from "admin/Logout";
+import { userService } from "services/UserService";
 
 const Header = () => {
-  //assigning location variable
-  const location = useLocation();
-  var isAdmin = false;
-  if (Helper.isAdmin(location)) {
-    isAdmin = true;
-    console.log("isAdmin");
-  }
+  const [user, setUser] = useState(null);
 
-  // <Nav.Link as={Link} className="link" to="/isadmin">Admin</Nav.Link>
+  useEffect(() => {
+    const subscription = userService.user.subscribe((x) => setUser(x));
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // <Nav className="ml-auto">
   return (
     <Navbar expand="lg" variant="dark" bg="dark">
       <Navbar.Brand as={Link} to="/">
         Rolex - URLs verification tool
       </Navbar.Brand>
-      <Navbar.Collapse>
+      <Navbar.Collapse className="justify-content-center">
         <Nav>
-          {isAdmin && (
+          {user && (
             <>
-              <Nav.Link as={Link} className="link" to="/isadmin">
+              <Nav.Link as={Link} className="link" to="/admin">
                 Admin
               </Nav.Link>
-              <Nav.Link as={Link} className="link" to="/isadmin/add">
-                Add
+              <Nav.Link as={Link} className="link" to="/admin/domain/add">
+                Add a new domain
               </Nav.Link>
             </>
           )}
+        </Nav>
+        <Nav className="userLinks">
+          {user && (
+            <>
+              <Nav.Link as={Link} className="link" to={`/admin/users/${user.uuid}`}>
+                Edit user
+              </Nav.Link>
+              <Nav.Link as={Link} className="link" to={`/admin/users`}>
+                Users management
+              </Nav.Link>
+              <Logout />
+            </>
+          )}
+          {!user && <Login />}
         </Nav>
       </Navbar.Collapse>
     </Navbar>

@@ -1,4 +1,4 @@
-import configData from "../../config.json";
+import configData from "config.json";
 
 const DNS = {
 	async dnsExist(domain) {
@@ -14,11 +14,7 @@ const DNS = {
 					resolve(body);
 				})
 				.catch((err) => {
-					console.log(
-						"getDNS err2",
-						configData.API_DNS + domain,
-						err
-					);
+					console.log("getDNS err2", configData.API_DNS + domain, err);
 					reject(err);
 				});
 		});

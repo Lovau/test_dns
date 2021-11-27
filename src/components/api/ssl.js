@@ -1,4 +1,4 @@
-import configData from "../../config.json";
+import configData from "config.json";
 const fetch = require("node-fetch");
 
 const SSL = {
@@ -13,21 +13,13 @@ const SSL = {
 				.then((res) => res.json())
 				.then((body) => {
 					if (!body.daysRemaining) {
-						console.log(
-							"getSSL err1",
-							configData.API_SSL + domain,
-							body
-						);
+						console.log("getSSL err1", configData.API_SSL + domain, body);
 						return reject(body);
 					}
 					return resolve(body.daysRemaining);
 				})
 				.catch((err) => {
-					console.log(
-						"getSSL err2",
-						configData.API_SSL + domain,
-						err
-					);
+					console.log("getSSL err2", configData.API_SSL + domain, err);
 					reject(err);
 				});
 		});

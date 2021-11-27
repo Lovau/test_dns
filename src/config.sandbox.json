@@ -1,0 +1,8 @@
+{
+	"API_KEY": "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6",
+	"API_DNS": "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=",
+	"API_SSL": "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=",
+	"API_REDIRECT": "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=",
+	"API_DOMAIN_BASE_URL": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod",
+	"API_USERS": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod"
+}

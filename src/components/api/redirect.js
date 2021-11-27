@@ -1,4 +1,4 @@
-import configData from "../../config.json";
+import configData from "config.json";
 
 const Redirect = {
 	async getRedirect(fullURL) {
@@ -22,11 +22,7 @@ const Redirect = {
 				})
 				.then((body) => resolve(body))
 				.catch((err) => {
-					console.log(
-						"getRedirect err",
-						configData.API_REDIRECT + fullURL,
-						err
-					);
+					console.log("getRedirect err", configData.API_REDIRECT + fullURL, err);
 					reject(err);
 				});
 		});

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import DomainDataService from "../services/domain.service";
-import Helper from "../../helpers/Helper";
-import { Alert } from "../../components/Alert";
-import { alertService } from "../../services/AlertService";
+import DomainDataService from "admin/services/domain.service";
+import Helper from "helpers/Helper";
+import { Alert } from "components/Alert";
+import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
+import { alertService } from "services/AlertService";
 const isValidDomain = require("is-valid-domain");
 
 //TODO : make comment a textarea
@@ -244,7 +245,7 @@ export default class AddDomain extends Component {
     DomainDataService.delete(this.state.currentDomain.uuid)
       .then((response) => {
         console.log(response.data);
-        this.props.history.push("/isadmin");
+        this.props.history.push("/admin");
         alertService.success("The domain was deleted successfully!");
       })
       .catch((e) => {
@@ -352,6 +353,7 @@ export default class AddDomain extends Component {
 
     return (
       <>
+        <RedirectIfNotLoggedIn />
         <Alert />
 
         <div className="row addEdit">

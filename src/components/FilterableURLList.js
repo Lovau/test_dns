@@ -5,12 +5,13 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 // import Alert from "react-bootstrap/Alert";
-import URLList from "./URLList";
+import URLList from "components/URLList";
 import Container from "react-bootstrap/Container";
-import Helper from "../helpers/Helper";
-import Column from "./Column";
-import { Alert } from "./Alert";
-import { alertService } from "../services/AlertService";
+import Helper from "helpers/Helper";
+import Column from "components/Column";
+import { Alert } from "components/Alert";
+import { alertService } from "services/AlertService";
+import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
 
 const messageFilterNeedsToBeActive =
   "Too many URLs to proceed, please use the filters below first. If too many requests are triggered at the same time, some results may be wrong.";
@@ -413,6 +414,7 @@ class FilterableURLList extends React.Component {
 
     return (
       <Container fluid>
+        {this.props.isadmin && <RedirectIfNotLoggedIn />}
         <Row>
           <Col sm={6}>
             <Form>
@@ -437,7 +439,7 @@ class FilterableURLList extends React.Component {
         <Alert autoClose={false} />
         <Row>
           <Col sm={12}>
-            <Table striped bordered hover size="sm" className="stubLinks">
+            <Table striped bordered hover size="sm" className="URLList">
               <thead>
                 <tr>{header1}</tr>
                 <tr>{header2}</tr>

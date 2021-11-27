@@ -1,13 +1,12 @@
 import React from "react";
-import Papa from "papaparse";
-import URL from "./URL";
-// import CSV from "../data/urls.csv";
-import CSV from "../data/Rolex_URL_working_copy.csv";
-import cnameMapping from "../data/cname_mapping.json";
-import Helper from "../helpers/Helper";
-import DomainDataService from "../admin/services/domain.service";
-
-const fetch = require("node-fetch");
+import URL from "components/URL";
+// import Papa from "papaparse";
+// import CSV from "../data/Rolex_URL_working_copy.csv";
+// const fetch = require("node-fetch");
+import cnameMapping from "data/cname_mapping.json";
+import Helper from "helpers/Helper";
+import DomainDataService from "admin/services/domain.service";
+import { alertService } from "services/AlertService";
 
 class URLList extends React.Component {
   constructor(props) {
@@ -32,34 +31,34 @@ class URLList extends React.Component {
     });
   }
 
-  async getURLsFromCSV() {
-    // if (URLs && URLs.length > 0) {
-    //  return URLs;
-    // }
-    var URLs = await this.readCSV();
-    for (var i = 0; i < URLs.length; i++) {
-      URLs[i].update = false;
-    }
+  // async getURLsFromCSV() {
+  //   // if (URLs && URLs.length > 0) {
+  //   //  return URLs;
+  //   // }
+  //   var URLs = await this.readCSV();
+  //   for (var i = 0; i < URLs.length; i++) {
+  //     URLs[i].update = false;
+  //   }
 
-    console.log("URLS", URLs);
+  //   console.log("URLS", URLs);
 
-    this.setState({
-      urls: URLs,
-    });
-  }
+  //   this.setState({
+  //     urls: URLs,
+  //   });
+  // }
 
-  async readCSV() {
-    return fetch(CSV)
-      .then((response) => {
-        return response.text();
-      })
-      .then((text) => {
-        var results = Papa.parse(text, { header: true, skipEmptyLines: true }); // object with { data, errors, meta }
-        var rows = results.data; // array of objects
-        // console.log("Results, rows", results, rows);
-        return rows;
-      });
-  }
+  // async readCSV() {
+  //   return fetch(CSV)
+  //     .then((response) => {
+  //       return response.text();
+  //     })
+  //     .then((text) => {
+  //       var results = Papa.parse(text, { header: true, skipEmptyLines: true }); // object with { data, errors, meta }
+  //       var rows = results.data; // array of objects
+  //       // console.log("Results, rows", results, rows);
+  //       return rows;
+  //     });
+  // }
 
   // some domains were created before new fields were introduced
   // so the fields are incomplete. Make sure we set default values here
@@ -68,21 +67,15 @@ class URLList extends React.Component {
 
     cleanedDomain.update = false;
 
-    if (cleanedDomain.changesTodo) {
-      cleanedDomain.changesTodo = "Y";
-    } else {
+    if (!Object.prototype.hasOwnProperty.call(cleanedDomain, "changesTodo")) {
       cleanedDomain.changesTodo = "N";
     }
 
-    if (cleanedDomain.live) {
-      cleanedDomain.live = "Y";
-    } else {
+    if (!Object.prototype.hasOwnProperty.call(cleanedDomain, "live")) {
       cleanedDomain.live = "N";
     }
 
-    if (cleanedDomain.liveCN) {
-      cleanedDomain.liveCN = "Y";
-    } else {
+    if (!Object.prototype.hasOwnProperty.call(cleanedDomain, "liveCN")) {
       cleanedDomain.liveCN = "N";
     }
 
@@ -113,12 +106,9 @@ class URLList extends React.Component {
           domains: URLs,
           loadingURLs: false,
         });
-
         this.orderDomains();
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch(alertService.error);
   }
 
   orderDomains() {

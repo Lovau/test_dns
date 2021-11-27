@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import DomainDataService from "../admin/services/domain.service";
-import Helper from "../helpers/Helper";
-import { alertService } from "../services/AlertService";
-import DNS from "./api/dns";
-import Redirect from "./api/redirect";
-import SSL from "./api/ssl";
+import DomainDataService from "admin/services/domain.service";
+import Helper from "helpers/Helper";
+import { alertService } from "services/AlertService";
+import DNS from "components/api/dns";
+import Redirect from "components/api/redirect";
+import SSL from "components/api/ssl";
 
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
@@ -491,7 +491,7 @@ class URL extends React.Component {
             editLink = (
               <>
                 <Link
-                  to={"/isadmin/update/" + this.props.uuid}
+                  to={"/admin/update/" + this.props.uuid}
                   className="edit badge badge-warning"
                   target="_blank"
                 >

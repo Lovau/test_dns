@@ -1,9 +1,10 @@
 import axios from "axios";
+import config from "config.json";
 
 export default axios.create({
-  baseURL: "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod",
+  baseURL: config.API_DOMAIN_BASE_URL,
   headers: {
     "Content-type": "application/json",
-    "x-api-key": "ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04",
+    "x-api-key": config.API_KEY,
   },
 });

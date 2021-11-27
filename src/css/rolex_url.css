@@ -1,7 +1,7 @@
 button.btn.main {
   float: right;
 }
-table td button.btn {
+.URLList td button.btn {
   horizontal-align: middle;
   display: block;
   margin: auto;
@@ -56,4 +56,13 @@ table th.comment {
 .changesTodoForm {
   display: inline-block;
   width: 110px;
+}
+
+.loginMenu {
+  width: 250px;
+}
+.userLinks {
+  margin-left: 10px;
+  padding-left: 20px;
+  border-left: 1px solid #444;
 }

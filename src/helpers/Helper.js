@@ -1,16 +1,4 @@
 const Helper = {
-  isAdmin(location) {
-    //destructuring pathname from location
-    const { pathname } = location;
-
-    //Javascript split method to get the name of the path in array
-    const splitLocation = pathname.split("/");
-    if (splitLocation[1] === "isadmin") {
-      return true;
-    }
-    return false;
-  },
-
   _randomstring(length, hasCharacters = true) {
     var result = "";
     var characters = "0123456789";

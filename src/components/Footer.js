@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/hive.css";
+import "css/hive.css";
 import { Modal } from "react-bootstrap";
 
 class Footer extends React.Component {
