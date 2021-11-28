@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import DomainDataService from "admin/services/domain.service";
+import DomainDataService from "services/DomainService";
 import Helper from "helpers/Helper";
 import { alertService } from "services/AlertService";
-import DNS from "components/api/dns";
-import Redirect from "components/api/redirect";
-import SSL from "components/api/ssl";
+import DNS from "services/api/dns";
+import Redirect from "services/api/redirect";
+import SSL from "services/api/ssl";
 
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";

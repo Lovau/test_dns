@@ -5,7 +5,7 @@ import URL from "components/URL";
 // const fetch = require("node-fetch");
 import cnameMapping from "data/cname_mapping.json";
 import Helper from "helpers/Helper";
-import DomainDataService from "admin/services/domain.service";
+import DomainDataService from "services/DomainService";
 import { alertService } from "services/AlertService";
 
 class URLList extends React.Component {
@@ -97,7 +97,8 @@ class URLList extends React.Component {
 
     await DomainDataService.getAll()
       .then((response) => {
-        var URLs = response.data.Items;
+        // console.log("domain response", response);
+        var URLs = response.Items;
         for (var i = 0; i < URLs.length; i++) {
           URLs[i] = this.cleanDomainData(URLs[i]);
         }

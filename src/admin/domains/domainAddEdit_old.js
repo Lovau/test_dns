@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import DomainDataService from "admin/services/domain.service";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Link } from "react-router-dom";
+
+import DomainDataService from "services/DomainService";
 import Helper from "helpers/Helper";
 import { Alert } from "components/Alert";
 import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
 import { alertService } from "services/AlertService";
 const isValidDomain = require("is-valid-domain");
-
-//TODO : make comment a textarea
-// Merge the update & add
-// change the design a bit
 
 export default class AddDomain extends Component {
   constructor(props) {
@@ -46,14 +47,12 @@ export default class AddDomain extends Component {
 
   componentDidMount() {
     if (this.props.match.params.id) {
-      console.log("update page");
       this.setState({
         submitted: false,
         isNew: false,
       });
       this.loadDomain(this.props.match.params.id);
     } else {
-      console.log("creation page");
       this.newDomain();
     }
   }
@@ -111,9 +110,9 @@ export default class AddDomain extends Component {
     DomainDataService.get(id)
       .then((response) => {
         this.setState({
-          currentDomain: response.data.Item,
+          currentDomain: response.Item,
         });
-        console.log("Getting item", response.data.Item);
+        console.log("Getting item", response.Item);
         this.setState({
           loading: false,
         });
@@ -162,6 +161,7 @@ export default class AddDomain extends Component {
 
   validateAndCleanData() {
     var URL = this.state.currentDomain.domain;
+    console.log("before clean", this.state.currentDomain.changesTodo);
 
     try {
       URL = this.validateAndCleanDomain(URL);
@@ -191,8 +191,11 @@ export default class AddDomain extends Component {
       expectedRedirectCN: this.state.currentDomain.expectedRedirectCN
         ? this.state.currentDomain.expectedRedirectCN.trim()
         : "",
-      changesTodo: this.state.currentDomain.changesTodo ? true : false,
+      changesTodo: this.state.currentDomain.changesTodo
+        ? this.state.currentDomain.changesTodo
+        : false,
     };
+    console.log("after clean", data.changesTodo);
 
     return data;
   }
@@ -211,7 +214,7 @@ export default class AddDomain extends Component {
           currentDomain: data,
           submitted: true,
         });
-        console.log(response.data);
+        console.log(response);
       })
       .catch((e) => {
         alertService.error(e.toString());
@@ -229,7 +232,7 @@ export default class AddDomain extends Component {
     console.log("Updating", data, data.uuid);
     DomainDataService.update(data.uuid, data)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         this.setState({
           submitted: true,
         });
@@ -244,7 +247,7 @@ export default class AddDomain extends Component {
     console.log("Deleting domain", this.state.currentDomain, this.state.currentDomain.uuid);
     DomainDataService.delete(this.state.currentDomain.uuid)
       .then((response) => {
-        console.log(response.data);
+        console.log(response);
         this.props.history.push("/admin");
         alertService.success("The domain was deleted successfully!");
       })
@@ -320,7 +323,7 @@ export default class AddDomain extends Component {
 
   onChangeChangesTodo() {
     var currentDomain = this.state.currentDomain;
-    if (this.state.changesTodo === "on") {
+    if (typeof this.state.changesTodo === "string") {
       currentDomain.changesTodo = true;
     }
 
@@ -328,16 +331,19 @@ export default class AddDomain extends Component {
     this.setState({
       currentDomain: currentDomain,
     });
+    console.log("after change", currentDomain.changesTodo);
   }
 
   render() {
     const { currentDomain } = this.state;
 
-    if (currentDomain.changesTodo === "on") {
+    if (typeof this.state.changesTodo === "string") {
       currentDomain.changesTodo = true;
+    } else {
+      currentDomain.changesTodo = false;
     }
 
-    if (!this.state || !currentDomain || this.state.submitted) {
+    if (!this.state || !currentDomain) {
       return (
         <>
           <Alert />
@@ -482,7 +488,7 @@ export default class AddDomain extends Component {
           <div className="col-4 mt-2">
             <input
               type="checkbox"
-              checked={currentDomain.changesTodo}
+              defaultChecked={currentDomain.changesTodo}
               name="changesTodo"
               id="changesTodo"
               className="form-control"

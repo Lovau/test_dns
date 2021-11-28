@@ -4,8 +4,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import FilterableURLList from "components/FilterableURLList";
 import Header from "components/Header";
-import AddDomain from "admin/components/add-domain.component";
-import userAddEdit from "admin/users/userAddEdit";
+import { DomainAddEdit } from "admin/domains/DomainAddEdit";
+import userEdit from "admin/users/userEdit";
+import domainEdit from "admin/domains/domainEdit";
 import { AddEdit } from "admin/users/AddEdit";
 import usersManagement from "admin/users/usersManagement";
 import Footer from "components/Footer";
@@ -41,15 +42,15 @@ function App() {
           <Route
             exact
             path="/admin/domain/add"
-            component={AddDomain}
+            component={DomainAddEdit}
             key={window.location.pathname}
           />
-          <Route path="/admin/update/:id" component={AddDomain} key={window.location.pathname} />
           <Route
-            path="/admin/users/:userid"
-            component={userAddEdit}
+            path="/admin/update/:domainid"
+            component={domainEdit}
             key={window.location.pathname}
           />
+          <Route path="/admin/users/:userid" component={userEdit} key={window.location.pathname} />
           <Route exact path="/admin/user/add" component={AddEdit} key={window.location.pathname} />
           <Route
             exact

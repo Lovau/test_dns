@@ -1,8 +1,6 @@
 import { userService } from "services/UserService";
 import configData from "config.json";
 
-const baseUrl = `${configData.API_USERS}/users`;
-
 /**
  * The fetch wrapper is a lightweight wrapper around the native browser fetch() function used to simplify
  * the code for making HTTP requests. It contains methods for get, post, put and delete requests, it automatically
@@ -68,7 +66,8 @@ function authHeader(url) {
   // return auth header with jwt if user is logged in and request is to the api url
   const user = userService.userValue;
   const isLoggedIn = user && user.token;
-  const isApiUrl = url.startsWith(baseUrl);
+  const isApiUrl =
+    url.startsWith(configData.API_USERS) || url.startsWith(configData.API_DOMAIN_BASE_URL);
   if (isLoggedIn && isApiUrl) {
     return {
       Authorization: `Bearer ${user.token}`,

@@ -6,9 +6,9 @@ import { alertService } from "services/AlertService";
 import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
 import { Spinner } from "components/Spinner";
 
-export default userAddEdit;
-
-function userAddEdit() {
+export default userEdit;
+//TODO : get ride of this component
+function userEdit() {
   const [user, setUser] = useState(null);
   const { userid } = useParams();
 

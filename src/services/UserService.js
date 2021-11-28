@@ -43,15 +43,13 @@ export const userService = {
 
 function login(username, password) {
   // console.log("trying to log in with", username, password);
-  return fetchWrapper
-    .post(`${configData.API_USERS}/users/login`, { username, password })
-    .then((user) => {
-      // publish user to subscribers and store in local storage to stay logged in between page refreshes
-      userSubject.next(user);
-      localStorage.setItem("user", JSON.stringify(user));
+  return fetchWrapper.post(`${configData.API_USERS}/login`, { username, password }).then((user) => {
+    // publish user to subscribers and store in local storage to stay logged in between page refreshes
+    userSubject.next(user);
+    localStorage.setItem("user", JSON.stringify(user));
 
-      return user;
-    });
+    return user;
+  });
 }
 
 function logout() {
@@ -65,19 +63,19 @@ function logout() {
 
 function register(user) {
   user.uuid = Helper._randomstring(12);
-  return fetchWrapper.put(`${configData.API_USERS}/users`, user);
+  return fetchWrapper.put(`${configData.API_USERS}`, user);
 }
 
 function getAll() {
-  return fetchWrapper.get(`${configData.API_USERS}/users`);
+  return fetchWrapper.get(`${configData.API_USERS}`);
 }
 
 function getById(id) {
-  return fetchWrapper.get(`${configData.API_USERS}/users/${id}`);
+  return fetchWrapper.get(`${configData.API_USERS}/${id}`);
 }
 
 function update(id, params) {
-  return fetchWrapper.put(`${configData.API_USERS}/users/${id}`, params).then((x) => {
+  return fetchWrapper.put(`${configData.API_USERS}/${id}`, params).then((x) => {
     // update stored user if the logged in user updated their own record
     if (id === userSubject.value.id) {
       // update local storage
@@ -93,5 +91,5 @@ function update(id, params) {
 
 // prefixed with underscored because delete is a reserved word in javascript
 function _delete(id) {
-  return fetchWrapper.delete(`${configData.API_USERS}/users/${id}`);
+  return fetchWrapper.delete(`${configData.API_USERS}/${id}`);
 }

@@ -161,23 +161,21 @@ function AddEdit(props) {
       </div>
       <div className="form-row mb-3">
         <div className="col-4 offset-6">
-          <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary mr-2">
-            {formState.isSubmitting && (
-              <span className="spinner-border spinner-border-sm mr-1"></span>
-            )}
-            Save
-          </button>
+          <Link to="/admin/users" className="btn btn-link">
+            Cancel
+          </Link>
           <button
             onClick={() => reset(formOptions.defaultValues)}
             type="button"
             disabled={formState.isSubmitting}
-            className="btn btn-secondary"
+            className="btn btn-secondary mr-2"
           >
             Reset
           </button>
-          <Link to="/admin/users" className="btn btn-link">
-            Cancel
-          </Link>
+          <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary mr-2">
+            {formState.isSubmitting && <span className="spinner-border spinner-border-sm"></span>}
+            Save
+          </button>
         </div>
       </div>
     </form>

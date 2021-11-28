@@ -3,6 +3,6 @@
 	"API_DNS": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=",
 	"API_SSL": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS=",
 	"API_REDIRECT": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL=",
-	"API_DOMAIN_BASE_URL": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod",
+	"API_DOMAIN_BASE_URL": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/domains",
 	"API_USERS": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/users"
 }
