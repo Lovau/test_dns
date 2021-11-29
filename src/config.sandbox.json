@@ -4,5 +4,66 @@
 	"API_SSL": "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getsslexpirydate?DNS=",
 	"API_REDIRECT": "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL=",
 	"API_DOMAIN_BASE_URL": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod/domains",
-	"API_USERS": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod/users"
+	"API_USERS": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod/users",
+	"dynamicColumns": [
+	  {
+	    "name": "DNS",
+	    "isVisible": false
+	  },
+	  {
+	    "name": "SSL",
+	    "isVisible": false
+	  },
+	  {
+	    "name": "Redirection EU",
+	    "isVisible": true
+	  },
+	  {
+	    "name": "Redirection CN",
+	    "isVisible": false
+	  }
+	],
+	"environments": ["RC", "Staging", "Prod Tech", "Public prod"],
+	"columnsName": [
+      {
+        "columnNameDB": "brand",
+        "columnNameToDisplay": "Brand"
+      },
+      {
+        "columnNameDB": "environment",
+        "columnNameToDisplay": "Environment"
+      },
+      {
+        "columnNameDB": "domain",
+        "columnNameToDisplay": "URL"
+      },
+      {
+        "columnNameDB": "live",
+        "columnNameToDisplay": "Live EU"
+      },
+      {
+        "columnNameDB": "liveCN",
+        "columnNameToDisplay": "Live CN"
+      },
+      {
+        "columnNameDB": "changesTodo",
+        "columnNameToDisplay": "Changes in progress"
+      },
+      {
+        "columnNameDB": "comment",
+        "columnNameToDisplay": "Comment"
+      },
+      {
+        "columnNameDB": "expectedRedirectEU",
+        "columnNameToDisplay": "Expected redirection EU"
+      },
+      {
+        "columnNameDB": "expectedRedirectCN",
+        "columnNameToDisplay": "Expected redirection CN"
+      },
+      {
+        "columnNameDB": "updated",
+        "columnNameToDisplay": "Last update"
+      }
+    ]
 }

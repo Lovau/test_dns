@@ -18,7 +18,7 @@ function Login() {
             .login(login, password)
             .then(() => {
                 console.log("Login success!", userService.userValue);
-                history.push("/admin");
+                // history.push("/admin");
             })
             .catch(alertService.error);
     }

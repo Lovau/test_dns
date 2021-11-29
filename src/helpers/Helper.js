@@ -1,3 +1,5 @@
+import configData from "config.json";
+
 const Helper = {
   _randomstring(length, hasCharacters = true) {
     var result = "";
@@ -10,10 +12,6 @@ const Helper = {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-  },
-
-  getEnvironmentList() {
-    return ["RC", "Staging", "Prod Tech", "Public prod"];
   },
 
   getRandomSGTIN() {
@@ -33,52 +31,6 @@ const Helper = {
     return domain;
   },
 
-  //mapping: columnNameInDB => column name displayed
-  getColumnsNames() {
-    return [
-      {
-        columnNameDB: "brand",
-        columnNameToDisplay: "Brand",
-      },
-      {
-        columnNameDB: "environment",
-        columnNameToDisplay: "Environment",
-      },
-      {
-        columnNameDB: "domain",
-        columnNameToDisplay: "URL",
-      },
-      {
-        columnNameDB: "live",
-        columnNameToDisplay: "Live EU",
-      },
-      {
-        columnNameDB: "liveCN",
-        columnNameToDisplay: "Live CN",
-      },
-      {
-        columnNameDB: "changesTodo",
-        columnNameToDisplay: "Changes in progress",
-      },
-      {
-        columnNameDB: "comment",
-        columnNameToDisplay: "Comment",
-      },
-      {
-        columnNameDB: "expectedRedirectEU",
-        columnNameToDisplay: "Expected redirection EU",
-      },
-      {
-        columnNameDB: "expectedRedirectCN",
-        columnNameToDisplay: "Expected redirection CN",
-      },
-      {
-        columnNameDB: "updated",
-        columnNameToDisplay: "Last update",
-      },
-    ];
-  },
-
   isColumnAlwaysVisible(column) {
     var columnsVisible = ["brand", "environment", "domain"];
     if (columnsVisible.indexOf(column) !== -1) {
@@ -88,7 +40,7 @@ const Helper = {
   },
 
   getDBNameFromDisplayName(displayName) {
-    var columns = this.getColumnsNames();
+    var columns = configData.columnsName;
     for (var i = 0; i < columns.length; i++) {
       if (columns[i].columnNameToDisplay === displayName) {
         return columns[i].columnNameDB;
@@ -97,12 +49,24 @@ const Helper = {
   },
 
   getDisplayNameFromDBName(fieldDBName) {
-    var columns = this.getColumnsNames();
+    var columns = configData.columnsName;
     for (var i = 0; i < columns.length; i++) {
       if (columns[i].columnNameDB === fieldDBName) {
         return columns[i].columnNameToDisplay;
       }
     }
+  },
+
+  dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      var result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      return result * sortOrder;
+    };
   },
 };
 

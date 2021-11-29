@@ -34,10 +34,7 @@ function App() {
         <Header />
         <Switch>
           <Route exact path="/">
-            <FilterableURLList isadmin={false} key={window.location.pathname} />
-          </Route>
-          <Route exact path="/admin">
-            <FilterableURLList isadmin={true} key={window.location.pathname} />
+            <FilterableURLList key={window.location.pathname} />
           </Route>
           <Route
             exact

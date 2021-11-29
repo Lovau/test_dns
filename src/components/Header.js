@@ -25,9 +25,6 @@ const Header = () => {
         <Nav>
           {user && (
             <>
-              <Nav.Link as={Link} className="link" to="/admin">
-                Admin
-              </Nav.Link>
               <Nav.Link as={Link} className="link" to="/admin/domain/add">
                 Add a new domain
               </Nav.Link>

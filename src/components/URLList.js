@@ -182,8 +182,18 @@ class URLList extends React.Component {
 
     var redirectFilter = this.props.redirectFilter;
 
-    // const listUrls = this.state.urls.map((domain) => {
-    const listUrls = this.state.domains.map((domain) => {
+    const filteredURLs = this.state.domains.filter((domain) => {
+      if (!this.URLisFiltered(domain)) {
+        return domain;
+      }
+    });
+
+    if (this.props.sort && this.props.sort.column) {
+      var sortOrder = this.props.sort.order === "ASC" ? "" : "-";
+      filteredURLs.sort(Helper.dynamicSort(sortOrder + this.props.sort.column));
+    }
+
+    const listUrls = filteredURLs.map((domain) => {
       var update = this.props.update;
       var updateDNS = this.props.updateDNS;
       var updateSSL = this.props.updateSSL;

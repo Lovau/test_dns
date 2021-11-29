@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
 import DomainDataService from "services/DomainService";
-import Helper from "helpers/Helper";
 import { Alert } from "components/Alert";
 import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
 import { alertService } from "services/AlertService";
+import Helper from "helpers/Helper";
+import configData from "config.json";
 const isValidDomain = require("is-valid-domain");
 
 export { DomainAddEdit };
@@ -226,14 +227,14 @@ function DomainAddEdit(props) {
             {...register("environment")}
             className={`custom-select ${errors.environment ? "is-invalid" : ""}`}
           >
-            {Helper.getEnvironmentList().map((option) => (
+            {configData.environments.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
             ))}
           </select>
         </div>
-        <div className="offset-5 invalid-feedback">{errors.brand?.message}</div>
+        <div className="offset-5 invalid-feedback">{errors.environment?.message}</div>
 
         <div className="offset-md-2 col-3 mt-2 label">
           <label htmlFor="live">Live EU</label>
@@ -241,7 +242,6 @@ function DomainAddEdit(props) {
         <div className="col-4 mt-2">
           <select
             name="live"
-            value={domain.live}
             {...register("live")}
             className={`custom-select ${errors.live ? "is-invalid" : ""}`}
           >
@@ -257,7 +257,6 @@ function DomainAddEdit(props) {
         <div className="col-4 mt-2">
           <select
             name="liveCN"
-            value={domain.liveCN}
             {...register("liveCN")}
             className={`custom-select ${errors.liveCN ? "is-invalid" : ""}`}
           >
@@ -321,7 +320,7 @@ function DomainAddEdit(props) {
       </div>
 
       <div className="form-row mb-3">
-        <div className="col-4 offset-6">
+        <div className="col-4 offset-6 mt-3">
           <button
             onClick={(e) => {
               e.stopPropagation();

@@ -11,29 +11,14 @@ import Helper from "helpers/Helper";
 import Column from "components/Column";
 import { Alert } from "components/Alert";
 import { alertService } from "services/AlertService";
-import { RedirectIfNotLoggedIn } from "admin/RedirectIfNotLoggedIn";
+import { userService } from "services/UserService";
+import configData from "config.json";
 
+const dynamicColumns = configData.dynamicColumns;
 const messageFilterNeedsToBeActive =
   "Too many URLs to proceed, please use the filters below first. If too many requests are triggered at the same time, some results may be wrong.";
 
-const dynamicColumns = [
-  {
-    name: "DNS",
-    isVisible: false,
-  },
-  {
-    name: "SSL",
-    isVisible: false,
-  },
-  {
-    name: "Redirection EU",
-    isVisible: true,
-  },
-  {
-    name: "Redirection CN",
-    isVisible: false,
-  },
-];
+var subscription;
 
 class FilterableURLList extends React.Component {
   constructor(props) {
@@ -48,9 +33,11 @@ class FilterableURLList extends React.Component {
     this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
     this.handleRedirection = this.handleRedirection.bind(this);
     this.handleRedirectionCN = this.handleRedirectionCN.bind(this);
+    this.onHeaderClick = this.onHeaderClick.bind(this);
 
     this.handleColumnChange = this.handleColumnChange.bind(this);
     this.handleDynamicColumnChange = this.handleDynamicColumnChange.bind(this);
+    this.isAdmin = this.isAdmin.bind(this);
   }
 
   handleKeyPress(e) {
@@ -113,9 +100,34 @@ class FilterableURLList extends React.Component {
     this.setUpdateToFalse();
   }
 
+  isAdmin() {
+    if (
+      !this.state ||
+      !this.state.user ||
+      !Object.prototype.hasOwnProperty.call(this.state.user, "uuid")
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  componentWillUnmount() {
+    return () => subscription.unsubscribe();
+  }
+
   componentDidMount() {
+    subscription = userService.user.subscribe((x) =>
+      this.setState({
+        user: x,
+      })
+    );
+
+    this.setState({
+      sort: null,
+    });
+
     // fixed data
-    var columns = Helper.getColumnsNames();
+    var columns = configData.columnsName;
     var columnsFilters = [];
     for (var i = 0; i < columns.length; i++) {
       columnsFilters[columns[i].columnNameDB] = {
@@ -149,7 +161,6 @@ class FilterableURLList extends React.Component {
   }
 
   componentDidUpdate() {
-    // console.log("update", this.props);
     if (this.state && this.state.msg && this.state.msg.length > 0) {
       alertService.warn(this.state.msg);
     }
@@ -234,6 +245,24 @@ class FilterableURLList extends React.Component {
     });
   }
 
+  onHeaderClick(e) {
+    if (this.state.sort && this.state.sort.column === e.target.dataset.column) {
+      this.setState({
+        sort: {
+          column: e.target.dataset.column,
+          order: this.state.sort.order === "DESC" ? "ASC" : "DESC",
+        },
+      });
+    } else {
+      this.setState({
+        sort: {
+          column: e.target.dataset.column,
+          order: "ASC",
+        },
+      });
+    }
+  }
+
   render() {
     var cnameFilter = "";
     if (this.state != null && "cname" in this.state) {
@@ -271,6 +300,8 @@ class FilterableURLList extends React.Component {
     var header3 = [];
     var columnsFilters = [];
     var classes;
+    var sortData = this.state && this.state.sort ? this.state.sort : null;
+
     if (this.state && "columnsFilters" in this.state) {
       columnsFilters = this.state.columnsFilters;
 
@@ -284,7 +315,7 @@ class FilterableURLList extends React.Component {
 
           header1.push(<th className={classes} key={column}></th>);
           header2.push(
-            <th className={classes} key={column}>
+            <th className={classes} key={column} data-column={column} onClick={this.onHeaderClick}>
               {this.state.columnsFilters[column].displayName}
             </th>
           );
@@ -414,7 +445,6 @@ class FilterableURLList extends React.Component {
 
     return (
       <Container fluid>
-        {this.props.isadmin && <RedirectIfNotLoggedIn />}
         <Row>
           <Col sm={6}>
             <Form>
@@ -455,7 +485,8 @@ class FilterableURLList extends React.Component {
                 updateRedirectionCN={updateRedirectionCN}
                 columnsFilters={columnsFilters}
                 dynamicColumnsFilters={dynamicColumnsFilters}
-                isadmin={this.props.isadmin}
+                isadmin={this.isAdmin()}
+                sort={sortData}
               />
             </Table>
           </Col>
