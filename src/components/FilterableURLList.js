@@ -301,7 +301,7 @@ class FilterableURLList extends React.Component {
     var columnsFilters = [];
     var classes;
     var sortData = this.state && this.state.sort ? this.state.sort : null;
-
+    var sortOrder;
     if (this.state && "columnsFilters" in this.state) {
       columnsFilters = this.state.columnsFilters;
 
@@ -309,14 +309,24 @@ class FilterableURLList extends React.Component {
         var isVisible = this.state.columnsFilters[column].isVisible;
         if (isVisible) {
           classes = "";
+          sortOrder = "";
           if (column === "comment") {
             classes = "comment";
+          }
+          if (sortData && sortData.column === column) {
+            sortOrder = sortData.order === "ASC" ? "asc" : "desc";
           }
 
           header1.push(<th className={classes} key={column}></th>);
           header2.push(
-            <th className={classes} key={column} data-column={column} onClick={this.onHeaderClick}>
-              {this.state.columnsFilters[column].displayName}
+            <th className={classes} key={column}>
+              <div
+                className={`th-inner sortable both ${sortOrder}`}
+                data-column={column}
+                onClick={this.onHeaderClick}
+              >
+                {this.state.columnsFilters[column].displayName}
+              </div>
             </th>
           );
           header3.push(
@@ -467,9 +477,9 @@ class FilterableURLList extends React.Component {
           </Col>
         </Row>
         <Alert autoClose={false} />
-        <Row>
-          <Col sm={12}>
-            <Table striped bordered hover size="sm" className="URLList">
+        <Row className="bootstrap-table">
+          <Col sm={12} className="fixed-table-container">
+            <Table striped bordered hover size="sm" className="table URLList">
               <thead>
                 <tr>{header1}</tr>
                 <tr>{header2}</tr>

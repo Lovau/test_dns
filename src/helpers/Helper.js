@@ -58,13 +58,28 @@ const Helper = {
   },
 
   dynamicSort(property) {
+    console.log("sorting", property);
     var sortOrder = 1;
     if (property[0] === "-") {
       sortOrder = -1;
       property = property.substr(1);
     }
     return function (a, b) {
-      var result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      var result;
+      if (
+        !Object.prototype.hasOwnProperty.call(a, property) &&
+        !Object.prototype.hasOwnProperty.call(b, property)
+      ) {
+        return 0;
+      }
+      if (!Object.prototype.hasOwnProperty.call(a, property)) {
+        result = -1;
+      } else if (!Object.prototype.hasOwnProperty.call(b, property)) {
+        result = 1;
+      } else {
+        result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      }
+
       return result * sortOrder;
     };
   },
