@@ -8,16 +8,19 @@ import { userService } from "services/UserService";
 
 function Login() {
     const [login, setLogin] = useState("");
+    const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState("");
 
     let history = useHistory();
 
     function submit() {
-        console.log("submit", login, password);
+        setLoading(true);
+        // console.log("submit", login, password);
         return userService
             .login(login, password)
             .then(() => {
-                console.log("Login success!", userService.userValue);
+                setLoading(false);
+                // console.log("Login success!", userService.userValue);
                 // history.push("/admin");
             })
             .catch(alertService.error);
@@ -72,9 +75,9 @@ function Login() {
                         </Form.Group>
                         <Form.Group controlId="exampleForm.Submit">
                             <Row>
-                                <Col sm={{ span: 4, offset: 7 }}>
-                                    <Button variant="success" onClick={submit}>
-                                        Login
+                                <Col sm={{ span: 6, offset: 5 }}>
+                                    <Button variant="success" onClick={submit} disabled={loading}>
+                                        {loading && <div className="loader"></div>}Login
                                     </Button>
                                 </Col>
                             </Row>

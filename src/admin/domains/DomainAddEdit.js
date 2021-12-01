@@ -154,7 +154,7 @@ function DomainAddEdit(props) {
       .then((response) => {
         console.log("Creation response", response);
         alertService.success("Domain added", { keepAfterRouteChange: true });
-        history.push("/admin");
+        history.push("/");
       })
       .catch(alertService.error);
   };
@@ -180,7 +180,7 @@ function DomainAddEdit(props) {
     DomainDataService.delete(domain.uuid)
       .then((response) => {
         console.log(response);
-        props.history.push("/admin");
+        history.push("/");
         alertService.success("The domain was deleted successfully!");
       })
       .catch(alertService.error);
