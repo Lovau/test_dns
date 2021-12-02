@@ -3,26 +3,38 @@
 	"API_DNS": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=",
 	"API_SSL": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getsslexpirydate?DNS=",
 	"API_REDIRECT": "https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/getredirect?URL=",
+  "API_KEY_CN": "8jwGj8AWW31lCVyh9uvzOajnD9IYBnkk7XwUYDuK",
+  "API_DNS_CN": "https://xdif5k73cc.execute-api.cn-north-1.amazonaws.com.cn/prod/dnslookup?DNS=",
+  "API_SSL_CN": "https://xdif5k73cc.execute-api.cn-north-1.amazonaws.com.cn/prod/getsslexpirydate?DNS=",
+  "API_REDIRECT_CN": "https://xdif5k73cc.execute-api.cn-north-1.amazonaws.com.cn/prod/getredirect?URL=",
 	"API_DOMAIN_BASE_URL": "https://ccm35rsq84.execute-api.eu-west-1.amazonaws.com/prod/domains",
 	"API_USERS": "http://localhost:4000/users",
-	"dynamicColumns": [
-	  {
-	    "name": "DNS",
-	    "isVisible": false
-	  },
-	  {
-	    "name": "SSL",
-	    "isVisible": false
-	  },
-	  {
-	    "name": "Redirection EU",
-	    "isVisible": true
-	  },
-	  {
-	    "name": "Redirection CN",
-	    "isVisible": false
-	  }
-	],
+    "dynamicColumns": [
+      {
+        "name": "DNS EU",
+        "isVisible": false
+      },
+      {
+        "name": "DNS CN",
+        "isVisible": false
+      },
+      {
+        "name": "SSL EU",
+        "isVisible": false
+      },
+      {
+        "name": "SSL CN",
+        "isVisible": false
+      },
+      {
+        "name": "Redirection EU",
+        "isVisible": false
+      },
+      {
+        "name": "Redirection CN",
+        "isVisible": false
+      }
+    ],
 	"environments": ["RC", "Staging", "Prod Tech", "Public prod"],
 	"columnsName": [
       {

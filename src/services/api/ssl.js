@@ -2,24 +2,25 @@ import configData from "config.json";
 const fetch = require("node-fetch");
 
 const SSL = {
-	async getSSLExpiryDate(domain) {
+	async getSSLExpiryDate(domain, isChina = false) {
+		var ApiURL = isChina ? configData.API_SSL_CN : configData.API_SSL;
 		return new Promise((resolve, reject) => {
-			fetch(configData.API_SSL + domain, {
+			fetch(ApiURL + domain, {
 				method: "GET",
 				headers: {
-					"x-api-key": configData.API_KEY,
+					"x-api-key": isChina ? configData.API_KEY_CN : configData.API_KEY,
 				},
 			})
 				.then((res) => res.json())
 				.then((body) => {
 					if (!body.daysRemaining) {
-						console.log("getSSL err1", configData.API_SSL + domain, body);
+						console.log("getSSL err1", ApiURL + domain, body);
 						return reject(body);
 					}
 					return resolve(body.daysRemaining);
 				})
 				.catch((err) => {
-					console.log("getSSL err2", configData.API_SSL + domain, err);
+					console.log("getSSL err2", ApiURL + domain, err);
 					reject(err);
 				});
 		});

@@ -196,14 +196,18 @@ class URLList extends React.Component {
     const listUrls = filteredURLs.map((domain) => {
       var update = this.props.update;
       var updateDNS = this.props.updateDNS;
+      var updateDNSCN = this.props.updateDNSCN;
       var updateSSL = this.props.updateSSL;
+      var updateSSLCN = this.props.updateSSLCN;
       var updateRedirection = this.props.updateRedirection;
       var updateRedirectionCN = this.props.updateRedirectionCN;
       var display = true;
       if (this.URLisFiltered(domain)) {
         update = false;
         updateDNS = false;
+        updateDNSCN = false;
         updateSSL = false;
+        updateSSLCN = false;
         updateRedirection = false;
         updateRedirectionCN = false;
         display = false;
@@ -229,7 +233,9 @@ class URLList extends React.Component {
           cnameMapping={cnameMapping}
           update={update}
           updateDNS={updateDNS}
+          updateDNSCN={updateDNSCN}
           updateSSL={updateSSL}
+          updateSSLCN={updateSSLCN}
           updateRedirection={updateRedirection}
           updateRedirectionCN={updateRedirectionCN}
           display={display}

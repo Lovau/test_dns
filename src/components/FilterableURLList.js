@@ -30,7 +30,9 @@ class FilterableURLList extends React.Component {
     this.handleFilterRedirectChange = this.handleFilterRedirectChange.bind(this);
 
     this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
+    this.handleDNSVerificationsCN = this.handleDNSVerificationsCN.bind(this);
     this.handleSSLVerifications = this.handleSSLVerifications.bind(this);
+    this.handleSSLVerificationsCN = this.handleSSLVerificationsCN.bind(this);
     this.handleRedirection = this.handleRedirection.bind(this);
     this.handleRedirectionCN = this.handleRedirectionCN.bind(this);
     this.onHeaderClick = this.onHeaderClick.bind(this);
@@ -183,7 +185,9 @@ class FilterableURLList extends React.Component {
     this.setState({
       update: false,
       updateDNS: false,
+      updateDNSCN: false,
       updateSSL: false,
+      updateSSLCN: false,
       updateRedirection: false,
       updateRedirectionCN: false,
     });
@@ -211,6 +215,17 @@ class FilterableURLList extends React.Component {
       updateDNS: true,
     });
   }
+  handleDNSVerificationsCN() {
+    if (!this.isFilterActive()) {
+      this.setState({
+        msg: messageFilterNeedsToBeActive,
+      });
+      return;
+    }
+    this.setState({
+      updateDNSCN: true,
+    });
+  }
   handleSSLVerifications() {
     if (!this.isFilterActive()) {
       this.setState({
@@ -220,6 +235,17 @@ class FilterableURLList extends React.Component {
     }
     this.setState({
       updateSSL: true,
+    });
+  }
+  handleSSLVerificationsCN() {
+    if (!this.isFilterActive()) {
+      this.setState({
+        msg: messageFilterNeedsToBeActive,
+      });
+      return;
+    }
+    this.setState({
+      updateSSLCN: true,
     });
   }
   handleRedirection() {
@@ -280,9 +306,17 @@ class FilterableURLList extends React.Component {
     if (this.state != null && "updateDNS" in this.state) {
       updateDNS = this.state.updateDNS;
     }
+    var updateDNSCN = false;
+    if (this.state != null && "updateDNSCN" in this.state) {
+      updateDNSCN = this.state.updateDNSCN;
+    }
     var updateSSL = false;
     if (this.state != null && "updateSSL" in this.state) {
       updateSSL = this.state.updateSSL;
+    }
+    var updateSSLCN = false;
+    if (this.state != null && "updateSSLCN" in this.state) {
+      updateSSLCN = this.state.updateSSLCN;
     }
     var updateRedirection = false;
     if (this.state != null && "updateRedirection" in this.state) {
@@ -361,7 +395,7 @@ class FilterableURLList extends React.Component {
       for (column in this.state.dynamicColumnsFilters) {
         isVisible = this.state.dynamicColumnsFilters[column].isVisible;
         if (isVisible) {
-          if (column === "DNS") {
+          if (column === "DNS EU") {
             header1.push(
               <th key="headerDNS1">
                 <Button variant="outline-info" onClick={this.handleDNSVerifications}>
@@ -369,7 +403,7 @@ class FilterableURLList extends React.Component {
                 </Button>
               </th>
             );
-            header2.push(<th key="headerDNS2">DNS</th>);
+            header2.push(<th key="headerDNS2">DNS EU</th>);
             header3.push(
               <th key="headerDNS3">
                 <Form>
@@ -384,7 +418,30 @@ class FilterableURLList extends React.Component {
                 </Form>
               </th>
             );
-          } else if (column === "SSL") {
+          } else if (column === "DNS CN") {
+            header1.push(
+              <th key="headerDNSCN1">
+                <Button variant="outline-info" onClick={this.handleDNSVerificationsCN}>
+                  Test
+                </Button>
+              </th>
+            );
+            header2.push(<th key="headerDNSCN2">DNS CN</th>);
+            header3.push(
+              <th key="headerDNSCN3">
+                <Form>
+                  <Form.Control
+                    size="sm"
+                    type="text"
+                    placeholder="DNS & server"
+                    value={cnameFilter}
+                    onChange={this.handleFilterCnameChange}
+                    onKeyPress={this.handleKeyPress}
+                  />
+                </Form>
+              </th>
+            );
+          } else if (column === "SSL EU") {
             header1.push(
               <th key="headerSSL1">
                 <Button variant="outline-info" onClick={this.handleSSLVerifications}>
@@ -392,8 +449,18 @@ class FilterableURLList extends React.Component {
                 </Button>
               </th>
             );
-            header2.push(<th key="headerSSL2">SSL validity</th>);
+            header2.push(<th key="headerSSL2">SSL validity in EU</th>);
             header3.push(<th key="headerSSL3"></th>);
+          } else if (column === "SSL CN") {
+            header1.push(
+              <th key="headerSSLCN1">
+                <Button variant="outline-info" onClick={this.handleSSLVerificationsCN}>
+                  Test
+                </Button>
+              </th>
+            );
+            header2.push(<th key="headerSSLCN2">SSL validity in CN</th>);
+            header3.push(<th key="headerSSLCN3"></th>);
           } else if (column === "Redirection EU") {
             header1.push(
               <th key="headerRedirEU1">
@@ -490,7 +557,9 @@ class FilterableURLList extends React.Component {
                 redirectFilter={redirectFilter}
                 update={update}
                 updateDNS={updateDNS}
+                updateDNSCN={updateDNSCN}
                 updateSSL={updateSSL}
+                updateSSLCN={updateSSLCN}
                 updateRedirection={updateRedirection}
                 updateRedirectionCN={updateRedirectionCN}
                 columnsFilters={columnsFilters}

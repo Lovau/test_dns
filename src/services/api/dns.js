@@ -1,12 +1,13 @@
 import configData from "config.json";
 
 const DNS = {
-	async dnsExist(domain) {
+	async dnsExist(domain, isChina = false) {
+		var ApiURL = isChina ? configData.API_DNS_CN : configData.API_DNS;
 		return new Promise((resolve, reject) => {
-			fetch(configData.API_DNS + domain, {
+			fetch(ApiURL + domain, {
 				method: "GET",
 				headers: {
-					"x-api-key": configData.API_KEY,
+					"x-api-key": isChina ? configData.API_KEY_CN : configData.API_KEY,
 				},
 			})
 				.then((res) => res.json())
@@ -14,7 +15,7 @@ const DNS = {
 					resolve(body);
 				})
 				.catch((err) => {
-					console.log("getDNS err2", configData.API_DNS + domain, err);
+					console.log("getDNS err2", ApiURL + domain, err);
 					reject(err);
 				});
 		});
