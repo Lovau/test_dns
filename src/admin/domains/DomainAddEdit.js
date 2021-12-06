@@ -306,7 +306,7 @@ function DomainAddEdit(props) {
         <div className="offset-5 invalid-feedback">{errors.expectedRedirectCN?.message}</div>
 
         <div className="offset-md-2 col-3 mt-2 label">
-          <label htmlFor="changesTodo">Changes in progress - HookForm</label>
+          <label htmlFor="changesTodo">Changes in progress</label>
         </div>
         <div className="col-4 mt-2">
           <input
