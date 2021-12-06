@@ -119,7 +119,7 @@ class URL extends React.Component {
 
   updateDomain(domain) {
     DomainDataService.update(domain.uuid, domain)
-      .then((response) => {
+      .then(() => {
         alertService.success(
           `The domain <b>[${Helper._removeDomainProtocol(
             domain.domain
@@ -605,6 +605,12 @@ class URL extends React.Component {
           if (column in this.props) {
             value = this.props[column];
           }
+          if (column === "domain") {
+            value +=
+              "<a href='" +
+              this.props[column] +
+              "/0123456789129000OCVALID?stubapi' target='_blank' class='URLLink'></a>";
+          }
           if (column === "liveCN" && !this.props.liveCN) {
             value = "N";
           }
@@ -687,6 +693,8 @@ class URL extends React.Component {
                 dangerouslySetInnerHTML={{ __html: value }}
               ></td>
             );
+          } else if (column === "domain") {
+            TDs.push(<td key={column} dangerouslySetInnerHTML={{ __html: value }}></td>);
           } else {
             TDs.push(
               <td key={column}>

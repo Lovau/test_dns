@@ -91,3 +91,28 @@ table th.comment {
 .bootstrap-table .fixed-table-container .table.table-sm .th-inner {
   padding: 0.1rem;
 }
+.testAllButton {
+  display: none;
+}
+
+a.URLLink {
+  float: right;
+}
+a[href^="//"]:after, 
+a[href^="http://"]:after, 
+a[href^="https://"]:after
+{
+  content: url(http://upload.wikimedia.org/wikipedia/commons/6/64/Icon_External_Link.png);
+  margin: 0 0 0 5px;
+}
+
+a[href^="//localhost:3000/"]:after, 
+a[href^="//rolex-generate-test-links.hive.digital4danone.com/"]:after, 
+a[href^="http://localhost:3000/"]:after, 
+a[href^="http://rolex-generate-test-links.hive.digital4danone.com/"]:after, 
+a[href^="https://localhost:3000/"]:after,
+a[href^="https://rolex-generate-test-links.hive.digital4danone.com/"]:after
+{
+  content: "";
+  margin: 0;
+}

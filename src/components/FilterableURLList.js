@@ -52,7 +52,7 @@ class FilterableURLList extends React.Component {
     var columnName = e.target.placeholder;
     var columnDBName = Helper.getDBNameFromDisplayName(columnName);
     var columnsFilters = this.state.columnsFilters;
-    columnsFilters[columnDBName].filter = e.target.value;
+    columnsFilters[columnDBName].filter = e.target.value.trim();
     this.setState({
       columnsFilters: columnsFilters,
     });
@@ -534,7 +534,7 @@ class FilterableURLList extends React.Component {
               <Button
                 variant="outline-warning"
                 onClick={this.handleURLsVerifications}
-                className="mt-2 mb-2 main"
+                className="mt-2 mb-2 main testAllButton"
               >
                 Test all
               </Button>

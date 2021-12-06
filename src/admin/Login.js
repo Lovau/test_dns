@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Dropdown, Form, Button, Row, Col } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 import { alertService } from "services/AlertService";
 import { userService } from "services/UserService";
@@ -11,7 +11,7 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState("");
 
-    let history = useHistory();
+    // let history = useHistory();
 
     function submit() {
         setLoading(true);
