@@ -145,6 +145,13 @@ class URLList extends React.Component {
 
     for (var column in this.props.columnsFilters) {
       if (
+        Object.prototype.hasOwnProperty.call(domain, column) &&
+        typeof domain[column] === "boolean"
+      ) {
+        domain[column] = domain[column] ? "Y" : "N";
+      }
+
+      if (
         this.props.columnsFilters[column].isVisible &&
         this.props.columnsFilters[column].filter &&
         this.props.columnsFilters[column].filter.length > 0 &&
