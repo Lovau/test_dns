@@ -52,7 +52,7 @@ class FilterableURLList extends React.Component {
     var columnName = e.target.placeholder;
     var columnDBName = Helper.getDBNameFromDisplayName(columnName);
     var columnsFilters = this.state.columnsFilters;
-    columnsFilters[columnDBName].filter = e.target.value.trim();
+    columnsFilters[columnDBName].filter = e.target.value;
     this.setState({
       columnsFilters: columnsFilters,
     });
