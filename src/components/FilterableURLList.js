@@ -164,7 +164,10 @@ class FilterableURLList extends React.Component {
 
   componentDidUpdate() {
     if (this.state && this.state.msg && this.state.msg.length > 0) {
-      alertService.warn(this.state.msg);
+      alertService.warn(this.state.msg, { autoClose: true });
+      this.setState({
+        msg: null,
+      });
     }
   }
 

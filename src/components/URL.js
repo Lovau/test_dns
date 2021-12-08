@@ -59,7 +59,7 @@ class URL extends React.Component {
   }
 
   setEditMode() {
-    if (!this.state.editMode) {
+    if (this.props.isadmin && !this.state.editMode) {
       this.setState({
         editMode: true,
       });
