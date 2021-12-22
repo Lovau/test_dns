@@ -15,8 +15,8 @@ const Helper = {
   },
 
   getRandomSGTIN() {
-    // return '0' + this._randomstring(12, false) + '9' + this._randomstring(11, true);
-    return this._randomstring(3, false);
+    return "0" + this._randomstring(12, false) + "9" + this._randomstring(11, true);
+    // return this._randomstring(3, false);
   },
 
   _removeDomainProtocol(domain) {
