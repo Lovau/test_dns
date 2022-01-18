@@ -516,9 +516,10 @@ class URL extends React.Component {
       tdRedirectionClass = "updating";
     }
     if (
-      typeof this.state.redirects !== "undefined" &&
-      typeof this.state.redirects.redirectWithoutSGTIN.redirect !== "undefined" &&
-      typeof this.state.redirects.redirectWithSGTIN.redirect !== "undefined"
+      typeof this.state.redirects !== "undefined"
+      //  &&
+      // typeof this.state.redirects.redirectWithoutSGTIN.redirect !== "undefined" &&
+      // typeof this.state.redirects.redirectWithSGTIN.redirect !== "undefined"
     ) {
       sameRedirectionsWithOrWithoutSGTIN = this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
 
@@ -543,6 +544,7 @@ class URL extends React.Component {
         }
       }
     }
+
     // Redirection CN
     var tdRedirectionClassCN = "";
     var RedirectionContentCN = "";
@@ -551,9 +553,10 @@ class URL extends React.Component {
       tdRedirectionClassCN = "updating";
     }
     if (
-      typeof this.state.redirectsCN !== "undefined" &&
-      typeof this.state.redirectsCN.redirectWithoutSGTIN.redirect !== "undefined" &&
-      typeof this.state.redirectsCN.redirectWithSGTIN.redirect !== "undefined"
+      typeof this.state.redirectsCN !== "undefined"
+      //  &&
+      // typeof this.state.redirectsCN.redirectWithoutSGTIN.redirect !== "undefined" &&
+      // typeof this.state.redirectsCN.redirectWithSGTIN.redirect !== "undefined"
     ) {
       sameRedirectionsWithOrWithoutSGTINCN =
         this.redirectionsWithSGTINisTheSameAsWithoutSGTIN(true);
