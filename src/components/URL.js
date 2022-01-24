@@ -352,7 +352,7 @@ class URL extends React.Component {
           SSLExpiryDate: SSLError,
         });
       }
-      console.log(domain + ": Error", err);
+      console.log(domain + ": SSL Error" + (isChina ? " from CN" : " from EU"), err);
     }
 
     var update = this.state.update;
@@ -377,7 +377,7 @@ class URL extends React.Component {
       }
     } catch (err) {
       redirects.redirectWithSGTIN.msg = RedirectionError;
-      console.log(domain + ": Error", err);
+      console.log(domain + ": redir Error" + (isChina ? " from CN" : " from EU"), err);
     }
 
     var update = this.state.update;
@@ -400,7 +400,7 @@ class URL extends React.Component {
       }
     } catch (err) {
       redirects.redirectWithoutSGTIN.msg = RedirectionError;
-      console.log(domain + ": Error", err);
+      console.log(domain + ": redir Error" + (isChina ? " from CN" : " from EU"), err);
     }
 
     if (isChina) {

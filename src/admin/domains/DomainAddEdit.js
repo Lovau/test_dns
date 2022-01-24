@@ -111,7 +111,6 @@ function DomainAddEdit(props) {
 
   const validateAndCleanData = (domain) => {
     var URL = domain.domain;
-    console.log("before clean", domain);
 
     try {
       URL = validateAndCleanDomain(URL);
@@ -137,7 +136,6 @@ function DomainAddEdit(props) {
       expectedRedirectCN: domain.expectedRedirectCN ? domain.expectedRedirectCN.trim() : "",
       changesTodo: domain.changesTodo ? domain.changesTodo : false,
     };
-    console.log("after clean", data.changesTodo);
 
     return data;
   };
