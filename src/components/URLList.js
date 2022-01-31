@@ -132,7 +132,7 @@ class URLList extends React.Component {
   }
 
   URLisFiltered(domain) {
-    var dns = Helper._removeDomainProtocol(domain.brand);
+    var dns = Helper._removeDomainProtocol(domain.domain);
     if (
       this.props.cnameFilter.length > 0 &&
       (!(dns in this.state.domainsToCnames) ||
