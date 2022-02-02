@@ -333,14 +333,6 @@ class FilterableURLList extends React.Component {
   }
 
   render() {
-    var cnameFilter = "";
-    if (this.state != null && "cname" in this.state) {
-      cnameFilter = this.state.cname;
-    }
-    var aemFolderFilter = "";
-    if (this.state != null && "aemFolderFilter" in this.state) {
-      aemFolderFilter = this.state.aemFolderFilter;
-    }
     var update = false;
     if (this.state != null && "update" in this.state) {
       update = this.state.update;
@@ -651,7 +643,6 @@ class FilterableURLList extends React.Component {
                 <tr>{header3}</tr>
               </thead>
               <URLList
-                cnameFilter={cnameFilter}
                 update={update}
                 updateDNS={updateDNS}
                 updateDNSCN={updateDNSCN}

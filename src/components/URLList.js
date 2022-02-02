@@ -133,34 +133,13 @@ class URLList extends React.Component {
 
   URLisFiltered(domain) {
     var dns = Helper._removeDomainProtocol(domain.domain);
-    // if (
-    //   this.props.cnameFilter.length > 0 &&
-    //   (!(dns in this.state.domainsToCnames) ||
-    //     !this.state.domainsToCnames[dns]
-    //       .toLowerCase()
-    //       .includes(this.props.cnameFilter.toLowerCase()))
-    // ) {
-    //   return true;
-    // }
 
-    //TODO filter based on this.props.dynamicColumnsFilters
     for (var column in this.props.dynamicColumnsFilters) {
       if (
         this.props.dynamicColumnsFilters[column].isVisible &&
         this.props.dynamicColumnsFilters[column].filter &&
         this.props.dynamicColumnsFilters[column].filter.length > 0
       ) {
-        // DNS
-        // if (
-        //   (column === "DNS EU" || column === "DNS CN") &&
-        //   (!(dns in this.state.domainsToCnames) ||
-        //     !this.state.domainsToCnames[dns]
-        //       .toLowerCase()
-        //       .includes(this.props.cnameFilter.toLowerCase()))
-        // ) {
-        //   return true;
-        // }
-
         if (
           this.state.dynamicValuesByDomain &&
           this.state.dynamicValuesByDomain[dns] &&
@@ -194,8 +173,6 @@ class URLList extends React.Component {
         return true;
       }
     }
-    // console.log("cnamefilter", this.props.cnameFilter);
-    // console.log("dynamicfilter", this.props.dynamicColumnsFilters);
 
     return false;
   }
