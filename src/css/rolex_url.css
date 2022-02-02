@@ -116,3 +116,12 @@ a[href^="https://rolex-generate-test-links.hive.digital4danone.com/"]:after
   content: "";
   margin: 0;
 }
+.table-striped tbody tr:not(.hide):nth-of-type(odd) {
+  background-color: #303030;
+}
+.table-striped tbody tr:not(.hide):nth-of-type(even) {
+  background-color: #222;
+}
+.hide {
+  display: none;
+}

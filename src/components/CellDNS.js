@@ -28,7 +28,8 @@ export default class CellDNS extends React.Component {
 	}
 
 	async getDNSDetails(domain) {
-		var domainAndCnameData = {};
+		var filter = {};
+		var filterValue = "";
 		try {
 			var response = await DNS.dnsExist(
 				Helper._removeDomainProtocol(domain),
@@ -59,15 +60,19 @@ export default class CellDNS extends React.Component {
 				otherRecords: otherRecords,
 			});
 
-			domainAndCnameData[Helper._removeDomainProtocol(domain)] = cname + " " + server;
+			filterValue = cname + " " + server;
 		} catch (err) {
 			this.setState({
 				cname: cnameErrorMessage,
 			});
-			domainAndCnameData[Helper._removeDomainProtocol(domain)] = cnameErrorMessage;
+			filterValue = cnameErrorMessage;
 			console.log(domain + ": Error", err);
 		} finally {
-			this.props.parentCallback(domainAndCnameData);
+			var filterKey = "DNS " + (this.props.isChina ? "CN" : "EU");
+			filter[Helper._removeDomainProtocol(this.props.domain)] = {
+				[filterKey]: filterValue,
+			};
+			this.props.dynamicFilterCallback(filter);
 		}
 
 		this.setState({

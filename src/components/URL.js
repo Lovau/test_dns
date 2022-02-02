@@ -7,6 +7,7 @@ import { alertService } from "services/AlertService";
 import CellDNS from "components/CellDNS";
 import CellSSL from "components/CellSSL";
 import CellRedirect from "components/CellRedirect";
+import CellAEMFolder from "components/CellAEMFolder";
 
 // curl --location --request https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: 44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6'
 // curl --location --request https://fd902g59y1.execute-api.eu-west-1.amazonaws.com/prod/dnslookup?DNS=qrt.aptaclub.de --header 'x-api-key: ARISr1o5Cp5ElA4GyfbWeR4hgrZeINBaeLTuJZ04'
@@ -255,64 +256,54 @@ export default class URL extends React.Component {
       for (column in this.props.dynamicColumnsFilters) {
         if (this.props.dynamicColumnsFilters[column].isVisible) {
           value = "";
-          if (column === "DNS EU") {
+          if (column === "DNS EU" || column === "DNS CN") {
             TDs.push(
               <CellDNS
-                key="DNSEU"
+                key={column}
                 domain={this.props.domain}
-                isChina={false}
-                updateDNS={this.props.updateDNS}
+                isChina={column === "DNS CN"}
+                update={column === "DNS EU" ? this.props.updateDNS : this.props.updateDNSCN}
                 cnameMapping={this.props.cnameMapping}
-                parentCallback={this.props.parentCallback}
+                dynamicFilterCallback={this.props.dynamicFilterCallback}
               />
             );
-          } else if (column === "DNS CN") {
-            TDs.push(
-              <CellDNS
-                key="DNSCN"
-                domain={this.props.domain}
-                isChina={true}
-                update={this.props.updateDNSCN}
-                cnameMapping={this.props.cnameMapping}
-                parentCallback={this.props.parentCallback}
-              />
-            );
-          } else if (column === "SSL EU") {
+          } else if (column === "SSL EU" || column === "SSL CN") {
             TDs.push(
               <CellSSL
-                key="SSLEU"
+                key={column}
                 domain={this.props.domain}
-                isChina={false}
-                update={this.props.updateSSL}
+                isChina={column === "SSL CN"}
+                update={column === "SSL EU" ? this.props.updateSSL : this.props.updateSSLCN}
               />
             );
-          } else if (column === "SSL CN") {
-            TDs.push(
-              <CellSSL
-                key="SSLCN"
-                domain={this.props.domain}
-                isChina={true}
-                update={this.props.updateSSLCN}
-              />
-            );
-          } else if (column === "Redirection EU") {
+          } else if (column === "Redirection EU" || column === "Redirection CN") {
             TDs.push(
               <CellRedirect
-                key="redirectEU"
+                key={column}
                 url={this.state.url}
                 domain={this.props.domain}
-                isChina={false}
-                update={this.props.updateRedirection}
+                isChina={column === "Redirection CN"}
+                update={
+                  column === "Redirection EU"
+                    ? this.props.updateRedirection
+                    : this.props.updateRedirectionCN
+                }
+                dynamicFilterCallback={this.props.dynamicFilterCallback}
               />
             );
-          } else if (column === "Redirection CN") {
+          } else if (column === "AEM Folder EU" || column === "AEM Folder CN") {
             TDs.push(
-              <CellRedirect
-                key="redirectCN"
-                url={this.state.url}
+              <CellAEMFolder
+                key={column}
                 domain={this.props.domain}
-                isChina={true}
-                update={this.props.updateRedirectionCN}
+                url={this.state.url}
+                isChina={column === "AEM Folder CN"}
+                update={this.props.updateAEMFolder}
+                dynamicFilterCallback={
+                  column === "AEM Folder EU"
+                    ? this.props.dynamicFilterCallback
+                    : this.props.dynamicFilterCallback
+                }
               />
             );
           }
@@ -322,6 +313,10 @@ export default class URL extends React.Component {
       }
     }
 
-    return <tr onClick={() => this.setActiveDomain()}>{TDs}</tr>;
+    return (
+      <tr onClick={() => this.setActiveDomain()} className={this.props.display ? "" : "hide"}>
+        {TDs}
+      </tr>
+    );
   }
 }

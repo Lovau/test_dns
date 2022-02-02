@@ -28,6 +28,7 @@ class FilterableURLList extends React.Component {
     this.handleFilterColumnChange = this.handleFilterColumnChange.bind(this);
     this.handleFilterCnameChange = this.handleFilterCnameChange.bind(this);
     this.handleFilterRedirectChange = this.handleFilterRedirectChange.bind(this);
+    this.handleDynamicFilterChange = this.handleDynamicFilterChange.bind(this);
 
     this.handleDNSVerifications = this.handleDNSVerifications.bind(this);
     this.handleDNSVerificationsCN = this.handleDNSVerificationsCN.bind(this);
@@ -35,6 +36,8 @@ class FilterableURLList extends React.Component {
     this.handleSSLVerificationsCN = this.handleSSLVerificationsCN.bind(this);
     this.handleRedirection = this.handleRedirection.bind(this);
     this.handleRedirectionCN = this.handleRedirectionCN.bind(this);
+    this.handleAEMFolder = this.handleAEMFolder.bind(this);
+    this.handleAEMFolderCN = this.handleAEMFolderCN.bind(this);
     this.onHeaderClick = this.onHeaderClick.bind(this);
 
     this.handleColumnChange = this.handleColumnChange.bind(this);
@@ -71,6 +74,19 @@ class FilterableURLList extends React.Component {
     this.setState({
       redirectFilter: e.target.value,
       msg: "",
+    });
+    this.setUpdateToFalse();
+  }
+
+  handleDynamicFilterChange(e) {
+    var dynamicColumnsFilters = this.state.dynamicColumnsFilters;
+    dynamicColumnsFilters[e.target.placeholder] = {
+      isVisible: true,
+      filter: e.target.value,
+      displayName: e.target.placeholder,
+    };
+    this.setState({
+      dynamicColumnsFilters: dynamicColumnsFilters,
     });
     this.setUpdateToFalse();
   }
@@ -193,6 +209,8 @@ class FilterableURLList extends React.Component {
       updateSSLCN: false,
       updateRedirection: false,
       updateRedirectionCN: false,
+      updateAEMFolder: false,
+      updateAEMFolderCN: false,
     });
   }
 
@@ -273,6 +291,28 @@ class FilterableURLList extends React.Component {
       updateRedirectionCN: true,
     });
   }
+  handleAEMFolder() {
+    if (!this.isFilterActive()) {
+      this.setState({
+        msg: messageFilterNeedsToBeActive,
+      });
+      return;
+    }
+    this.setState({
+      updateAEMFolder: true,
+    });
+  }
+  handleAEMFolderCN() {
+    if (!this.isFilterActive()) {
+      this.setState({
+        msg: messageFilterNeedsToBeActive,
+      });
+      return;
+    }
+    this.setState({
+      updateAEMFolderCN: true,
+    });
+  }
 
   onHeaderClick(e) {
     if (this.state.sort && this.state.sort.column === e.target.dataset.column) {
@@ -297,9 +337,9 @@ class FilterableURLList extends React.Component {
     if (this.state != null && "cname" in this.state) {
       cnameFilter = this.state.cname;
     }
-    var redirectFilter = "";
-    if (this.state != null && "redirectFilter" in this.state) {
-      redirectFilter = this.state.redirectFilter;
+    var aemFolderFilter = "";
+    if (this.state != null && "aemFolderFilter" in this.state) {
+      aemFolderFilter = this.state.aemFolderFilter;
     }
     var update = false;
     if (this.state != null && "update" in this.state) {
@@ -328,6 +368,14 @@ class FilterableURLList extends React.Component {
     var updateRedirectionCN = false;
     if (this.state != null && "updateRedirectionCN" in this.state) {
       updateRedirectionCN = this.state.updateRedirectionCN;
+    }
+    var updateAEMFolder = false;
+    if (this.state != null && "updateAEMFolder" in this.state) {
+      updateAEMFolder = this.state.updateAEMFolder;
+    }
+    var updateAEMFolderCN = false;
+    if (this.state != null && "updateAEMFolderCN" in this.state) {
+      updateAEMFolderCN = this.state.updateAEMFolderCN;
     }
 
     var checkboxes = [];
@@ -395,8 +443,9 @@ class FilterableURLList extends React.Component {
     var dynamicColumnsFilters = [];
     if (this.state && "dynamicColumnsFilters" in this.state) {
       dynamicColumnsFilters = this.state.dynamicColumnsFilters;
-      for (column in this.state.dynamicColumnsFilters) {
-        isVisible = this.state.dynamicColumnsFilters[column].isVisible;
+
+      for (column in dynamicColumnsFilters) {
+        isVisible = dynamicColumnsFilters[column].isVisible;
         if (isVisible) {
           if (column === "DNS EU") {
             header1.push(
@@ -413,9 +462,9 @@ class FilterableURLList extends React.Component {
                   <Form.Control
                     size="sm"
                     type="text"
-                    placeholder="DNS & server"
-                    value={cnameFilter}
-                    onChange={this.handleFilterCnameChange}
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
@@ -436,9 +485,9 @@ class FilterableURLList extends React.Component {
                   <Form.Control
                     size="sm"
                     type="text"
-                    placeholder="DNS & server"
-                    value={cnameFilter}
-                    onChange={this.handleFilterCnameChange}
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
@@ -472,16 +521,16 @@ class FilterableURLList extends React.Component {
                 </Button>
               </th>
             );
-            header2.push(<th key="headerRedirEU2">Redirect EU</th>);
+            header2.push(<th key="headerRedirEU2">Redirection EU</th>);
             header3.push(
               <th key="headerRedirEU3">
                 <Form>
                   <Form.Control
                     size="sm"
                     type="text"
-                    placeholder="Redirect EU"
-                    value={redirectFilter}
-                    onChange={this.handleFilterRedirectChange}
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
@@ -495,16 +544,62 @@ class FilterableURLList extends React.Component {
                 </Button>
               </th>
             );
-            header2.push(<th key="headerRedirCN2">Redirect CN</th>);
+            header2.push(<th key="headerRedirCN2">Redirection CN</th>);
             header3.push(
               <th key="headerRedirCN3">
                 <Form>
                   <Form.Control
                     size="sm"
                     type="text"
-                    placeholder="Redirect CN"
-                    value={redirectFilter}
-                    onChange={this.handleFilterRedirectChange}
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
+                    onKeyPress={this.handleKeyPress}
+                  />
+                </Form>
+              </th>
+            );
+          } else if (column === "AEM Folder EU") {
+            header1.push(
+              <th key="headerAEMFolderEU1">
+                <Button variant="outline-info" onClick={this.handleAEMFolder}>
+                  Test
+                </Button>
+              </th>
+            );
+            header2.push(<th key="headerAEMFolderEU2">AEM Folder EU</th>);
+            header3.push(
+              <th key="headerAEMFolderEU3">
+                <Form>
+                  <Form.Control
+                    size="sm"
+                    type="text"
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
+                    onKeyPress={this.handleKeyPress}
+                  />
+                </Form>
+              </th>
+            );
+          } else if (column === "AEM Folder CN") {
+            header1.push(
+              <th key="headerAEMFolderCN1">
+                <Button variant="outline-info" onClick={this.handleAEMFolderCN}>
+                  Test
+                </Button>
+              </th>
+            );
+            header2.push(<th key="headerAEMFolderCN2">AEM Folder CN</th>);
+            header3.push(
+              <th key="headerAEMFolderCN3">
+                <Form>
+                  <Form.Control
+                    size="sm"
+                    type="text"
+                    placeholder={column}
+                    value={dynamicColumnsFilters[column].filter}
+                    onChange={this.handleDynamicFilterChange}
                     onKeyPress={this.handleKeyPress}
                   />
                 </Form>
@@ -557,7 +652,6 @@ class FilterableURLList extends React.Component {
               </thead>
               <URLList
                 cnameFilter={cnameFilter}
-                redirectFilter={redirectFilter}
                 update={update}
                 updateDNS={updateDNS}
                 updateDNSCN={updateDNSCN}
@@ -565,6 +659,8 @@ class FilterableURLList extends React.Component {
                 updateSSLCN={updateSSLCN}
                 updateRedirection={updateRedirection}
                 updateRedirectionCN={updateRedirectionCN}
+                updateAEMFolder={updateAEMFolder}
+                updateAEMFolderCN={updateAEMFolderCN}
                 columnsFilters={columnsFilters}
                 dynamicColumnsFilters={dynamicColumnsFilters}
                 isadmin={this.isAdmin()}

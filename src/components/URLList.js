@@ -17,17 +17,17 @@ class URLList extends React.Component {
     //  this.state.urls[2] = {'domain': "https://qrG.aptaclub.de", "update": false};
     this.state = {
       domainsToCnames: {},
+      dynamicValuesByDomain: {},
     };
 
-    this.handleCallback = this.handleCallback.bind(this);
+    this.dynamicFilterCallback = this.dynamicFilterCallback.bind(this);
     this.state.loadingURLs = false;
   }
 
-  handleCallback(childData) {
-    var domainsToCnames = { ...this.state.domainsToCnames, ...childData };
-
+  dynamicFilterCallback(childData) {
+    var dynamicValuesByDomain = { ...this.state.dynamicValuesByDomain, ...childData };
     this.setState({
-      domainsToCnames: domainsToCnames,
+      dynamicValuesByDomain: dynamicValuesByDomain,
     });
   }
 
@@ -133,17 +133,48 @@ class URLList extends React.Component {
 
   URLisFiltered(domain) {
     var dns = Helper._removeDomainProtocol(domain.domain);
-    if (
-      this.props.cnameFilter.length > 0 &&
-      (!(dns in this.state.domainsToCnames) ||
-        !this.state.domainsToCnames[dns]
-          .toLowerCase()
-          .includes(this.props.cnameFilter.toLowerCase()))
-    ) {
-      return true;
+    // if (
+    //   this.props.cnameFilter.length > 0 &&
+    //   (!(dns in this.state.domainsToCnames) ||
+    //     !this.state.domainsToCnames[dns]
+    //       .toLowerCase()
+    //       .includes(this.props.cnameFilter.toLowerCase()))
+    // ) {
+    //   return true;
+    // }
+
+    //TODO filter based on this.props.dynamicColumnsFilters
+    for (var column in this.props.dynamicColumnsFilters) {
+      if (
+        this.props.dynamicColumnsFilters[column].isVisible &&
+        this.props.dynamicColumnsFilters[column].filter &&
+        this.props.dynamicColumnsFilters[column].filter.length > 0
+      ) {
+        // DNS
+        // if (
+        //   (column === "DNS EU" || column === "DNS CN") &&
+        //   (!(dns in this.state.domainsToCnames) ||
+        //     !this.state.domainsToCnames[dns]
+        //       .toLowerCase()
+        //       .includes(this.props.cnameFilter.toLowerCase()))
+        // ) {
+        //   return true;
+        // }
+
+        if (
+          this.state.dynamicValuesByDomain &&
+          this.state.dynamicValuesByDomain[dns] &&
+          this.state.dynamicValuesByDomain[dns][column] &&
+          !this.state.dynamicValuesByDomain[dns][column]
+            .toLowerCase()
+            .includes(this.props.dynamicColumnsFilters[column].filter.toLowerCase())
+        ) {
+          return true;
+        }
+      }
     }
 
-    for (var column in this.props.columnsFilters) {
+    for (column in this.props.columnsFilters) {
       if (
         Object.prototype.hasOwnProperty.call(domain, column) &&
         typeof domain[column] === "boolean"
@@ -163,12 +194,13 @@ class URLList extends React.Component {
         return true;
       }
     }
+    // console.log("cnamefilter", this.props.cnameFilter);
+    // console.log("dynamicfilter", this.props.dynamicColumnsFilters);
 
     return false;
   }
 
   render() {
-    // if (!this.state || !("urls" in this.state) || this.state.urls.length < 1) {
     if (this.state && this.state.loadingURLs) {
       return (
         <tbody>
@@ -189,18 +221,19 @@ class URLList extends React.Component {
 
     var redirectFilter = this.props.redirectFilter;
 
-    const filteredURLs = this.state.domains.filter((domain) => {
-      if (!this.URLisFiltered(domain)) {
-        return domain;
-      }
-    });
+    // const filteredURLs = this.state.domains.filter((domain) => {
+    //   if (!this.URLisFiltered(domain)) {
+    //     return domain;
+    //   }
+    // });
 
     if (this.props.sort && this.props.sort.column) {
       var sortOrder = this.props.sort.order === "ASC" ? "" : "-";
-      filteredURLs.sort(Helper.dynamicSort(sortOrder + this.props.sort.column));
+      // filteredURLs.sort(Helper.dynamicSort(sortOrder + this.props.sort.column));
+      this.state.domains.sort(Helper.dynamicSort(sortOrder + this.props.sort.column));
     }
 
-    const listUrls = filteredURLs.map((domain) => {
+    const listUrls = this.state.domains.map((domain) => {
       var update = this.props.update;
       var updateDNS = this.props.updateDNS;
       var updateDNSCN = this.props.updateDNSCN;
@@ -208,6 +241,8 @@ class URLList extends React.Component {
       var updateSSLCN = this.props.updateSSLCN;
       var updateRedirection = this.props.updateRedirection;
       var updateRedirectionCN = this.props.updateRedirectionCN;
+      var updateAEMFolder = this.props.updateAEMFolder;
+      var updateAEMFolderCN = this.props.updateAEMFolderCN;
       var display = true;
       if (this.URLisFiltered(domain)) {
         update = false;
@@ -217,25 +252,26 @@ class URLList extends React.Component {
         updateSSLCN = false;
         updateRedirection = false;
         updateRedirectionCN = false;
+        updateAEMFolder = false;
+        updateAEMFolderCN = false;
         display = false;
       }
 
       domain.brand = domain.brand.trim();
-
       return (
         <URL
           key={domain.domain}
           uuid={domain.uuid}
           domain={domain.domain}
-          brand={domain.brand} // dynamic field
-          environment={domain.environment} // dynamic field
-          live={domain.live} // dynamic field
-          liveCN={domain.liveCN} // dynamic field
-          comment={domain.comment} // dynamic field
-          updated={domain.updated} // dynamic field
-          expectedRedirectEU={domain.expectedRedirectEU} // dynamic field
-          expectedRedirectCN={domain.expectedRedirectCN} // dynamic field
-          changesTodo={domain.changesTodo} // dynamic field
+          brand={domain.brand}
+          environment={domain.environment}
+          live={domain.live}
+          liveCN={domain.liveCN}
+          comment={domain.comment}
+          updated={domain.updated}
+          expectedRedirectEU={domain.expectedRedirectEU}
+          expectedRedirectCN={domain.expectedRedirectCN}
+          changesTodo={domain.changesTodo}
           redirectFilter={redirectFilter}
           cnameMapping={cnameMapping}
           update={update}
@@ -245,8 +281,10 @@ class URLList extends React.Component {
           updateSSLCN={updateSSLCN}
           updateRedirection={updateRedirection}
           updateRedirectionCN={updateRedirectionCN}
+          updateAEMFolder={updateAEMFolder}
+          updateAEMFolderCN={updateAEMFolderCN}
           display={display}
-          parentCallback={this.handleCallback}
+          dynamicFilterCallback={this.dynamicFilterCallback}
           columnsFilters={this.props.columnsFilters}
           dynamicColumnsFilters={this.props.dynamicColumnsFilters}
           isadmin={this.props.isadmin}
