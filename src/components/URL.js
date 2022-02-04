@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import DomainDataService from "services/DomainService";
@@ -17,87 +17,64 @@ import CellAEMFolder from "components/CellAEMFolder";
 // const API_REDIRECT = "https://tj4k759l15.execute-api.eu-west-1.amazonaws.com/test/getredirect?URL="; // sandbox
 // const API_KEY = "44XlITH2DCdahKjpe4401eT5070UwdK9xBFCJMR6"; //sandbox
 
-export default class URL extends React.Component {
-  constructor(props) {
-    super(props);
+export default function URL(props) {
+  const [url, setUrl] = useState(props.domain + "/" + Helper.getRandomSGTIN());
+  const [comment, setComment] = useState("");
+  const [isSelected, setIsSelected] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [changesTodo, setChangesTodo] = useState(false);
+  // var sgtin = Helper.getRandomSGTIN();
+  // state = {
+  //   sgtin: sgtin,
+  //   url: props.domain + "/" + sgtin,
+  // };
 
-    this.setActiveDomain = this.setActiveDomain.bind(this);
-    this.setEditMode = this.setEditMode.bind(this);
-    this.cancelEditMode = this.cancelEditMode.bind(this);
-    this.validateComment = this.validateComment.bind(this);
-    this.validateChangesTodo = this.validateChangesTodo.bind(this);
-    this.onChangeComment = this.onChangeComment.bind(this);
-    this.onChangeChangesTodo = this.onChangeChangesTodo.bind(this);
+  const toggleEditMode = () => {
+    setEditMode(props.isadmin && !editMode);
+  };
 
-    var sgtin = Helper.getRandomSGTIN();
-    this.state = {
-      sgtin: sgtin,
-      url: props.domain + "/" + sgtin,
-      isSelected: false,
-      editMode: false,
-    };
-  }
+  const onChangeComment = (e) => {
+    setComment(e.target.value);
+  };
 
-  setEditMode() {
-    if (this.props.isadmin && !this.state.editMode) {
-      this.setState({
-        editMode: true,
-      });
+  const onChangeChangesTodo = () => {
+    var val = props.changesTodo;
+    if (changesTodo) {
+      val = changesTodo;
     }
-  }
+    setChangesTodo(val === "Y" ? "N" : "Y");
+  };
 
-  onChangeComment(e) {
-    this.setState({
-      comment: e.target.value,
-    });
-  }
+  const cancelEditMode = () => {
+    setEditMode(false);
+    setComment(null);
+  };
 
-  onChangeChangesTodo() {
-    var val = this.props.changesTodo;
-    if (this.state && this.state.changesTodo) {
-      val = this.state.changesTodo;
-    }
-    this.setState({
-      changesTodo: val === "Y" ? "N" : "Y",
-    });
-  }
-
-  cancelEditMode() {
-    this.setState({
-      editMode: false,
-      comment: null,
-    });
-  }
-
-  validateComment() {
-    this.setState({
-      editMode: false,
-    });
-    if (!this.state.comment) {
+  const validateComment = () => {
+    setEditMode(false);
+    if (!comment) {
       return;
     }
 
-    var domain = Object.assign({}, this.props);
-    domain.comment = this.state.comment;
+    var domain = Object.assign({}, props);
+    domain.comment = comment;
 
-    this.updateDomain(domain);
-  }
+    updateDomain(domain);
+  };
 
-  validateChangesTodo() {
-    this.setState({
-      editMode: false,
-    });
-    if (!("changesTodo" in this.state)) {
+  const validateChangesTodo = () => {
+    setEditMode(false);
+    if (!changesTodo) {
       return;
     }
 
-    var domain = Object.assign({}, this.props);
-    domain.changesTodo = this.state.changesTodo === "Y" ? true : false;
+    var domain = Object.assign({}, props);
+    domain.changesTodo = changesTodo === "Y" ? true : false;
 
-    this.updateDomain(domain);
-  }
+    updateDomain(domain);
+  };
 
-  updateDomain(domain) {
+  const updateDomain = (domain) => {
     DomainDataService.update(domain.uuid, domain)
       .then(() => {
         alertService.success(
@@ -110,213 +87,181 @@ export default class URL extends React.Component {
         console.log(e);
         alertService.error(e.toString());
       });
+  };
+
+  const setActiveDomain = () => {
+    setIsSelected(!isSelected);
+  };
+
+  if (!props.display) {
+    return null;
   }
 
-  setActiveDomain() {
-    this.setState({
-      isSelected: !this.state.isSelected,
-    });
-  }
+  //TODO : display a message when a domain is successfully updated or if the update has an error
+  var TDs = [];
+  var countTD = 0;
+  var value;
+  var editLink = "";
 
-  render() {
-    //TODO : pass this display props to Cells and let the Cell handle the display,
-    // to avoid a filter emptying the dynamic values
-    if (!this.props.display) {
-      return null;
-    }
+  if (props && "columnsFilters" in props) {
+    for (var column in props.columnsFilters) {
+      if (props.columnsFilters[column].isVisible) {
+        value = "";
+        editLink = "";
+        if (column in props) {
+          value = props[column];
+        }
+        if (column === "domain") {
+          value +=
+            "<a href='" +
+            props[column] +
+            "/0123456789129000OCVALID?stubapi' target='_blank' class='URLLink'></a>";
+        }
+        if (column === "liveCN" && !props.liveCN) {
+          value = "N";
+        }
+        if (column === "comment" && comment) {
+          value = comment;
+        }
+        if (column === "changesTodo" && changesTodo) {
+          value = changesTodo;
+        }
+        if (column === "changesTodo" && editMode) {
+          value = value === "Y" ? true : false;
+        }
+        if (column === "comment" && !editMode) {
+          value = value.replace(/(?:\r\n|\r|\n)/g, "<br>");
+        }
 
-    // Filter
-    // TODO: why was this filter here ? move it elswhere
-    // if (
-    //   "redirectFilter" in this.props &&
-    //   this.props.redirectFilter.length > 0 &&
-    //   (RedirectionContent.length < 1 ||
-    //     !RedirectionContent.toLowerCase().includes(this.props.redirectFilter.toLowerCase()))
-    // ) {
-    //   return "";
-    // }
-
-    //TODO : display a message when a domain is successfully updated or if the update has an error
-    var TDs = [];
-    var countTD = 0;
-    var value;
-    var editLink = "";
-
-    if (this.props && "columnsFilters" in this.props) {
-      for (var column in this.props.columnsFilters) {
-        if (this.props.columnsFilters[column].isVisible) {
-          value = "";
-          editLink = "";
-          if (column in this.props) {
-            value = this.props[column];
-          }
-          if (column === "domain") {
-            value +=
-              "<a href='" +
-              this.props[column] +
-              "/0123456789129000OCVALID?stubapi' target='_blank' class='URLLink'></a>";
-          }
-          if (column === "liveCN" && !this.props.liveCN) {
-            value = "N";
-          }
-          if (column === "comment" && this.state.comment) {
-            value = this.state.comment;
-          }
-          if (column === "changesTodo" && this.state.changesTodo) {
-            value = this.state.changesTodo;
-          }
-          if (column === "changesTodo" && this.state.editMode) {
-            value = value === "Y" ? true : false;
-          }
-          if (column === "comment" && !this.state.editMode) {
-            value = value.replace(/(?:\r\n|\r|\n)/g, "<br>");
-          }
-
-          // if it is the 1st cell, we display here the edit button
-          if (this.props.isadmin && countTD === 0 && this.state && this.state.isSelected) {
-            editLink = (
-              <>
-                <Link
-                  to={"/admin/update/" + this.props.uuid}
-                  className="edit badge badge-warning"
-                  target="_blank"
-                >
-                  Edit
-                </Link>
-              </>
-            );
-          }
-          countTD++;
-          if (column === "comment" && this.state.editMode) {
-            TDs.push(
-              <td key={column} onClick={this.setEditMode}>
-                <textarea
-                  name="comment"
-                  id="comment"
+        // if it is the 1st cell, we display here the edit button
+        if (props.isadmin && countTD === 0 && isSelected) {
+          editLink = (
+            <>
+              <Link
+                to={"/admin/update/" + props.uuid}
+                className="edit badge badge-warning"
+                target="_blank"
+              >
+                Edit
+              </Link>
+            </>
+          );
+        }
+        countTD++;
+        if (column === "comment" && editMode) {
+          TDs.push(
+            <td key={column} onClick={toggleEditMode}>
+              <textarea
+                name="comment"
+                id="comment"
+                className="form-control"
+                onChange={onChangeComment}
+                defaultValue={value}
+                rows="3"
+              ></textarea>
+              <button onClick={cancelEditMode} className="badge badge-warning comment">
+                Cancel
+              </button>
+              <button onClick={validateComment} className="badge badge-success comment">
+                Submit
+              </button>
+            </td>
+          );
+        } else if (column === "changesTodo" && editMode) {
+          TDs.push(
+            <td key={column} onClick={toggleEditMode}>
+              <span className="changesTodoForm mt-1">
+                <input
+                  type="checkbox"
+                  name="changesTodo"
+                  id="changesTodo"
                   className="form-control"
-                  onChange={this.onChangeComment}
-                  defaultValue={value}
-                  rows="3"
-                ></textarea>
-                <button onClick={this.cancelEditMode} className="badge badge-warning comment">
+                  onChange={onChangeChangesTodo}
+                  checked={value}
+                />
+                <button onClick={cancelEditMode} className="badge badge-warning comment">
                   Cancel
                 </button>
-                <button onClick={this.validateComment} className="badge badge-success comment">
+                <button onClick={validateChangesTodo} className="badge badge-success comment">
                   Submit
                 </button>
-              </td>
-            );
-          } else if (column === "changesTodo" && this.state.editMode) {
-            TDs.push(
-              <td key={column} onClick={this.setEditMode}>
-                <span className="changesTodoForm mt-1">
-                  <input
-                    type="checkbox"
-                    name="changesTodo"
-                    id="changesTodo"
-                    className="form-control"
-                    onChange={this.onChangeChangesTodo}
-                    checked={value}
-                  />
-                  <button onClick={this.cancelEditMode} className="badge badge-warning comment">
-                    Cancel
-                  </button>
-                  <button
-                    onClick={this.validateChangesTodo}
-                    className="badge badge-success comment"
-                  >
-                    Submit
-                  </button>
-                </span>
-              </td>
-            );
-          } else if (column === "comment" || column === "changesTodo") {
-            TDs.push(
-              <td
-                key={column}
-                onClick={this.setEditMode}
-                dangerouslySetInnerHTML={{ __html: value }}
-              ></td>
-            );
-          } else if (column === "domain") {
-            TDs.push(<td key={column} dangerouslySetInnerHTML={{ __html: value }}></td>);
-          } else {
-            TDs.push(
-              <td key={column}>
-                {editLink}
-                {value}
-              </td>
-            );
-          }
+              </span>
+            </td>
+          );
+        } else if (column === "comment" || column === "changesTodo") {
+          TDs.push(
+            <td
+              key={column}
+              onClick={toggleEditMode}
+              dangerouslySetInnerHTML={{ __html: value }}
+            ></td>
+          );
+        } else if (column === "domain") {
+          TDs.push(<td key={column} dangerouslySetInnerHTML={{ __html: value }}></td>);
+        } else {
+          TDs.push(
+            <td key={column}>
+              {editLink}
+              {value}
+            </td>
+          );
         }
       }
     }
-
-    if (this.props && "dynamicColumnsFilters" in this.props) {
-      for (column in this.props.dynamicColumnsFilters) {
-        if (this.props.dynamicColumnsFilters[column].isVisible) {
-          value = "";
-          if (column === "DNS EU" || column === "DNS CN") {
-            TDs.push(
-              <CellDNS
-                key={column}
-                domain={this.props.domain}
-                isChina={column === "DNS CN"}
-                update={column === "DNS EU" ? this.props.updateDNS : this.props.updateDNSCN}
-                cnameMapping={this.props.cnameMapping}
-                dynamicFilterCallback={this.props.dynamicFilterCallback}
-              />
-            );
-          } else if (column === "SSL EU" || column === "SSL CN") {
-            TDs.push(
-              <CellSSL
-                key={column}
-                domain={this.props.domain}
-                isChina={column === "SSL CN"}
-                update={column === "SSL EU" ? this.props.updateSSL : this.props.updateSSLCN}
-              />
-            );
-          } else if (column === "Redirection EU" || column === "Redirection CN") {
-            TDs.push(
-              <CellRedirect
-                key={column}
-                url={this.state.url}
-                domain={this.props.domain}
-                isChina={column === "Redirection CN"}
-                update={
-                  column === "Redirection EU"
-                    ? this.props.updateRedirection
-                    : this.props.updateRedirectionCN
-                }
-                dynamicFilterCallback={this.props.dynamicFilterCallback}
-              />
-            );
-          } else if (column === "AEM Folder EU" || column === "AEM Folder CN") {
-            TDs.push(
-              <CellAEMFolder
-                key={column}
-                domain={this.props.domain}
-                url={this.state.url}
-                isChina={column === "AEM Folder CN"}
-                update={this.props.updateAEMFolder}
-                dynamicFilterCallback={
-                  column === "AEM Folder EU"
-                    ? this.props.dynamicFilterCallback
-                    : this.props.dynamicFilterCallback
-                }
-              />
-            );
-          }
-
-          countTD++;
-        }
-      }
-    }
-
-    return (
-      <tr onClick={() => this.setActiveDomain()} className={this.props.display ? "" : "hide"}>
-        {TDs}
-      </tr>
-    );
   }
+
+  if (props && "dynamicColumnsFilters" in props) {
+    for (column in props.dynamicColumnsFilters) {
+      if (props.dynamicColumnsFilters[column].isVisible) {
+        if (column === "DNS EU" || column === "DNS CN") {
+          TDs.push(
+            <CellDNS
+              key={column}
+              column={column}
+              domain={props.domain}
+              isChina={column === "DNS CN"}
+              cnameMapping={props.cnameMapping}
+            />
+          );
+        } else if (column === "SSL EU" || column === "SSL CN") {
+          TDs.push(
+            <CellSSL
+              key={column}
+              column={column}
+              domain={props.domain}
+              isChina={column === "SSL CN"}
+            />
+          );
+        } else if (column === "Redirection EU" || column === "Redirection CN") {
+          TDs.push(
+            <CellRedirect
+              key={column}
+              column={column}
+              url={url}
+              domain={props.domain}
+              isChina={column === "Redirection CN"}
+            />
+          );
+        } else if (column === "AEM Folder EU" || column === "AEM Folder CN") {
+          TDs.push(
+            <CellAEMFolder
+              key={column}
+              column={column}
+              domain={props.domain}
+              url={url}
+              isChina={column === "AEM Folder CN"}
+            />
+          );
+        }
+
+        countTD++;
+      }
+    }
+  }
+
+  return (
+    <tr onClick={() => setActiveDomain()} className={props.display ? "" : "hide"}>
+      {TDs}
+    </tr>
+  );
 }

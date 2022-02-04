@@ -1,58 +1,64 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Redirect from "services/api/redirect";
 import Helper from "helpers/Helper";
+import { useSelector, useDispatch } from "react-redux";
+import { setValue } from "services/reduxServices/DomainDynamicValueService";
 
 const AEMFolderNotFoundMessage = "Not found";
 
-export default class CellAEMFolder extends React.Component {
-	constructor(props) {
-		super(props);
+export default function CellAEMFolder(props) {
+	const [update, setUpdate] = useState(false);
+	const [aemFolder, setAemFolder] = useState(null);
 
-		this.state = {
-			update: false,
-		};
+	const reduxUpdates = useSelector((state) => state.DomainUpdate);
+	const reduxValues = useSelector((state) => state.DomainDynamicValue);
+	const dispatch = useDispatch();
+
+	var dns = Helper._removeDomainProtocol(props.domain);
+	if (!aemFolder && reduxValues[dns] && reduxValues[dns][props.column]) {
+		setAemFolder(reduxValues[dns][props.column]);
 	}
 
-	componentDidUpdate() {
-		if (this.props.update === true && !this.state.update && !this.state.aemFolder) {
-			this.setState({
-				update: true,
-			});
-			this.getRedirectionDetails(this.props.url, this.props.isChina);
+	// componentDidUpdate
+	useEffect(() => {
+		if (reduxUpdates[props.column] && !update && !aemFolder) {
+			setUpdate(true);
+			getRedirectionDetails();
 		}
-	}
+	}); // notice, no second argument
 
-	async getRedirectionDetails(domain, isChina = false) {
+	const getRedirectionDetails = async () => {
 		var aemFolder;
 		try {
-			var result = await Redirect.getRedirect(this.props.url, isChina);
+			var result = await Redirect.getRedirect(props.url, props.isChina);
 			aemFolder = AEMFolderNotFoundMessage;
 			if (result.AEM && result.AEM.folder) {
 				aemFolder = result.AEM.folder;
 			}
 		} catch (err) {
 			aemFolder = AEMFolderNotFoundMessage;
-			console.log(domain + ": redir Error" + (isChina ? " from CN" : " from EU"), err);
+			console.log(
+				props.url + ": redir Error" + (props.isChina ? " from CN" : " from EU"),
+				err
+			);
 		} finally {
-			this.setState({
-				aemFolder: aemFolder,
-				update: false,
-			});
-			var filter = {};
-			var filterKey = "AEM Folder " + (this.props.isChina ? "CN" : "EU");
-			filter[Helper._removeDomainProtocol(this.props.domain)] = {
-				[filterKey]: aemFolder,
-			};
-			this.props.dynamicFilterCallback(filter);
+			setUpdate(false);
+
+			dispatch(
+				setValue({
+					column: props.column,
+					dns: Helper._removeDomainProtocol(props.domain),
+					value: aemFolder,
+				})
+			);
+			setAemFolder(aemFolder);
 		}
+	};
+
+	var tdCnameClass = "";
+	if (update) {
+		tdCnameClass = "updating";
 	}
 
-	render() {
-		var tdCnameClass = "";
-		if (this.state.update) {
-			tdCnameClass = "updating";
-		}
-
-		return <td className={tdCnameClass}>{this.state?.aemFolder}</td>;
-	}
+	return <td className={tdCnameClass}>{aemFolder}</td>;
 }

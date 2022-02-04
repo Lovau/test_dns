@@ -1,60 +1,113 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Redirect from "services/api/redirect";
 import Helper from "helpers/Helper";
+import { useSelector, useDispatch } from "react-redux";
+import { setValue } from "services/reduxServices/DomainDynamicValueService";
 
 const RedirectionError = "Unable to get the redirection";
 const NoRedirectionMessage = "No redirection";
 const RolexExperienceMessage = "<span class='rolex-experience' >Rolex experience</span>";
 
-export default class CellRedirect extends React.Component {
-	constructor(props) {
-		super(props);
+export default function CellRedirect(props) {
+	const [update, setUpdate] = useState(null);
+	const [redirects, setRedirects] = useState(false);
+	const [displayedMsg, setDisplayedMsg] = useState(false);
 
-		this.state = {
-			update: false,
-		};
+	const reduxUpdates = useSelector((state) => state.DomainUpdate);
+	const reduxValues = useSelector((state) => state.DomainDynamicValue);
+	const dispatch = useDispatch();
+
+	var dns = Helper._removeDomainProtocol(props.domain);
+	if (!displayedMsg && reduxValues[dns] && reduxValues[dns][props.column]) {
+		setDisplayedMsg(reduxValues[dns][props.column]);
 	}
 
-	componentDidUpdate() {
+	// componentDidUpdate
+	useEffect(() => {
 		if (
-			this.props.update === true &&
-			!this.state.update &&
-			!this.state.redirWithoutSgtin &&
-			(typeof this.state.redirects === "undefined" ||
-				typeof this.state.redirects.redirectWithSGTIN === "undefined" ||
-				typeof this.state.redirects.redirectWithoutSGTIN === "undefined")
+			reduxUpdates[props.column] &&
+			!update &&
+			(typeof redirects === "undefined" ||
+				typeof redirects.redirectWithSGTIN === "undefined" ||
+				typeof redirects.redirectWithoutSGTIN === "undefined")
 		) {
-			this.setState({
-				update: {
-					redirWithSgtin: true,
-					redirWithoutSgtin: true,
-				},
+			setUpdate({
+				redirWithSgtin: true,
+				redirWithoutSgtin: true,
 			});
-			this.getRedirectionDetails();
+			getRedirectionDetails();
 		}
-	}
+	}); // notice, no second argument
 
-	getRedirectionDisplayedContent() {
+	const getRedirectionDetails = async () => {
+		var newUpdate = { ...update };
+		try {
+			var redirects = {};
+			redirects.redirectWithSGTIN = {};
+			redirects.redirectWithSGTIN = await Redirect.getRedirect(props.url, props.isChina);
+			redirects.redirectWithSGTIN.msg = redirects.redirectWithSGTIN.redirect;
+			if (redirects.redirectWithSGTIN.redirect === props.url) {
+				redirects.redirectWithSGTIN.msg = NoRedirectionMessage;
+			}
+		} catch (err) {
+			redirects.redirectWithSGTIN.msg = RedirectionError;
+			console.log(
+				props.domain + ": redir Error" + (props.isChina ? " from CN" : " from EU"),
+				err
+			);
+		} finally {
+			newUpdate.redirWithSgtin = false;
+			setUpdate(newUpdate);
+		}
+
+		try {
+			redirects.redirectWithoutSGTIN = {};
+			redirects.redirectWithoutSGTIN = await Redirect.getRedirect(
+				props.domain,
+				props.isChina
+			);
+			redirects.redirectWithoutSGTIN.msg = redirects.redirectWithoutSGTIN.redirect;
+			if (
+				redirects.redirectWithoutSGTIN.redirect === props.domain ||
+				redirects.redirectWithoutSGTIN.redirect === props.domain + "/" ||
+				redirects.redirectWithoutSGTIN.redirect + "/" === props.domain
+			) {
+				redirects.redirectWithoutSGTIN.msg = NoRedirectionMessage;
+			}
+		} catch (err) {
+			redirects.redirectWithoutSGTIN.msg = RedirectionError;
+			console.log(
+				props.domain + ": redir Error" + (props.isChina ? " from CN" : " from EU"),
+				err
+			);
+		} finally {
+			newUpdate = { ...update };
+			newUpdate.redirWithoutSgtin = false;
+			setUpdate(newUpdate);
+			setRedirects(redirects);
+		}
+	};
+
+	const getRedirectionDisplayedContent = () => {
 		var tdRedirectionClass = "";
 		var RedirectionContent = "";
 		var sameRedirectionsWithOrWithoutSGTIN = true;
-		if (this.state && this.state.update.redirWithoutSgtin) {
+		if (update && update.redirWithoutSgtin) {
 			tdRedirectionClass = "updating";
 		}
 		if (
-			typeof this.state.redirects !== "undefined" &&
-			typeof this.state.redirects.redirectWithoutSGTIN !== "undefined" &&
-			typeof this.state.redirects.redirectWithSGTIN !== "undefined"
+			typeof redirects !== "undefined" &&
+			typeof redirects.redirectWithoutSGTIN !== "undefined" &&
+			typeof redirects.redirectWithSGTIN !== "undefined"
 		) {
-			sameRedirectionsWithOrWithoutSGTIN =
-				this.redirectionsWithSGTINisTheSameAsWithoutSGTIN();
+			sameRedirectionsWithOrWithoutSGTIN = redirectionsWithSGTINisTheSameAsWithoutSGTIN();
 
-			if (this.state.redirects.redirectWithoutSGTIN.msg === RedirectionError) {
+			if (redirects.redirectWithoutSGTIN.msg === RedirectionError) {
 				tdRedirectionClass = "errorCell";
 				RedirectionContent = RedirectionError;
 			} else {
-				RedirectionContent = this.state.redirects.redirectWithoutSGTIN.msg;
-				if (this.state.redirects.redirectWithoutSGTIN.isRolex) {
+				RedirectionContent = redirects.redirectWithoutSGTIN.msg;
+				if (redirects.redirectWithoutSGTIN.isRolex) {
 					RedirectionContent += " - " + RolexExperienceMessage;
 				}
 			}
@@ -64,8 +117,8 @@ export default class CellRedirect extends React.Component {
 					"Without SGTIN: " +
 					RedirectionContent +
 					"<br/>With SGTIN:" +
-					this.state.redirects.redirectWithSGTIN.msg;
-				if (this.state.redirects.redirectWithSGTIN.isRolex) {
+					redirects.redirectWithSGTIN.msg;
+				if (redirects.redirectWithSGTIN.isRolex) {
 					RedirectionContent += " - " + RolexExperienceMessage;
 				}
 			}
@@ -75,103 +128,48 @@ export default class CellRedirect extends React.Component {
 			className: tdRedirectionClass,
 			content: RedirectionContent,
 		};
-	}
+	};
 
-	async getRedirectionDetails() {
-		try {
-			var redirects = {};
-			redirects.redirectWithSGTIN = {};
-			redirects.redirectWithSGTIN = await Redirect.getRedirect(
-				this.props.url,
-				this.props.isChina
-			);
-			redirects.redirectWithSGTIN.msg = redirects.redirectWithSGTIN.redirect;
-			if (redirects.redirectWithSGTIN.redirect === this.props.url) {
-				redirects.redirectWithSGTIN.msg = NoRedirectionMessage;
-			}
-		} catch (err) {
-			redirects.redirectWithSGTIN.msg = RedirectionError;
-			console.log(
-				this.props.domain +
-					": redir Error" +
-					(this.props.isChina ? " from CN" : " from EU"),
-				err
-			);
-		}
-
-		var update = this.state.update;
-		update.redirWithSgtin = false;
-
-		try {
-			redirects.redirectWithoutSGTIN = {};
-			redirects.redirectWithoutSGTIN = await Redirect.getRedirect(
-				this.props.domain,
-				this.props.isChina
-			);
-			redirects.redirectWithoutSGTIN.msg = redirects.redirectWithoutSGTIN.redirect;
-			if (
-				redirects.redirectWithoutSGTIN.redirect === this.props.domain ||
-				redirects.redirectWithoutSGTIN.redirect === this.props.domain + "/" ||
-				redirects.redirectWithoutSGTIN.redirect + "/" === this.props.domain
-			) {
-				redirects.redirectWithoutSGTIN.msg = NoRedirectionMessage;
-			}
-		} catch (err) {
-			redirects.redirectWithoutSGTIN.msg = RedirectionError;
-			console.log(
-				this.props.domain +
-					": redir Error" +
-					(this.props.isChina ? " from CN" : " from EU"),
-				err
-			);
-		}
-
-		update.redirWithoutSgtin = false;
-		this.setState({
-			redirects: redirects,
-			update: update,
-		});
-
-		var displayedContent = this.getRedirectionDisplayedContent();
-		var filter = {};
-		var filterKey = "Redirection " + (this.props.isChina ? "CN" : "EU");
-		filter[Helper._removeDomainProtocol(this.props.domain)] = {
-			[filterKey]: displayedContent.content,
-		};
-		this.props.dynamicFilterCallback(filter);
-	}
-
-	redirectionsWithSGTINisTheSameAsWithoutSGTIN() {
+	const redirectionsWithSGTINisTheSameAsWithoutSGTIN = () => {
 		if (
-			!this.state.redirects.redirectWithoutSGTIN.redirect ||
-			this.state.redirects.redirectWithoutSGTIN.redirect.length < 1 ||
-			!this.state.redirects.redirectWithSGTIN.redirect ||
-			this.state.redirects.redirectWithSGTIN.redirect.length < 1
+			!redirects.redirectWithoutSGTIN.redirect ||
+			redirects.redirectWithoutSGTIN.redirect.length < 1 ||
+			!redirects.redirectWithSGTIN.redirect ||
+			redirects.redirectWithSGTIN.redirect.length < 1
 		) {
 			return true;
 		}
 
 		if (
-			this.state.redirects.redirectWithoutSGTIN.redirect ===
-				this.state.redirects.redirectWithSGTIN.redirect ||
-			this.state.redirects.redirectWithSGTIN.redirect.includes(
-				this.state.redirects.redirectWithoutSGTIN.redirect
-			)
+			redirects.redirectWithoutSGTIN.redirect === redirects.redirectWithSGTIN.redirect ||
+			redirects.redirectWithSGTIN.redirect.includes(redirects.redirectWithoutSGTIN.redirect)
 		) {
 			return true;
 		}
 		return false;
+	};
+
+	var msg = "";
+	var className = "";
+	if (displayedMsg) {
+		msg = displayedMsg;
+	} else {
+		var content = getRedirectionDisplayedContent();
+		msg = content.content;
+		className = content.className;
+		if (content.content.length > 0) {
+			setDisplayedMsg(content.content);
+			dispatch(
+				setValue({
+					column: props.column,
+					dns: Helper._removeDomainProtocol(props.domain),
+					value: content.content,
+				})
+			);
+		}
 	}
 
-	render() {
-		var content = this.getRedirectionDisplayedContent();
-
-		return (
-			<td
-				key="redirectEU"
-				className={content.className}
-				dangerouslySetInnerHTML={{ __html: content.content }}
-			></td>
-		);
-	}
+	return (
+		<td key="redirectEU" className={className} dangerouslySetInnerHTML={{ __html: msg }}></td>
+	);
 }

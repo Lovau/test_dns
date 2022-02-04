@@ -1,39 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Helper from "helpers/Helper";
 import DNS from "services/api/dns";
+import { useSelector, useDispatch } from "react-redux";
+import { setValue } from "services/reduxServices/DomainDynamicValueService";
+
 const cnameErrorMessage = "Doesn't exist";
 const serverUnknownMessage = "Unknown server";
 
-export default class CellDNS extends React.Component {
-	constructor(props) {
-		super(props);
+export default function CellDNS(props) {
+	const [cname, setCname] = useState(null);
+	const [server, setServer] = useState(null);
+	const [otherRecords, setOtherRecords] = useState(null);
+	const [displayedMsg, setDisplayedMsg] = useState(null);
+	const [update, setUpdate] = useState(false);
 
-		this.state = {
-			update: false,
-			cname: null,
-			otherRecords: null,
-		};
+	const reduxUpdates = useSelector((state) => state.DomainUpdate);
+	const reduxValues = useSelector((state) => state.DomainDynamicValue);
+	const dispatch = useDispatch();
+
+	var dns = Helper._removeDomainProtocol(props.domain);
+	if (!displayedMsg && reduxValues[dns] && reduxValues[dns][props.column]) {
+		setDisplayedMsg(reduxValues[dns][props.column]);
 	}
 
-	componentDidUpdate() {
-		if (
-			this.props.update === true &&
-			!this.state.update &&
-			!this.state.cname &&
-			!this.state.otherRecords
-		) {
-			this.setState({ update: true });
-			this.getDNSDetails(this.props.domain);
+	// componentDidUpdate
+	useEffect(() => {
+		if (reduxUpdates[props.column] && !update && !cname && !otherRecords) {
+			setUpdate(true);
+			getDNSDetails();
 		}
-	}
+	}); // notice, no second argument
 
-	async getDNSDetails(domain) {
-		var filter = {};
-		var filterValue = "";
+	const getDNSDetails = async () => {
+		var msg = "";
 		try {
 			var response = await DNS.dnsExist(
-				Helper._removeDomainProtocol(domain),
-				this.props.isChina
+				Helper._removeDomainProtocol(props.domain),
+				props.isChina
 			);
 			console.log("DNS response", response);
 			var cname, otherRecords;
@@ -45,58 +48,53 @@ export default class CellDNS extends React.Component {
 				throw Error("Record not found");
 			}
 
-			var server;
-			if (this.props.cnameMapping[cname]) {
-				server = this.props.cnameMapping[cname];
-			} else if (this.props.cnameMapping[cname + "."]) {
-				server = this.props.cnameMapping[cname + "."];
+			var serverName;
+			if (props.cnameMapping[cname]) {
+				serverName = props.cnameMapping[cname];
+			} else if (props.cnameMapping[cname + "."]) {
+				serverName = props.cnameMapping[cname + "."];
 			} else {
-				server = serverUnknownMessage;
+				serverName = serverUnknownMessage;
 			}
 
-			this.setState({
-				server: server,
-				cname: cname,
-				otherRecords: otherRecords,
-			});
+			setServer(serverName);
+			setCname(cname);
+			setOtherRecords(otherRecords);
 
-			filterValue = cname + " " + server;
+			if (cname) {
+				msg = cname + "<br />" + serverName;
+			} else {
+				msg = otherRecords;
+			}
 		} catch (err) {
-			this.setState({
-				cname: cnameErrorMessage,
-			});
-			filterValue = cnameErrorMessage;
-			console.log(domain + ": Error", err);
+			setCname(cnameErrorMessage);
+			msg = cnameErrorMessage;
+			console.log(props.domain + ": Error", err);
 		} finally {
-			var filterKey = "DNS " + (this.props.isChina ? "CN" : "EU");
-			filter[Helper._removeDomainProtocol(this.props.domain)] = {
-				[filterKey]: filterValue,
-			};
-			this.props.dynamicFilterCallback(filter);
-		}
+			setDisplayedMsg(msg);
+			setUpdate(false);
 
-		this.setState({
-			update: false,
-		});
+			dispatch(
+				setValue({
+					column: props.column,
+					dns: Helper._removeDomainProtocol(props.domain),
+					value: msg,
+				})
+			);
+		}
+	};
+
+	// DNS cell
+	var tdCnameClass = "";
+	if (update) {
+		tdCnameClass = "updating";
+	}
+	if (server === serverUnknownMessage) {
+		tdCnameClass = "warningCell";
+	}
+	if (cname === cnameErrorMessage) {
+		tdCnameClass = "errorCell";
 	}
 
-	render() {
-		// DNS cell
-		var tdCnameClass = "";
-		var DNSContent = this.state.cname;
-		if (this.state.update) {
-			tdCnameClass = "updating";
-		}
-		if (this.state.server === serverUnknownMessage) {
-			tdCnameClass = "warningCell";
-		}
-		if (this.state.cname === cnameErrorMessage) {
-			tdCnameClass = "errorCell";
-		}
-		if ("server" in this.state) {
-			DNSContent += "<br/>" + this.props.server;
-		}
-
-		return <td className={tdCnameClass} dangerouslySetInnerHTML={{ __html: DNSContent }}></td>;
-	}
+	return <td className={tdCnameClass} dangerouslySetInnerHTML={{ __html: displayedMsg }}></td>;
 }
