@@ -30,6 +30,7 @@ export default function URL(props) {
   // };
 
   const toggleEditMode = () => {
+    console.log("toggleEditMode", editMode, props.isadmin, props.isadmin && !editMode);
     setEditMode(props.isadmin && !editMode);
   };
 

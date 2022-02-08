@@ -103,7 +103,8 @@ function FilterableURLList(props) {
   };
 
   const isAdmin = () => {
-    if (user || !Object.prototype.hasOwnProperty.call(user, "uuid")) {
+    // console.log("isAdmin", user);
+    if (!user || !Object.prototype.hasOwnProperty.call(user, "uuid")) {
       return false;
     }
     return true;
