@@ -30,8 +30,7 @@ export default function URL(props) {
   // };
 
   const toggleEditMode = () => {
-    console.log("toggleEditMode", editMode, props.isadmin, props.isadmin && !editMode);
-    setEditMode(props.isadmin && !editMode);
+    setEditMode(props.isadmin);
   };
 
   const onChangeComment = (e) => {
@@ -151,7 +150,7 @@ export default function URL(props) {
         countTD++;
         if (column === "comment" && editMode) {
           TDs.push(
-            <td key={column} onClick={toggleEditMode}>
+            <td key={column}>
               <textarea
                 name="comment"
                 id="comment"
@@ -170,7 +169,7 @@ export default function URL(props) {
           );
         } else if (column === "changesTodo" && editMode) {
           TDs.push(
-            <td key={column} onClick={toggleEditMode}>
+            <td key={column}>
               <span className="changesTodoForm mt-1">
                 <input
                   type="checkbox"
