@@ -116,24 +116,47 @@ function URLList(props) {
 
   const URLisFiltered = (domain) => {
     var dns = Helper._removeDomainProtocol(domain.domain);
+    var filter;
+    var isNegativeFilter;
+    var negativeFilter;
 
     for (var column in props.dynamicColumnsFilters) {
+      isNegativeFilter = false;
+      filter = "";
+      negativeFilter = "";
       if (
         props.dynamicColumnsFilters[column].isVisible &&
         props.dynamicColumnsFilters[column].filter &&
         props.dynamicColumnsFilters[column].filter.length > 0 &&
         reduxDynamicValues &&
         reduxDynamicValues[dns] &&
-        reduxDynamicValues[dns][column] &&
-        !reduxDynamicValues[dns][column]
-          .toLowerCase()
-          .includes(props.dynamicColumnsFilters[column].filter.toLowerCase())
+        reduxDynamicValues[dns][column]
       ) {
-        return true;
+        filter = props.dynamicColumnsFilters[column].filter.toLowerCase();
+        isNegativeFilter = filter.charAt(0) === "!";
+        negativeFilter = filter.substring(1);
+
+        if (
+          !isNegativeFilter &&
+          !reduxDynamicValues[dns][column].toLowerCase().includes(filter.toLowerCase())
+        ) {
+          return true;
+        }
+
+        if (
+          isNegativeFilter &&
+          negativeFilter.length > 0 &&
+          reduxDynamicValues[dns][column].toLowerCase().includes(negativeFilter.toLowerCase())
+        ) {
+          return true;
+        }
       }
     }
 
     for (column in props.columnsFilters) {
+      isNegativeFilter = false;
+      filter = "";
+      negativeFilter = "";
       if (
         Object.prototype.hasOwnProperty.call(domain, column) &&
         typeof domain[column] === "boolean"
@@ -144,11 +167,29 @@ function URLList(props) {
       if (
         props.columnsFilters[column].isVisible &&
         props.columnsFilters[column].filter &&
-        props.columnsFilters[column].filter.length > 0 &&
-        (!domain[column] ||
-          !domain[column].toLowerCase().includes(props.columnsFilters[column].filter.toLowerCase()))
+        props.columnsFilters[column].filter.length > 0
       ) {
-        return true;
+        filter = props.columnsFilters[column].filter;
+        isNegativeFilter = filter.charAt(0) === "!";
+        negativeFilter = filter.substring(1);
+        if (
+          !isNegativeFilter &&
+          (!domain[column] || !domain[column].toLowerCase().includes(filter.toLowerCase()))
+        ) {
+          return true;
+        }
+
+        if (domain.brand === "AFR Aptamil") {
+          console.log("coucou debug", isNegativeFilter, column, filter);
+        }
+
+        if (
+          isNegativeFilter &&
+          negativeFilter.length > 0 &&
+          (!domain[column] || domain[column].toLowerCase().includes(negativeFilter.toLowerCase()))
+        ) {
+          return true;
+        }
       }
     }
 
