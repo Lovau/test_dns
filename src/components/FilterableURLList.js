@@ -50,7 +50,7 @@ function FilterableURLList(props) {
         column: columnDBName,
         filter: {
           isVisible: reduxFilter[columnDBName].isVisible,
-          filter: e.target.value,
+          filter: e.target.value.toLowerCase(),
           displayName: reduxFilter[columnDBName].displayName,
         },
       })
