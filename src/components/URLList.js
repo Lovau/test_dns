@@ -179,10 +179,6 @@ function URLList(props) {
           return true;
         }
 
-        if (domain.brand === "AFR Aptamil") {
-          console.log("coucou debug", isNegativeFilter, column, filter);
-        }
-
         if (
           isNegativeFilter &&
           negativeFilter.length > 0 &&

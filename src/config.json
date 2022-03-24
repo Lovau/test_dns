@@ -33,7 +33,15 @@
 	  {
 	    "name": "Redirection CN",
 	    "isVisible": false
-	  }
+	  },
+    {
+      "name": "AEM Folder EU",
+      "isVisible": false
+    },
+    {
+      "name": "AEM Folder CN",
+      "isVisible": false
+    }
 	],
 	"environments": ["RC", "Staging", "Prod Tech", "Public prod"],
 	"columnsName": [

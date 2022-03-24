@@ -88,7 +88,7 @@ async function getRedirect(fullURL) {
     });
 }
 // local test
-// (async () => {
-//     var res = await getRedirect("https://qrt.aptaclub.it/0539152247310228NQ3MNSX35");
-//     console.log("res", res);
-// })();
+(async () => {
+    var res = await getRedirect("https://qrt.aptaclub.it/0539152247310228NQ3MNSX35");
+    console.log("res", res);
+})();
