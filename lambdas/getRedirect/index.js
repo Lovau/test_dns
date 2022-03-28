@@ -58,6 +58,7 @@ async function getRedirect(fullURL) {
 
         var r = request(options, function (err, res, body) {
             if (err) {
+                // errno = EBUSY means DNS doesn't exist
                 reject(err);
             } else {
                 // console.log(r.uri.href);
@@ -89,6 +90,10 @@ async function getRedirect(fullURL) {
 }
 // local test
 (async () => {
-    var res = await getRedirect("https://qrt.aptaclub.it/0539152247310228NQ3MNSX35");
-    console.log("res", res);
+    try {
+        var res = await getRedirect("https://qrw.aptamil-anz.com/12345");
+        console.log("res", res);
+    } catch (e) {
+        console.log("ERROR", e);
+    }
 })();

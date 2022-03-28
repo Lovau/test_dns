@@ -23,7 +23,10 @@ function Login() {
                 // console.log("Login success!", userService.userValue);
                 // history.push("/admin");
             })
-            .catch(alertService.error);
+            .catch((e) => {
+                setLoading(false);
+                alertService.error("Wrong login or wrong passord.");
+            });
     }
 
     function onLoginChange(e) {
